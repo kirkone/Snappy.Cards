@@ -1,0 +1,27 @@
+{
+  "name": "about",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start:cards": "npm start --workspace=src/Cards",
+    "build:cards": "npm run build --workspace=src/Cards"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kirkone/about.git"
+  },
+  "author": "Kirsten Kluge",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kirkone/about/issues"
+  },
+  "homepage": "https://github.com/kirkone/about#readme",
+  "workspaces": [
+    "src/Cards"
+  ],
+  "devDependencies": {
+    "@snowpack/plugin-sass": "1.4.0",
+    "snowpack": "3.8.8"
+  }
+}

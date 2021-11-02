@@ -1,0 +1,21 @@
+{
+  "name": "about.cards",
+  "version": "1.0.0",
+  "description": "A web site to show a business card.",
+  "main": "index.html",
+  "scripts": {
+    "start": "snowpack dev --reload",
+    "build": "snowpack build"
+  },
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kirkone/About.git"
+  },
+  "devDependencies": {
+  },
+  "dependencies": {
+    "qr-code-styling":"1.6.0-rc.1"
+  }
+}

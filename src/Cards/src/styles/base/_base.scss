@@ -1,0 +1,26 @@
+@use 'typography';
+
+body,
+html {
+    overscroll-behavior: none ;
+    min-height: 100%;
+
+    height: 100%;
+    overflow: hidden;
+
+    font-size: 62.5%;
+}
+
+body {
+    font-family: typography.$font;
+    font-weight: 300;
+    font-size: 1.6rem;
+    color: var(--foregroundcolor);
+
+    background-color: var(--backgroundcolor);
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+

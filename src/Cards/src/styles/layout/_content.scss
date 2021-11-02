@@ -1,0 +1,24 @@
+@use '../abstracts/variables';
+
+body {
+    > .content{
+        height: 100%;
+        overflow-y: auto;
+
+        visibility: hidden;
+    }
+    
+    .page{
+        height: 100%;
+    
+        position: sticky;
+        top: 0;
+    
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    
+        pointer-events: none; 
+    }
+}
+

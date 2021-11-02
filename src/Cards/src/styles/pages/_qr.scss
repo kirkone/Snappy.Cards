@@ -1,0 +1,15 @@
+@use '../abstracts/variables';
+
+.qr{
+
+    canvas{
+        border-radius: 20px;
+        max-width: 100%;
+        animation: fadeIn 1s;
+    }
+
+    @keyframes fadeIn {
+        0% {opacity:0;}
+        100% {opacity:1;}
+    }
+}

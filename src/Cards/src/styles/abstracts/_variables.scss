@@ -1,0 +1,38 @@
+$backgroundcolor: rgb(8, 8, 8);
+$backgroundcolor-trans: rgba($backgroundcolor, 0.8);
+$backgroundcolor-light: rgb(16, 16, 16);
+$backgroundcolor-lighter: rgb(24, 24, 24);
+$backgroundcolor-lightest: rgb(32, 32, 32);
+
+$foregroundcolor: rgb(255, 255, 255);
+$foregroundcolor-trans: rgba($foregroundcolor, 0.8);
+$foregroundcolor-light: rgb(247, 247, 247);
+$foregroundcolor-lighter: rgb(239, 239, 239);
+$foregroundcolor-lightest: rgb(231, 231, 231);
+
+$shadow-color: rgb(0, 0, 0);
+$shadow-color-light: rgb(80, 80, 80);
+
+$spacer-height: 60px;
+$divider-height: 3px;
+
+$nav-width: 250px;
+
+$duration-default: 270ms;
+$transition-mode: ease-in-out;
+
+$box-shadow: 0 0 20px var(--shadow-color);
+
+:root {
+    --backgroundcolor: #{$backgroundcolor};
+    --backgroundcolor-trans: #{$backgroundcolor-trans};
+    --backgroundcolor-light: #{$backgroundcolor-light};
+    --backgroundcolor-lighter: #{$backgroundcolor-lighter};
+
+    --foregroundcolor: #{$foregroundcolor};
+    --foregroundcolor-light: #{$foregroundcolor-light};
+    --foregroundcolor-lighter: #{$foregroundcolor-lighter};
+
+    --shadow-color: #{$shadow-color};
+}
+
