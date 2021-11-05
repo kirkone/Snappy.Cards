@@ -1,0 +1,5 @@
+{
+  "imports": {
+    "qr-code-styling": "./qr-code-styling.js"
+  }
+}

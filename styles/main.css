@@ -1,0 +1,190 @@
+:root {
+  --backgroundcolor: #080808;
+  --backgroundcolor-trans: rgba(8, 8, 8, 0.8);
+  --backgroundcolor-light: #101010;
+  --backgroundcolor-lighter: #181818;
+  --foregroundcolor: white;
+  --foregroundcolor-light: #f7f7f7;
+  --foregroundcolor-lighter: #efefef;
+  --shadow-color: black;
+}
+
+/*** The new CSS Reset - version 1.3.1 (last updated 28.10.2021) ***/
+/*
+    Remove all the styles of the "User-Agent-Stylesheet", except for the 'display' property
+    - The "symbol *" part is to solve Firefox SVG sprite bug
+ */
+*:where(:not(iframe, canvas, img, svg, video):not(svg *, symbol *)) {
+  all: unset;
+  display: revert;
+}
+
+/* Preferred box-sizing value */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Remove list styles (bullets/numbers) */
+ol, ul {
+  list-style: none;
+}
+
+/* For images to not be able to exceed their container */
+img {
+  max-width: 100%;
+}
+
+/* removes spacing between cells in tables */
+table {
+  border-collapse: collapse;
+}
+
+/* revert the 'white-space' property for textarea elements on Safari */
+textarea {
+  white-space: revert;
+}
+
+body,
+html {
+  overscroll-behavior: none;
+  min-height: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-size: 62.5%;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  font-weight: 300;
+  font-size: 1.6rem;
+  color: var(--foregroundcolor);
+  background-color: var(--backgroundcolor);
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
+body > .content {
+  height: 100%;
+  overflow-y: auto;
+  visibility: hidden;
+}
+body .page {
+  height: 100%;
+  position: sticky;
+  top: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+}
+
+.page > div {
+  position: relative;
+  width: 50rem;
+  min-width: 20rem;
+  margin: 1rem;
+  padding: 2rem;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(64, 64, 64, 0.45);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 25px 25px rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
+  overflow: hidden;
+  transition: background 1s;
+  pointer-events: auto;
+}
+@supports not ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
+  .page > div {
+    background-color: rgba(64, 64, 64, 0.85);
+  }
+}
+.page > div:hover {
+  background: rgba(64, 64, 64, 0.65);
+}
+
+.card {
+  min-height: 300px;
+  padding-bottom: 10rem !important;
+  gap: 2rem;
+}
+.card .sub {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 8rem;
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #0000001a;
+  color: rgba(0, 0, 0, 0.05);
+  font-weight: 900;
+  font-size: 5rem;
+}
+.card .sub span {
+  white-space: nowrap;
+  width: 100%;
+  overflow: hidden;
+  text-align: center;
+}
+.card .image {
+  display: none;
+  position: relative;
+  width: 120px;
+  height: 120px;
+  overflow: hidden;
+  border-radius: 50%;
+  box-shadow: 0 0 0 10px rgba(255, 255, 255, 0.1);
+}
+.card .image img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.card .detail {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  color: white;
+}
+.card .detail div {
+  display: none;
+  align-items: center;
+  justify-items: center;
+  gap: 10px;
+}
+.card .detail div svg {
+  width: 2.5rem;
+  color: #ffffffbb;
+}
+.card .detail h3 {
+  font-size: 2.5rem;
+  font-weight: 600;
+}
+
+.qr canvas {
+  border-radius: 20px;
+  max-width: 100%;
+  animation: fadeIn 1s;
+}
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
