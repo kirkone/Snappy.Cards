@@ -10,12 +10,14 @@ jobs:
       - name: Checkout 🚛
         uses: actions/checkout@v2.3.1
 
-      - uses: actions/setup-node@v2
+      - name: Setup node 
+        uses: actions/setup-node@v2
         with:
           node-version: 'lts/*'
 
       - name: Install and Build 🔧
         run: |
+          npm -v
           npm install
           npm run-script build:cards
 
