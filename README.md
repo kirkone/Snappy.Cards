@@ -7,14 +7,14 @@
 
 Snappy Cards are for sharing your contact information with others without storing the data on any server.
 
-This site is hosted on GitHub Pages under [snappy.cards](https://snappy.cards) and can be modified by using serveral [parameters](#parameters).
+This site is hosted on GitHub Pages under [snappy.cards/?...](https://snappy.cards/?name=Max%20Mustermann&phone=+49%20123%204567890&mail=no@mail.de&web=blog.undefined.de&sub=Mustermann&avatar=random&background=random) and can be modified by using several [parameters](#parameters).
 
 ### Example
 
 ![Sample of a card](/doc/images/sample-card.png)
 ![Sample of a code](/doc/images/sample-code.png)
 
-Here is an live example: [snappy.cards/...](https://snappy.cards/?name=Max%20Mustermann&phone=+49%20123%204567890&mail=no@mail.de&web=blog.undefined.de&sub=Mustermann&avatar=random&background=random)
+Here is a live example: [snappy.cards/?...](https://snappy.cards/?name=Max%20Mustermann&phone=+49%20123%204567890&mail=no@mail.de&web=blog.undefined.de&sub=Mustermann&avatar=random&background=random)
 ```
 https://snappy.cards/?name=Max Mustermann&phone=+49 123 4567890&mail=no@mail.de&web=blog.undefined.de&sub=Mustermann&avatar=random&background=random
 ```
@@ -24,7 +24,7 @@ https://snappy.cards/?name=Max Mustermann&phone=+49 123 4567890&mail=no@mail.de&
 All parameters are optional if you do not want to use them. The order is not relevant.
 
 ```
-https://snappy.cards/?name={name}&phone={phone}&mail={mail}&web={web}&sub={subtitle}&avatar={unsplash image id | random | uri to image}&background={Unsplash image id | random | uri to image}
+https://snappy.cards/?name={name}&phone={phone}&mail={mail}&web={web}&sub={subtitle}&avatar={unsplash image id | random | URL to image}&background={Unsplash image id | random | URL to image}
 ```
 
 ### name
@@ -51,16 +51,16 @@ A water mark showed on the bottom of the card. Can be any sort of text.
 
 This is the avatar image on the card. There are the following options:
 
-**Unsplash Image** Use an ID from [unsplash.com](hhttps://unsplash.com/). You could copy it easily from the url of a specific image.  
-**random** A image of a person will randomly taken from [unsplash.com](hhttps://unsplash.com/)  
-**Image URI** You can provide an uri to your own image.  
+**Unsplash Image** Use an ID from [unsplash.com](https://unsplash.com/). You could copy it easily from the URL of a specific image.  
+**random** A image of a person will randomly taken from [unsplash.com](https://unsplash.com/)  
+**Image URL** You can provide an URL to your own image.  
 **blank** Leaf the parameter empty or omit it complete and no avatar will be shown.
 
 ### background
 
 This is the background image of the card. There are the following options:
 
-**Unsplash Image** Use an ID from [unsplash.com](hhttps://unsplash.com/). You could copy it easily from the url of a specific image.  
-**random** A somewhat blury image will randomly taken from [unsplash.com](hhttps://unsplash.com/)  
-**Image URI** You can provide an uri to your own image.  
+**Unsplash Image** Use an ID from [unsplash.com](https://unsplash.com/). You could copy it easily from the URL of a specific image.  
+**random** A somewhat blurry image will randomly taken from [unsplash.com](https://unsplash.com/)  
+**Image URL** You can provide an URL to your own image.  
 **blank** Leaf the parameter empty or omit it complete and the background will be blank.
