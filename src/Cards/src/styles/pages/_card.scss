@@ -70,6 +70,10 @@
             height: 100%;
             object-fit: cover;
         }
+
+        &.visible {
+            display: block;
+        }
     }
 
     .detail{
@@ -84,6 +88,10 @@
             align-items: center;
             justify-items: center;
             gap: 10px;
+
+            &.visible {
+                display: flex;
+            }
 
             svg{
                 width: 2.5rem;
