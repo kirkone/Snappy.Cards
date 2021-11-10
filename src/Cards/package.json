@@ -13,9 +13,9 @@
     "type": "git",
     "url": "https://github.com/kirkone/About.git"
   },
-  "devDependencies": {
-  },
+  "devDependencies": {},
   "dependencies": {
-    "qr-code-styling":"1.6.0-rc.1"
+    "qr-code-styling": "1.6.0-rc.1",
+    "fp-ts": "2.11.5"
   }
 }
