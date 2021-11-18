@@ -83,7 +83,7 @@ const isInstanceOf = <CLS extends new (...args: any) => any>(
 ): el is InstanceType<CLS> => el instanceof Cls;
 
 const getEl = flow(
-    document.querySelector,
+    document.querySelector.bind(document),
     O.fromNullable
 );
 
