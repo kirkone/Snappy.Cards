@@ -3,6 +3,7 @@ $backgroundcolor-trans: rgba($backgroundcolor, 0.8);
 $backgroundcolor-light: rgb(16, 16, 16);
 $backgroundcolor-lighter: rgb(24, 24, 24);
 $backgroundcolor-lightest: rgb(32, 32, 32);
+$backgroundcolor-accent: rgb(90, 90, 100);
 
 $foregroundcolor: rgb(255, 255, 255);
 $foregroundcolor-trans: rgba($foregroundcolor, 0.8);
@@ -28,6 +29,7 @@ $box-shadow: 0 0 20px var(--shadow-color);
     --backgroundcolor-trans: #{$backgroundcolor-trans};
     --backgroundcolor-light: #{$backgroundcolor-light};
     --backgroundcolor-lighter: #{$backgroundcolor-lighter};
+    --backgroundcolor-accent: #{$backgroundcolor-accent};
 
     --foregroundcolor: #{$foregroundcolor};
     --foregroundcolor-light: #{$foregroundcolor-light};
