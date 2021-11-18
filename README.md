@@ -5,7 +5,9 @@
 [![GitHub pull requests open](https://img.shields.io/github/issues-pr/kirkone/snappy.cards.svg)](https://github.com/kirkone/Snappy.Cards/pulls)
 [![GitHub last commit (branch)](https://img.shields.io/github/last-commit/kirkone/snappy.cards/main)](https://github.com/kirkone/Snappy.Cards/commits/main)
 
-Snappy Cards are for sharing your contact information with others without storing the data on any server.
+Snappy Cards are for sharing your contact information with others.  
+This card works with data only beeing stored in the URL.  
+To make sharing easier a QR code is also generated. 
 
 This site is hosted on GitHub Pages under [snappy.cards/?...](https://snappy.cards/?name=Max%20Mustermann&phone=+49%20123%204567890&mail=no@mail.de&web=blog.undefined.de&sub=Mustermann&avatar=random&background=random) and can be modified by using several [parameters](#parameters).
 
@@ -21,7 +23,7 @@ https://snappy.cards/?name=Max Mustermann&phone=+49 123 4567890&mail=no@mail.de&
 
 ## Parameters
 
-All parameters are optional if you do not want to use them. The order is not relevant.
+All parameters are optional if you do not want to use them. There is no specific order for them.
 
 ```
 https://snappy.cards/?name={name}&phone={phone}&mail={mail}&web={web}&sub={subtitle}&avatar={unsplash image id | random | URL to image}&background={Unsplash image id | random | URL to image}
@@ -29,7 +31,7 @@ https://snappy.cards/?name={name}&phone={phone}&mail={mail}&web={web}&sub={subti
 
 ### name
 
-What you want to show as your name or headline.
+Your name or headline.
 
 ### phone
 
