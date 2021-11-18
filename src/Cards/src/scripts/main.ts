@@ -4,7 +4,7 @@ import { flow, identity, pipe } from "fp-ts/es6/function";
 import type { Endomorphism } from "fp-ts/es6/Endomorphism";
 import type { IO as IOType } from "fp-ts/es6/IO";
 import type { Option as OptionType } from "fp-ts/es6/Option";
-import QRCodeStyling from "qr-code-styling";
+import {makeQrCode} from "./qr/QRCode.js";
 import { sequenceS } from "fp-ts/es6/Apply";
 
 type KnownUrlParameters =
@@ -85,20 +85,27 @@ const isInstanceOf = <CLS extends new (...args: any) => any>(
 const getEl = flow(
     document.querySelector.bind(document),
     O.fromNullable,
-    IO.of
+    IO.of,
 );
 
 const getHtmlEl = flow(
     getEl,
     IO.map(O.chain(
         O.fromPredicate(isInstanceOf(HTMLElement))
-    ))
+    )),
 );
 
 const getImgEl = flow(
     getEl,
     IO.map(O.chain(
         O.fromPredicate(isInstanceOf(HTMLImageElement))
+    ))
+);
+
+const getSvgEl = flow(
+    getEl,
+    IO.map(O.chain(
+        O.fromPredicate(isInstanceOf(SVGElement))
     ))
 );
 
@@ -169,35 +176,6 @@ const fillInValues = pipe(
     IO.chain(render)
 );
 
-const qrCode = new QRCodeStyling({
-    width: 600,
-    height: 600,
-    type: "canvas",
-    data: window.location.href,
-    image: "",
-    margin: 10,
-    qrOptions: {
-        typeNumber: 0,
-        mode: "Byte",
-        errorCorrectionLevel: "L"
-    },
-    dotsOptions: {
-        color: "#000000",
-        type: "rounded"
-    },
-    backgroundOptions: {
-        color: "#ffffffaa",
-    },
-    cornersSquareOptions: {
-        color: "#000000",
-        type: "extra-rounded",
-    },
-    cornersDotOptions: {
-        color: "#000000",
-        type: "dot",
-    }
-});
-
 window.addEventListener("DOMContentLoaded", () => {
     pipe(
         getHtmlEl("body > .content"),
@@ -207,10 +185,19 @@ window.addEventListener("DOMContentLoaded", () => {
     )();
 
     pipe(
-        getHtmlEl("#qr"),
+        sequenceIO({
+            qrSvg: getSvgEl("#qr .qr-svg"),
+            qrPath: getSvgEl("#qr .fill-in"),
+        }),
+        IO.map(sequenceO),
         IO.map(O.map(
-            qr => qrCode.append(qr)
-        ))
+            ({ qrSvg, qrPath }) => {
+                const x = makeQrCode("L", window.location.href);
+
+                qrSvg.setAttribute("viewBox", `0 0 ${x.sideLength} ${x.sideLength}`);
+                qrPath.setAttribute("d", x.path);
+            }
+        )),
     )();
 
     fillInValues();

@@ -26,6 +26,11 @@ module.exports = {
     "out": "../../build",
     "metaUrlPath": "/vendor"
   },
+  optimize: {
+    bundle: true,
+    minify: true,
+    target: 'es2020',
+  },
   exclude: [
     "**/node_modules/**/*"
   ]
