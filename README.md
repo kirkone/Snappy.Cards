@@ -66,3 +66,23 @@ This is the background image of the card. There are the following options:
 **random** A somewhat blurry image will randomly taken from [unsplash.com](https://unsplash.com/)  
 **Image URL** You can provide an URL to your own image.  
 **blank** Leaf the parameter empty or omit it complete and the background will be blank.
+
+## Authors
+
+-   **Kirsten Kluge** - _Initial work_ - [kirkone](https://github.com/kirkone)
+-   **Thomas Müller** - _fanzy functional programming_ - [tmueller](https://github.com/tmueller)
+
+See also the list of [contributors](https://github.com/kirkone/Snappy.Cards/graphs/contributors) who participated in this project.
+
+## Acknowledgments
+
+### Design
+
+The design and layout is inspired by this YouTube video: [Html CSS Glassmorphism Business Card Design](https://www.youtube.com/watch?v=Glsby66vuLA) by [Online Tutorials](https://www.youtube.com/channel/UCbwXnUipZsLfUckBPsC7Jog)
+
+### QR Code
+
+For the QR codes is code used by: Joe Grinstead  
+[GitHub: grinstead / makeQrCode](https://github.com/grinstead/makeQrCode)
+
+The code base has been slightly modified to work with TypeScript and some unused code has been removed.
