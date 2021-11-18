@@ -1,50 +1,62 @@
+import {IO, O, R} from "./fp.js";
+import {flow, identity, pipe} from "../vendor/pkg/fp-ts/es6/function.js";
 import QRCodeStyling from "../vendor/pkg/qr-code-styling.js";
-function setValues() {
-  var uri = window.location.href;
-  var queryString = uri.split("?");
-  var parameters = queryString[1].split("&");
-  for (var i = 0; i < parameters.length; i++) {
-    var parameter = parameters[i].split("=");
-    var key = parameter[0];
-    var value = parameter[1];
-    if (key === "background") {
-      var body = document.querySelector("body");
-      if (body instanceof HTMLElement) {
-        body.style.backgroundImage = `url(https://source.unsplash.com/${decodeURI(value)}/1000×1000/?blur)`;
-      }
-      continue;
-    }
-    if (key === "avatar") {
-      var avatar = document.getElementById("avatar");
-      if (avatar instanceof HTMLImageElement) {
-        if (value.startsWith("http")) {
-          avatar.src = decodeURI(value);
-        } else {
-          avatar.src = `https://source.unsplash.com/${decodeURI(value)}/100*100/?face`;
-        }
-        if (avatar.parentElement) {
-          avatar.parentElement.style.display = "block";
-        }
-      }
-      continue;
-    }
-    var element = document.getElementById(key);
-    if (element) {
-      element.innerText = decodeURI(parameter[1]);
-      if (element.parentElement) {
-        element.parentElement.style.display = "flex";
-      }
-    } else {
-      var e = document.querySelector(`[data-${key}]`);
-      if (e instanceof HTMLElement) {
-        e.dataset[key] = decodeURI(value);
-      }
-    }
-  }
-}
-setValues();
-var qrElement = document.getElementById("qr");
-const options = {
+import {sequenceS} from "../vendor/pkg/fp-ts/es6/Apply.js";
+const StringParamDecoder = identity;
+const ImageParamDecoder = ({width, height, params}) => (input) => pipe(input, O.map((i) => i.startsWith("http") ? i : `https://source.unsplash.com/${i}/${width}x${height}?${new URLSearchParams(params)}`));
+const urlParameters = {
+  name: StringParamDecoder,
+  phone: StringParamDecoder,
+  mail: StringParamDecoder,
+  web: StringParamDecoder,
+  sub: StringParamDecoder,
+  avatar: ImageParamDecoder({
+    width: 100,
+    height: 100,
+    params: {face: ""}
+  }),
+  background: ImageParamDecoder({
+    width: 1e3,
+    height: 1e3,
+    params: {blur: ""}
+  })
+};
+const decodeParameters = (params) => pipe(urlParameters, R.mapWithIndex((name, decode) => pipe(params, R.lookup(name), decode)));
+const isInstanceOf = (Cls) => (el) => el instanceof Cls;
+const getEl = flow(document.querySelector.bind(document), O.fromNullable, IO.of);
+const getHtmlEl = flow(getEl, IO.map(O.chain(O.fromPredicate(isInstanceOf(HTMLElement)))));
+const getImgEl = flow(getEl, IO.map(O.chain(O.fromPredicate(isInstanceOf(HTMLImageElement)))));
+const sequenceIO = sequenceS(IO.Apply);
+const sequenceO = sequenceS(O.Apply);
+const render = ({
+  avatar,
+  background,
+  ...data
+}) => () => {
+  pipe(sequenceIO({
+    body: getHtmlEl("body"),
+    background: IO.of(background)
+  }), IO.map(sequenceO), IO.map(O.map(({body, background: background2}) => body.style.backgroundImage = `url(${background2})`)))();
+  pipe(sequenceIO({
+    el: getHtmlEl("#avatar"),
+    fillIn: getImgEl("#avatar > .fill-in"),
+    src: IO.of(avatar)
+  }), IO.map(sequenceO), IO.map(O.map(({fillIn, src, el}) => {
+    fillIn.src = src;
+    el.classList.add("visible");
+  })))();
+  pipe(data, R.mapWithIndex((key, value) => pipe(sequenceIO({
+    el: getHtmlEl(`#${key}`),
+    fillIn: getHtmlEl(`#${key} > .fill-in`),
+    text: IO.of(value)
+  }), IO.map(sequenceO), IO.map(O.map(({fillIn, text, el}) => {
+    fillIn.innerText = text;
+    el.classList.add("visible");
+  })), (fillIn) => fillIn())));
+};
+const getParametersFromSearch = () => pipe(new URLSearchParams(document.location.search.substring(1)).entries(), Object.fromEntries);
+const fillInValues = pipe(getParametersFromSearch, IO.map(decodeParameters), IO.chain(render));
+const qrCode = new QRCodeStyling({
   width: 600,
   height: 600,
   type: "canvas",
@@ -71,14 +83,9 @@ const options = {
     color: "#000000",
     type: "dot"
   }
-};
-const qrCode = new QRCodeStyling(options);
-window.addEventListener("load", () => {
-  var content = document.querySelector("body > .content");
-  if (content instanceof HTMLElement) {
-    content.style.visibility = "visible";
-  }
-  if (qrElement) {
-    qrCode.append(qrElement);
-  }
+});
+window.addEventListener("DOMContentLoaded", () => {
+  pipe(getHtmlEl("body > .content"), IO.map(O.map((content) => content.style.visibility = "visible")))();
+  pipe(getHtmlEl("#qr"), IO.map(O.map((qr) => qrCode.append(qr))))();
+  fillInValues();
 });

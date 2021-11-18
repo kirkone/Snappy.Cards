@@ -154,6 +154,9 @@ body .page {
   height: 100%;
   object-fit: cover;
 }
+.card .image.visible {
+  display: block;
+}
 .card .detail {
   display: flex;
   flex-direction: column;
@@ -165,6 +168,9 @@ body .page {
   align-items: center;
   justify-items: center;
   gap: 10px;
+}
+.card .detail div.visible {
+  display: flex;
 }
 .card .detail div svg {
   width: 2.5rem;
