@@ -84,19 +84,25 @@ const isInstanceOf = <CLS extends new (...args: any) => any>(
 
 const getEl = flow(
     document.querySelector.bind(document),
-    O.fromNullable
+    O.fromNullable,
+    IO.of
 );
 
 const getHtmlEl = flow(
     getEl,
-    O.chain(O.fromPredicate(isInstanceOf(HTMLElement)))
+    IO.map(O.chain(
+        O.fromPredicate(isInstanceOf(HTMLElement))
+    ))
 );
 
 const getImgEl = flow(
     getEl,
-    O.chain(O.fromPredicate(isInstanceOf(HTMLImageElement)))
+    IO.map(O.chain(
+        O.fromPredicate(isInstanceOf(HTMLImageElement))
+    ))
 );
 
+const sequenceIO = sequenceS(IO.Apply);
 const sequenceO = sequenceS(O.Apply);
 
 type RenderProps = Record<KnownUrlParameters, OptionType<string>>;
@@ -107,37 +113,44 @@ const render = ({
     ...data
 }: RenderProps): IOType<void> => () => {
     pipe(
-        sequenceO({
+        sequenceIO({
             body: getHtmlEl("body"),
-            background: background
+            background: IO.of(background)
         }),
-        O.map(({ body, background }) => body.style.backgroundImage = `url(${background})`),
-    );
+        IO.map(sequenceO),
+        IO.map(O.map(
+            ({ body, background }) => body.style.backgroundImage = `url(${background})`
+        )),
+    )();
 
     pipe(
-        sequenceO({
+        sequenceIO({
             el: getHtmlEl("#avatar"),
             fillIn: getImgEl("#avatar > .fill-in"),
-            src: avatar
+            src: IO.of(avatar)
         }),
-        O.map(({ fillIn, src, el }) => {
+        IO.map(sequenceO),
+        IO.map(O.map(({ fillIn, src, el }) => {
             fillIn.src = src;
             el.classList.add("visible");
-        }),
-    );
+        })),
+    )();
 
     pipe(
         data,
         R.mapWithIndex((key, value) => pipe(
-            sequenceO({
+            sequenceIO({
                 el: getHtmlEl(`#${key}`),
                 fillIn: getHtmlEl(`#${key} > .fill-in`),
-                text: value
+                text: IO.of(value)
             }),
-            O.map(({ fillIn, text, el }) => {
+            IO.map(sequenceO),
+            IO.map(O.map(({ fillIn, text, el }) => {
                 fillIn.innerText = text;
                 el.classList.add("visible");
-            }),
+            })),
+            // run IO
+            fillIn => fillIn()
         )),
     );
 };
@@ -188,13 +201,17 @@ const qrCode = new QRCodeStyling({
 window.addEventListener("DOMContentLoaded", () => {
     pipe(
         getHtmlEl("body > .content"),
-        O.map(content => content.style.visibility = "visible"),
-    );
+        IO.map(O.map(
+            content => content.style.visibility = "visible"
+        )),
+    )();
 
     pipe(
         getHtmlEl("#qr"),
-        O.map(qr => qrCode.append(qr))
-    );
+        IO.map(O.map(
+            qr => qrCode.append(qr)
+        ))
+    )();
 
     fillInValues();
 });

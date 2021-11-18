@@ -2,8 +2,10 @@
 // import * as O from "fp-ts/Option";
 
 import {
+    Apply as IOApply,
     chain as IOchain,
-    map as IOmap
+    map as IOmap,
+    of as IOof,
 } from "fp-ts/es6/IO";
 import {
     Apply as OApply,
@@ -20,7 +22,9 @@ import {
 // IO
 export const IO = {
     map: IOmap,
-    chain: IOchain
+    chain: IOchain,
+    of: IOof,
+    Apply: IOApply
 };
 
 // Record
