@@ -15,6 +15,6 @@
   },
   "devDependencies": {},
   "dependencies": {
-    "fp-ts": "2.11.5"
+    "fp-ts": "2.11.6"
   }
 }
