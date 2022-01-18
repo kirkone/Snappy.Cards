@@ -250,10 +250,10 @@ window.addEventListener("DOMContentLoaded", () => {
         IO.map(sequenceO),
         IO.map(O.map(
             ({ qrSvg, qrPath }) => {
-                const x = makeQrCode("L", window.location.href);
+                const { sideLength, path } = makeQrCode("L", window.location.href);
 
-                qrSvg.setAttribute("viewBox", `0 0 ${x.sideLength} ${x.sideLength}`);
-                qrPath.setAttribute("d", x.path);
+                qrSvg.setAttribute("viewBox", `0 0 ${sideLength} ${sideLength}`);
+                qrPath.setAttribute("d", path);
             }
         )),
     )();
@@ -265,7 +265,7 @@ window.addEventListener("DOMContentLoaded", () => {
         IO.chain(flow(
             O.map(el => pipe(
                 getVCardUrl,
-                IO.map((vCardUrl) => el.href = vCardUrl)
+                IO.map((vCardUrl) => el.href = vCardUrl),
             )),
             O.getOrElse(() => () => { })
         ))
