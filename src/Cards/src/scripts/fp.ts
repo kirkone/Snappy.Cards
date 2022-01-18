@@ -9,6 +9,7 @@ import {
 } from "fp-ts/es6/IO";
 import {
     Apply as OApply,
+    alt as Oalt,
     chain as Ochain,
     fromNullable as OfromNullable,
     fromPredicate as OfromPredicate,
@@ -25,7 +26,12 @@ import {
 import {
     Monoid as SMonoid,
     Ord as SOrd,
+    isEmpty as SisEmpty,
 } from "fp-ts/es6/string";
+
+import {
+    not
+} from "fp-ts/es6/Predicate";
 
 // IO
 export const IO = {
@@ -46,6 +52,7 @@ export const R = {
 // Option
 export const O = {
     map: Omap,
+    alt: Oalt,
     chain: Ochain,
     fromNullable: OfromNullable,
     fromPredicate: OfromPredicate,
@@ -56,5 +63,10 @@ export const O = {
 
 export const S = {
     Ord: SOrd,
-    Monoid: SMonoid
+    Monoid: SMonoid,
+    isEmpty: SisEmpty,
+};
+
+export const P = {
+    not
 };
