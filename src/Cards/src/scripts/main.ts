@@ -1,4 +1,4 @@
-import { IO, O, R, S } from "./fp";
+import { IO, O, P, R, S } from "./fp";
 import { flow, identity, pipe } from "fp-ts/es6/function";
 
 import type { Endomorphism } from "fp-ts/es6/Endomorphism";
@@ -7,6 +7,9 @@ import type { Option as OptionType } from "fp-ts/es6/Option";
 import { makeQrCode } from "./qr/QRCode.js";
 import { sequenceS } from "fp-ts/es6/Apply";
 
+// ============================================================================
+// Parameter handling
+// ============================================================================
 type KnownUrlParameters =
     | "name"
     | "phone"
@@ -16,8 +19,39 @@ type KnownUrlParameters =
     | "avatar"
     | "background";
 
+const getParametersFromInput = (
+    input: string
+): OptionType<Record<string, string>> => pipe(
+    input,
+    O.fromPredicate(P.not(S.isEmpty)),
+    O.map(flow(
+        s => new URLSearchParams(s).entries(),
+        // prevent usage of fromEntries overload, that uses any as return type
+        params => Object.fromEntries(params),
+
+    ))
+);
+
+const getParametersFromSearch = pipe(
+    IO.of(document.location.search.substring(1)),
+    IO.map(getParametersFromInput),
+);
+
+const getParametersFromHash = pipe(
+    IO.of(document.location.hash.substring(1)),
+    IO.map(getParametersFromInput),
+);
+
+const getParametersFromUrl: IOType<Record<string, string>> = pipe(
+    getParametersFromSearch,
+    IO.map(flow(
+        O.alt(getParametersFromHash),
+        O.getOrElse(() => ({}))
+    )),
+);
+
 // ============================================================================
-// URL Parameters
+// Content Parameters
 // ============================================================================
 type ImageParams =
     | "random"
@@ -214,19 +248,14 @@ const vCardUrl = (vcardData: string) => pipe(
 // ============================================================================
 // Compose
 // ============================================================================
-const getParametersFromSearch: IOType<Record<string, string>> = () => pipe(
-    new URLSearchParams(document.location.search.substring(1)).entries(),
-    Object.fromEntries,
-);
-
 const fillInValues = pipe(
-    getParametersFromSearch,
+    getParametersFromUrl,
     IO.map(decodeParameters),
     IO.chain(render)
 );
 
 const getVCardUrl = pipe(
-    getParametersFromSearch,
+    getParametersFromUrl,
     IO.map(flow(
         encodeVCardFields,
         renderVCard,
