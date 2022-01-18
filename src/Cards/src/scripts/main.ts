@@ -1,10 +1,10 @@
-import { IO, O, R } from "./fp";
+import { IO, O, R, S } from "./fp";
 import { flow, identity, pipe } from "fp-ts/es6/function";
 
 import type { Endomorphism } from "fp-ts/es6/Endomorphism";
 import type { IO as IOType } from "fp-ts/es6/IO";
 import type { Option as OptionType } from "fp-ts/es6/Option";
-import {makeQrCode} from "./qr/QRCode.js";
+import { makeQrCode } from "./qr/QRCode.js";
 import { sequenceS } from "fp-ts/es6/Apply";
 
 type KnownUrlParameters =
@@ -109,6 +109,13 @@ const getSvgEl = flow(
     ))
 );
 
+const getAnchorEl = flow(
+    getEl,
+    IO.map(O.chain(
+        O.fromPredicate(isInstanceOf(HTMLAnchorElement))
+    ))
+);
+
 const sequenceIO = sequenceS(IO.Apply);
 const sequenceO = sequenceS(O.Apply);
 
@@ -163,6 +170,48 @@ const render = ({
 };
 
 // ============================================================================
+// VCard
+// ============================================================================
+type VCardFields = Exclude<
+    KnownUrlParameters,
+    | "sub"
+    | "avatar"
+    | "background"
+>;
+
+const VCardParamDecoder = (prefix: string) => (param: OptionType<string>) => pipe(
+    param,
+    O.map(p => `${prefix}${p}\n`)
+);
+
+const vCardParameters: Record<VCardFields, UrlParamDecoder> = {
+    name: VCardParamDecoder("N:"),
+    phone: VCardParamDecoder("TEL;TYPE=PREF:"),
+    mail: VCardParamDecoder("EMAIL;TYPE=PREF,INTERNET:"),
+    web: VCardParamDecoder("URL:"),
+};
+
+const encodeVCardFields = (params: Record<string, string>) => pipe(
+    vCardParameters,
+    R.mapWithIndex((name, decode) => pipe(
+        params,
+        R.lookup(name),
+        decode,
+    )),
+);
+
+const renderVCard = (params: Record<VCardFields, OptionType<string>>) => pipe(
+    params,
+    R.foldMap(S.Ord)(S.Monoid)(O.getOrElse(() => "")),
+    content => `BEGIN:VCARD\nVERSION:3.0\n${content}END:VCARD`
+);
+
+const vCardUrl = (vcardData: string) => pipe(
+    new Blob([vcardData], { type: "text/vcard" }),
+    URL.createObjectURL,
+);
+
+// ============================================================================
 // Compose
 // ============================================================================
 const getParametersFromSearch: IOType<Record<string, string>> = () => pipe(
@@ -174,6 +223,15 @@ const fillInValues = pipe(
     getParametersFromSearch,
     IO.map(decodeParameters),
     IO.chain(render)
+);
+
+const getVCardUrl = pipe(
+    getParametersFromSearch,
+    IO.map(flow(
+        encodeVCardFields,
+        renderVCard,
+        vCardUrl,
+    )),
 );
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -201,4 +259,15 @@ window.addEventListener("DOMContentLoaded", () => {
     )();
 
     fillInValues();
+
+    pipe(
+        getAnchorEl("#downloadVcard"),
+        IO.chain(flow(
+            O.map(el => pipe(
+                getVCardUrl,
+                IO.map((vCardUrl) => el.href = vCardUrl)
+            )),
+            O.getOrElse(() => () => { })
+        ))
+    )();
 });

@@ -12,12 +12,20 @@ import {
     chain as Ochain,
     fromNullable as OfromNullable,
     fromPredicate as OfromPredicate,
+    getOrElse as OgetOrElse,
     map as Omap,
+    none as Onone,
 } from "fp-ts/es6/Option";
 import {
+    foldMap as RfoldMap,
     lookup as Rlookup,
-    mapWithIndex as RmapWithIndex,
+    map as Rmap,
+    mapWithIndex as RmapWithIndex
 } from "fp-ts/es6/Record";
+import {
+    Monoid as SMonoid,
+    Ord as SOrd,
+} from "fp-ts/es6/string";
 
 // IO
 export const IO = {
@@ -30,6 +38,8 @@ export const IO = {
 // Record
 export const R = {
     mapWithIndex: RmapWithIndex,
+    map: Rmap,
+    foldMap: RfoldMap,
     lookup: Rlookup,
 };
 
@@ -40,4 +50,11 @@ export const O = {
     fromNullable: OfromNullable,
     fromPredicate: OfromPredicate,
     Apply: OApply,
+    none: Onone,
+    getOrElse: OgetOrElse,
+};
+
+export const S = {
+    Ord: SOrd,
+    Monoid: SMonoid
 };
