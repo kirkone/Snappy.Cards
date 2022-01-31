@@ -5,20 +5,24 @@
 [![GitHub pull requests open](https://img.shields.io/github/issues-pr/kirkone/snappy.cards.svg)](https://github.com/kirkone/Snappy.Cards/pulls)
 [![GitHub last commit (branch)](https://img.shields.io/github/last-commit/kirkone/snappy.cards/main)](https://github.com/kirkone/Snappy.Cards/commits/main)
 
-Snappy Cards are for sharing your contact information with others.  
-This card works with data only beeing stored in the URL.  
+Snappy Cards is for sharing your contact information with others.  
+This card works with data **only** beeing stored in the URL.  
 To make sharing easier a QR code is also generated. 
 
-This site is hosted on GitHub Pages under [snappy.cards/?...](https://snappy.cards/?name=Max%20Mustermann&phone=+49%20123%204567890&mail=no@mail.de&web=blog.undefined.de&sub=Mustermann&avatar=random&background=random) and can be modified by using several [parameters](#parameters).
+This site is hosted on GitHub Pages under [snappy.cards/#...](https://snappy.cards/#name=Max%20Mustermann&phone=%2b49%20123%204567890&mail=no@mail.de&web=blog.undefined.de&sub=Mustermann&avatar=random&background=random) and can be modified by using several [parameters](#parameters).
+
+> **Important**:  
+> The parameters coming after the `#` will never be sent to the server.  
+> So **everything** stays on **your** client!
 
 ### Example
 
 ![Sample of a card](/doc/images/sample-card.png)
 ![Sample of a code](/doc/images/sample-code.png)
 
-Here is a live example: [snappy.cards/?...](https://snappy.cards/?name=Max%20Mustermann&phone=+49%20123%204567890&mail=no@mail.de&web=blog.undefined.de&sub=Mustermann&avatar=random&background=random)
+Here is a live example: [snappy.cards/#...](https://snappy.cards/#name=Max%20Mustermann&phone=%2b49%20123%204567890&mail=no@mail.de&web=blog.undefined.de&sub=Mustermann&avatar=random&background=random)
 ```
-https://snappy.cards/?name=Max Mustermann&phone=+49 123 4567890&mail=no@mail.de&web=blog.undefined.de&sub=Mustermann&avatar=random&background=random
+https://snappy.cards/#name=Max Mustermann&phone=+49 123 4567890&mail=no@mail.de&web=blog.undefined.de&sub=Mustermann&avatar=random&background=random
 ```
 
 ## Parameters
@@ -26,7 +30,7 @@ https://snappy.cards/?name=Max Mustermann&phone=+49 123 4567890&mail=no@mail.de&
 All parameters are optional if you do not want to use them. There is no specific order for them.
 
 ```
-https://snappy.cards/?name={name}&phone={phone}&mail={mail}&web={web}&sub={subtitle}&avatar={unsplash image id | random | URL to image}&background={Unsplash image id | random | URL to image}
+https://snappy.cards/#name={name}&phone={phone}&mail={mail}&web={web}&sub={subtitle}&avatar={unsplash image id | random | URL to image}&background={Unsplash image id | random | URL to image}
 ```
 
 ### name
@@ -70,7 +74,7 @@ This is the background image of the card. There are the following options:
 ## Authors
 
 -   **Kirsten Kluge** - _Initial work_ - [kirkone](https://github.com/kirkone)
--   **Thomas Müller** - _fanzy functional programming_ - [tmueller](https://github.com/tmueller)
+-   **Thomas Müller** - _fanzy functional programming, vcard download_ - [tmueller](https://github.com/tmueller)
 
 See also the list of [contributors](https://github.com/kirkone/Snappy.Cards/graphs/contributors) who participated in this project.
 
@@ -82,7 +86,12 @@ The design and layout is inspired by this YouTube video: [Html CSS Glassmorphism
 
 ### QR Code
 
-For the QR codes is code used by: Joe Grinstead  
+For the QR codes, code is used from: Joe Grinstead  
 [GitHub: grinstead / makeQrCode](https://github.com/grinstead/makeQrCode)
 
 The code base has been slightly modified to work with TypeScript and some unused code has been removed.
+
+### URI fragment
+
+More information about the used uri fragment to store the information on the client side:  
+[Wikipedia - URI fragment](https://en.wikipedia.org/wiki/URI_fragment)
