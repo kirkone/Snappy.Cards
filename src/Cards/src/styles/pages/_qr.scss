@@ -5,6 +5,8 @@
     svg{
         border-radius: 20px;
         max-width: 100%;
+        max-height: calc(100vw - 6rem);
+
         animation: fadeIn 1s;
         background-color: #ffffffaa;
 
