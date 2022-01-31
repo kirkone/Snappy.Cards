@@ -290,7 +290,7 @@ window.addEventListener("DOMContentLoaded", () => {
     fillInValues();
 
     pipe(
-        getAnchorEl("#downloadVcard"),
+        getAnchorEl("#vcarddownload"),
         IO.chain(flow(
             O.map(el => pipe(
                 getVCardUrl,
