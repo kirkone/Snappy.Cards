@@ -13,7 +13,8 @@ This site is hosted on GitHub Pages under [snappy.cards/#...](https://snappy.car
 
 > **Important**:  
 > The parameters coming after the `#` will never be sent to the server.  
-> So **everything** stays on **your** client!
+> So **everything** stays on **your** client!  
+> More details about this can be found on [Wikipedia](https://en.wikipedia.org/wiki/URI_fragment).
 
 ### Example
 
