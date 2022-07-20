@@ -3,8 +3,10 @@
     "language": "en",
     "words": [
         "elmish",
+        "endregion",
         "esbuild",
-        "Preact"
+        "Preact",
+        "vite"
     ],
     "flagWords": []
 }
