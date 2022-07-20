@@ -1,20 +1,52 @@
 {
-  "name": "about.cards",
-  "version": "1.0.0",
-  "description": "A web site to show a business card.",
-  "main": "index.html",
-  "scripts": {
-    "start": "snowpack dev --reload",
-    "build": "snowpack build"
-  },
-  "author": "",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/kirkone/About.git"
-  },
-  "devDependencies": {},
-  "dependencies": {
-    "fp-ts": "2.11.6"
-  }
+    "name": "about.cards",
+    "version": "1.0.0",
+    "description": "A web site to show a business card.",
+    "main": "index.html",
+    "license": "MIT",
+    "type": "module",
+    "private": true,
+    "author": {
+        "name": "Kirsten Kluge",
+        "url": "https://github.com/kirkone"
+    },
+    "contributors": [
+        {
+            "name": "Thomas Müller",
+            "url": "https://github.com/tmueller"
+        }
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/kirkone/About.git"
+    },
+    "scripts": {
+        "start": "vite",
+        "build": "tsc && vite build",
+        "preview": "vite preview",
+        "check": "npm run -s check:eslint && npm run -s check:cspell && npm run -s check:tsc",
+        "check:eslint": "eslint ./src/**/*.{ts,tsx}",
+        "check:cspell": "cspell ./src/**/*.{ts,tsx}",
+        "check:tsc": "tsc --noEmit --emitDeclarationOnly false"
+    },
+    "dependencies": {
+        "fp-ts": "2.12.1",
+        "preact": "10.10.0",
+        "@fun-ts/elmish": "0.4.4",
+        "@fun-ts/elmish-preact": "0.4.4",
+        "tslib": "2.4.0"
+    },
+    "devDependencies": {
+        "@preact/preset-vite": "2.3.0",
+        "typescript": "4.7.4",
+        "vite": "2.9.14",
+        "@typescript-eslint/eslint-plugin": "5.30.7",
+        "@typescript-eslint/parser": "5.30.7",
+        "@tsconfig/strictest": "1.0.1",
+        "eslint": "8.20.0",
+        "eslint-plugin-fp-ts": "0.3.2",
+        "eslint-plugin-functional": "4.2.1",
+        "cspell": "6.4.0"
+
+    }
 }
