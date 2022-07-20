@@ -42,6 +42,7 @@
             }
         ],
         "functional/no-mixed-type": "off",
-        "functional/no-loop-statement": "error"
+        "functional/no-loop-statement": "error",
+        "fp-ts/no-module-imports": "off"
     }
 }

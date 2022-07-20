@@ -34,6 +34,8 @@
         "preact": "10.10.0",
         "@fun-ts/elmish": "0.4.4",
         "@fun-ts/elmish-preact": "0.4.4",
+        "@fun-ts/remote-result-adt": "0.4.4",
+        "@morphic-ts/adt": "3.0.0",
         "tslib": "2.4.0"
     },
     "devDependencies": {
