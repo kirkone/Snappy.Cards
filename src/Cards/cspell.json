@@ -5,7 +5,9 @@
         "elmish",
         "endregion",
         "esbuild",
+        "Monoid",
         "Preact",
+        "VCARD",
         "vite"
     ],
     "flagWords": []

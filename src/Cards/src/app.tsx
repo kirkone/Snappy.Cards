@@ -10,7 +10,7 @@ import * as styles from "./app.css";
 
 import { ADTType, makeADT, ofType } from "@morphic-ts/adt";
 import { ElmishResult, Init, Update, cmd } from "@fun-ts/elmish";
-import { flow, identity, pipe, tuple } from "fp-ts/function";
+import { flow, identity, pipe } from "fp-ts/function";
 
 import type { Endomorphism } from "fp-ts/Endomorphism";
 import type { FunctionalComponent } from "preact";
@@ -23,14 +23,14 @@ import { makeRemoteResultADT } from "@fun-ts/remote-result-adt";
 // #region Model
 // ============================================================================
 export type Model = {
-    cardData: ADTType<typeof CardDataAdt>;
+    appData: ADTType<typeof AppDataAdt>;
 };
 
 export const init: Init<Model, Msg> = (): ElmishResult<Model, Msg> => [
     {
-        cardData: CardDataAdt.as.NotLoaded({})
+        appData: AppDataAdt.as.NotLoaded({})
     },
-    cmd.ofMsg(MsgAdt.as.GetCardData({}))
+    cmd.ofMsg(MsgAdt.as.GetUrlData({}))
 ];
 
 // #endregion
@@ -38,12 +38,12 @@ export const init: Init<Model, Msg> = (): ElmishResult<Model, Msg> => [
 // ============================================================================
 // #region Messages
 // ============================================================================
-type GetCardDataMsg = { type: "GetCardData"; };
-type GetCardDataSucceededMsg = { type: "GetCardDataSucceeded"; data: CardData; };
+type GetUrlDataMsg = { type: "GetUrlData"; };
+type GetUrlDataSucceededMsg = { type: "GetUrlDataSucceeded"; data: UrlData; };
 
 const MsgAdt = makeADT("type")({
-    GetCardData: ofType<GetCardDataMsg>(),
-    GetCardDataSucceeded: ofType<GetCardDataSucceededMsg>(),
+    GetUrlData: ofType<GetUrlDataMsg>(),
+    GetUrlDataSucceeded: ofType<GetUrlDataSucceededMsg>(),
 });
 
 export type Msg = ADTType<typeof MsgAdt>;
@@ -54,26 +54,29 @@ export type Msg = ADTType<typeof MsgAdt>;
 // ============================================================================
 export const update: Update<Model, Msg> = (model, msg) => pipe(
     msg,
-    MsgAdt.matchStrict<ElmishResult<Model, Msg>>({
-        GetCardData: () => tuple(
+    MsgAdt.matchStrict({
+        GetUrlData: (): ElmishResult<Model, Msg> => [
             {
                 ...model,
-                cardData: CardDataAdt.as.Loading({})
+                appData: AppDataAdt.as.Loading({})
             },
             pipe(
-                getCardData,
+                getParametersFromUrl,
                 T.fromIO,
-                cmd.OfTask.perform(data => MsgAdt.as.GetCardDataSucceeded({ data }))
+                cmd.OfTask.perform(data => MsgAdt.as.GetUrlDataSucceeded({ data }))
             )
-        ),
+        ],
 
-        GetCardDataSucceeded: ({ data }) => tuple(
+        GetUrlDataSucceeded: ({ data }): ElmishResult<Model, Msg> => [
             {
                 ...model,
-                cardData: CardDataAdt.as.Loaded({ data })
+                appData: AppDataAdt.as.Loaded({
+                    card: decodeCardData(data),
+                    vCardUrl: getVCardUrl(data)
+                })
             },
             cmd.none
-        ),
+        ],
     })
 );
 
@@ -85,9 +88,9 @@ export const update: Update<Model, Msg> = (model, msg) => pipe(
 export const view: PreactView<Model, Msg> = (_dispatch, model) => (
     <div class={styles.app} style={{
         backgroundImage: pipe(
-            model.cardData,
-            O.fromPredicate(CardDataAdt.is.Loaded),
-            O.chain(({ data }) => data.background),
+            model.appData,
+            O.fromPredicate(AppDataAdt.is.Loaded),
+            O.chain(({ card: data }) => data.background),
             O.fold(
                 () => "none",
                 (url) => `url(${url})`
@@ -95,7 +98,7 @@ export const view: PreactView<Model, Msg> = (_dispatch, model) => (
         )
     }}>
         <section class="page">
-            <CardView {...model.cardData} />
+            <CardView {...model.appData} />
         </section>
         <section class="page">
             <div class="qr" id="qr">
@@ -109,9 +112,17 @@ export const view: PreactView<Model, Msg> = (_dispatch, model) => (
                 <a href="https://github.com/kirkone/Snappy.Cards">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11 10.9794C11 10.4271 11.4477 9.97937 12 9.97937C12.5523 9.97937 13 10.4271 13 10.9794V16.9794C13 17.5317 12.5523 17.9794 12 17.9794C11.4477 17.9794 11 17.5317 11 16.9794V10.9794Z" fill="currentColor" /><path d="M12 6.05115C11.4477 6.05115 11 6.49886 11 7.05115C11 7.60343 11.4477 8.05115 12 8.05115C12.5523 8.05115 13 7.60343 13 7.05115C13 6.49886 12.5523 6.05115 12 6.05115Z" fill="currentColor" /><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2ZM4 12C4 16.4183 7.58172 20 12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12Z" fill="currentColor" /></svg>
                 </a>
-                <a id="vcarddownload" download="SnappyCard.vcf" rel="noopener">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11 5C11 4.44772 11.4477 4 12 4C12.5523 4 13 4.44772 13 5V12.1578L16.2428 8.91501L17.657 10.3292L12.0001 15.9861L6.34326 10.3292L7.75748 8.91501L11 12.1575V5Z" fill="currentColor" /><path d="M4 14H6V18H18V14H20V18C20 19.1046 19.1046 20 18 20H6C4.89543 20 4 19.1046 4 18V14Z" fill="currentColor" /></svg>
-                </a>
+                {pipe(
+                    model.appData,
+                    O.fromPredicate(AppDataAdt.is.Loaded),
+                    O.map(({ vCardUrl }) => vCardUrl),
+                    O.fold(
+                        () => <></>,
+                        (vCardUrl) => <a id="vcarddownload" download="SnappyCard.vcf" rel="noopener" src={vCardUrl}>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11 5C11 4.44772 11.4477 4 12 4C12.5523 4 13 4.44772 13 5V12.1578L16.2428 8.91501L17.657 10.3292L12.0001 15.9861L6.34326 10.3292L7.75748 8.91501L11 12.1575V5Z" fill="currentColor" /><path d="M4 14H6V18H18V14H20V18C20 19.1046 19.1046 20 18 20H6C4.89543 20 4 19.1046 4 18V14Z" fill="currentColor" /></svg>
+                        </a>
+                    )
+                )}
             </div>
         </section>
     </div>
@@ -159,6 +170,8 @@ const getParametersFromUrl = pipe(
         O.getOrElseW((): Record<string, string> => ({}))
     )),
 );
+
+type UrlData = ReturnType<typeof getParametersFromUrl>;
 // #endregion
 
 // ============================================================================
@@ -209,7 +222,7 @@ const urlParameters: Record<KnownUrlParameters, UrlParamDecoder> = {
     }),
 };
 
-const decodeParameters = (params: Record<string, string>) => pipe(
+const decodeCardData = (params: Record<string, string>) => pipe(
     urlParameters,
     R.mapWithIndex((name, decode) => pipe(
         params,
@@ -217,27 +230,23 @@ const decodeParameters = (params: Record<string, string>) => pipe(
         decode,
     )),
 );
+
+type CardData = ReturnType<typeof decodeCardData>;
 // #endregion
 
 // ============================================================================
-// Compose
+// #region ADT for cardData
 // ============================================================================
-const getCardData = pipe(
-    getParametersFromUrl,
-    IO.map(decodeParameters),
-);
-
-type CardData = ReturnType<typeof getCardData>;
-
-// ============================================================================
-// ADT for cardData
-// ============================================================================
-const CardDataAdt = makeRemoteResultADT<
-    { data: CardData; }
+const AppDataAdt = makeRemoteResultADT<
+    {
+        card: CardData;
+        vCardUrl: string;
+    }
 >();
+// #endregion
 
 // ============================================================================
-// Views
+// #region Views
 // ============================================================================
 const CardLoaded: FunctionalComponent<{ data: CardData; }> = ({
     data
@@ -308,9 +317,60 @@ const CardLoaded: FunctionalComponent<{ data: CardData; }> = ({
         )}
     </div>;
 
-const CardView = CardDataAdt.matchStrict({
-    Failure: () => <>⚠ An error occured ⚠</>,
+const CardView = AppDataAdt.matchStrict({
+    Failure: () => <>⚠ An error occurred ⚠</>,
     NotLoaded: () => <></>,
     Loading: () => <>⏳</>,
-    Loaded: ({ data }) => <CardLoaded data={data} />
+    Loaded: ({ card: data }) => <CardLoaded data={data} />
 });
+
+// #endregion
+
+// ============================================================================
+// #region VCard
+// ============================================================================
+type VCardFields = Exclude<
+    KnownUrlParameters,
+    | "sub"
+    | "avatar"
+    | "background"
+>;
+
+const VCardParamDecoder = (prefix: string) => (param: O.Option<string>) => pipe(
+    param,
+    O.map(p => `${prefix}${p}\n`)
+);
+
+const vCardParameters: Record<VCardFields, UrlParamDecoder> = {
+    name: VCardParamDecoder("N:"),
+    phone: VCardParamDecoder("TEL;TYPE=PREF:"),
+    mail: VCardParamDecoder("EMAIL;TYPE=PREF,INTERNET:"),
+    web: VCardParamDecoder("URL:"),
+};
+
+const encodeVCardFields = (params: Record<string, string>) => pipe(
+    vCardParameters,
+    R.mapWithIndex((name, decode) => pipe(
+        params,
+        R.lookup(name),
+        decode,
+    )),
+);
+
+const renderVCard = (params: Record<VCardFields, O.Option<string>>) => pipe(
+    params,
+    R.foldMap(S.Ord)(S.Monoid)(O.getOrElse(() => "")),
+    content => `BEGIN:VCARD\nVERSION:3.0\n${content}END:VCARD`
+);
+
+const vCardUrl = (vcardData: string) => pipe(
+    new Blob([vcardData], { type: "text/vcard" }),
+    URL.createObjectURL,
+);
+
+const getVCardUrl = flow(
+    encodeVCardFields,
+    renderVCard,
+    vCardUrl,
+);
+// #endregion
