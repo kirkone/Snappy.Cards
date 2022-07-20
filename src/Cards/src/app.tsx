@@ -6,6 +6,7 @@ import * as P from "fp-ts/Predicate";
 import * as R from "fp-ts/Record";
 import * as S from "fp-ts/string";
 import * as T from "fp-ts/Task";
+import * as styles from "./app.css";
 
 import { ADTType, makeADT, ofType } from "@morphic-ts/adt";
 import { ElmishResult, Init, Update, cmd } from "@fun-ts/elmish";
@@ -228,7 +229,7 @@ const CardDataAdt = makeRemoteResultADT<
 // ============================================================================
 const CardLoaded: FunctionalComponent<{ data: CardData; }> = ({
     data
-}) => <div class="card">
+}) => <div class={styles.card}>
         {pipe(
             data.avatar,
             O.fold(
