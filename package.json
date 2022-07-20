@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start:cards": "npm start --workspace=src/Cards",
-    "build:cards": "npm run build --workspace=src/Cards"
+    "build:cards": "npm run build --workspace=src/Cards",
+    "check:cards": "npm run build --workspace=src/Cards"
   },
   "repository": {
     "type": "git",
@@ -21,7 +22,5 @@
     "src/Cards"
   ],
   "devDependencies": {
-    "@snowpack/plugin-sass": "1.4.0",
-    "snowpack": "3.8.8"
   }
 }

@@ -1,0 +1,23 @@
+{
+  "name": "about.cards",
+  "version": "1.0.0",
+  "description": "A web site to show a business card.",
+  "main": "index.html",
+  "scripts": {
+    "start": "snowpack dev --reload",
+    "build": "snowpack build"
+  },
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kirkone/About.git"
+  },
+  "devDependencies": {},
+  "dependencies": {
+    "fp-ts": "2.12.1",
+    "preact": "10.10.0",
+    "@fun-ts/elmish": "0.4.4",
+    "@fun-ts/elmish-preact": "0.4.4"
+  }
+}
