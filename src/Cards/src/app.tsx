@@ -15,6 +15,7 @@ import { flow, identity, pipe } from "fp-ts/function";
 import type { Endomorphism } from "fp-ts/Endomorphism";
 import type { FunctionalComponent } from "preact";
 import type { PreactView } from "@fun-ts/elmish-preact";
+import { QrCode } from "./components/qr-code";
 import { makeRemoteResultADT } from "@fun-ts/remote-result-adt";
 
 // #endregion
@@ -24,13 +25,18 @@ import { makeRemoteResultADT } from "@fun-ts/remote-result-adt";
 // ============================================================================
 export type Model = {
     appData: ADTType<typeof AppDataAdt>;
+    currentUrl: ADTType<typeof CurrentUrlAdt>;
 };
 
 export const init: Init<Model, Msg> = (): ElmishResult<Model, Msg> => [
     {
-        appData: AppDataAdt.as.NotLoaded({})
+        appData: AppDataAdt.as.NotLoaded({}),
+        currentUrl: CurrentUrlAdt.as.NotLoaded({}),
     },
-    cmd.ofMsg(MsgAdt.as.GetUrlData({}))
+    cmd.batch(
+        cmd.ofMsg(MsgAdt.of.GetUrlData({})),
+        cmd.ofMsg(MsgAdt.of.GetCurrentUrl({})),
+    )
 ];
 
 // #endregion
@@ -41,9 +47,20 @@ export const init: Init<Model, Msg> = (): ElmishResult<Model, Msg> => [
 type GetUrlDataMsg = { type: "GetUrlData"; };
 type GetUrlDataSucceededMsg = { type: "GetUrlDataSucceeded"; data: UrlData; };
 
+type GetCurrentUrlMsg = { type: "GetCurrentUrl"; };
+type GetCurrentUrlSucceededMsg = {
+    type: "GetCurrentUrlSucceeded";
+    location: {
+        href: string;
+    };
+};
+
 const MsgAdt = makeADT("type")({
     GetUrlData: ofType<GetUrlDataMsg>(),
     GetUrlDataSucceeded: ofType<GetUrlDataSucceededMsg>(),
+
+    GetCurrentUrl: ofType<GetCurrentUrlMsg>(),
+    GetCurrentUrlSucceeded: ofType<GetCurrentUrlSucceededMsg>(),
 });
 
 export type Msg = ADTType<typeof MsgAdt>;
@@ -77,6 +94,28 @@ export const update: Update<Model, Msg> = (model, msg) => pipe(
             },
             cmd.none
         ],
+
+        GetCurrentUrl: (): ElmishResult<Model, Msg> => [
+            {
+                ...model,
+                currentUrl: CurrentUrlAdt.as.Loading({})
+            },
+            cmd.ofSub(dispatch => dispatch(
+                MsgAdt.as.GetCurrentUrlSucceeded({
+                    location: {
+                        href: window.location.href
+                    }
+                })
+            ))
+        ],
+
+        GetCurrentUrlSucceeded: ({ location }): ElmishResult<Model, Msg> => [
+            {
+                ...model,
+                currentUrl: CurrentUrlAdt.as.Loaded(location)
+            },
+            cmd.none
+        ],
     })
 );
 
@@ -101,11 +140,7 @@ export const view: PreactView<Model, Msg> = (_dispatch, model) => (
             <CardView {...model.appData} />
         </section>
         <section class="page">
-            <div class="qr" id="qr">
-                <svg class="qr-svg" width="460" height="460" xmlns="http://www.w3.org/2000/svg">
-                    <path class="fill-in" stroke-width="1.05" />
-                </svg>
-            </div>
+            <QrCodeView {...model.currentUrl} />
         </section>
         <section class="foot">
             <div>
@@ -243,6 +278,9 @@ const AppDataAdt = makeRemoteResultADT<
         vCardUrl: string;
     }
 >();
+
+const CurrentUrlAdt = makeRemoteResultADT<{ href: string; }>();
+
 // #endregion
 
 // ============================================================================
@@ -318,10 +356,19 @@ const CardLoaded: FunctionalComponent<{ data: CardData; }> = ({
     </div>;
 
 const CardView = AppDataAdt.matchStrict({
-    Failure: () => <>⚠ An error occurred ⚠</>,
+    Failure: () => <>⚠ An error occurred while getting data ⚠</>,
     NotLoaded: () => <></>,
     Loading: () => <>⏳</>,
     Loaded: ({ card: data }) => <CardLoaded data={data} />
+});
+
+const QrCodeView = CurrentUrlAdt.matchStrict({
+    Failure: () => <>⚠ An error occurred while retrieving current URL ⚠</>,
+    NotLoaded: () => <></>,
+    Loading: () => <>⏳</>,
+    Loaded: ({ href }) => <div class="qr" id="qr" style={{ width: "90vw" }}>
+        <QrCode border={1} text={href} />
+    </div>
 });
 
 // #endregion

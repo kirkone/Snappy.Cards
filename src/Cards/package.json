@@ -37,7 +37,9 @@
         "@fun-ts/remote-result-adt": "0.4.4",
         "@morphic-ts/adt": "3.0.0",
         "tslib": "2.4.0",
-        "@vanilla-extract/css": "1.7.2"
+        "@vanilla-extract/css": "1.7.2",
+        "nayuki-qr-code-generator": "1.8.0",
+        "fp-ts-std": "0.14.2"
     },
     "devDependencies": {
         "@preact/preset-vite": "2.3.0",

@@ -6,6 +6,7 @@
         "endregion",
         "esbuild",
         "Monoid",
+        "nayuki",
         "Preact",
         "VCARD",
         "vite"
