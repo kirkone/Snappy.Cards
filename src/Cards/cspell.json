@@ -9,7 +9,8 @@
         "nayuki",
         "Preact",
         "VCARD",
-        "vite"
+        "vite",
+        "vitebook"
     ],
     "flagWords": []
 }
