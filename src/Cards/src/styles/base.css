@@ -1,0 +1,26 @@
+body,
+html {
+    overscroll-behavior: none;
+    min-height: 100%;
+
+    height: 100%;
+    overflow: hidden;
+
+    font-size: 62.5%;
+}
+
+body {
+    font-family: -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        "Roboto",
+        "Oxygen",
+        "Ubuntu",
+        "Cantarell",
+        "Fira Sans",
+        "Droid Sans",
+        "Helvetica Neue",
+        sans-serif;
+    font-weight: 300;
+    font-size: 1.6rem;
+}
