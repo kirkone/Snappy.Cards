@@ -53,6 +53,5 @@
         "eslint-plugin-fp-ts": "0.3.2",
         "eslint-plugin-functional": "4.2.1",
         "cspell": "6.4.0"
-
     }
 }
