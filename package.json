@@ -23,5 +23,9 @@
     "src/Cards"
   ],
   "devDependencies": {
+  },
+  "overrides": {
+    "typescript": "4.8.0-beta",
+    "vite": "3.0.3"
   }
 }
