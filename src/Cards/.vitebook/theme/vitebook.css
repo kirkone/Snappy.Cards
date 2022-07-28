@@ -1,3 +1,28 @@
 .page__container {
     display: block !important;
 }
+
+html {
+    line-height: unset !important;
+    font-size: 10px !important;
+}
+
+body {
+    line-height: inherit;
+    background: no-repeat center center fixed cover;
+    background-image: url("https://images.unsplash.com/photo-1533648664467-e0e8e1b42757?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=1000&ixid=MnwxfDB8MXxyYW5kb218MHx8Ymx1cnx8fHx8fDE2NTg2MTY4MjA&ixlib=rb-1.2.1&q=80&w=1000");
+    --vbk--body-bg-color: transparent;
+}
+
+.theme.theme.theme.theme {
+    font-family: inherit;
+    color: inherit;
+    background-color: inherit;
+    line-height: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+}
+
+.preview.preview.preview.preview.preview {
+    background-color: transparent;
+}
