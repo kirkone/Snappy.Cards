@@ -38,28 +38,28 @@
     "@fun-ts/remote-result-adt": "0.4.4",
     "@morphic-ts/adt": "3.0.0",
     "@vanilla-extract/css": "1.7.2",
-    "fp-ts": "2.12.1",
+    "fp-ts": "2.12.2",
     "fp-ts-std": "0.14.2",
     "nayuki-qr-code-generator": "1.8.0",
     "preact": "10.10.0",
-    "preact-render-to-string": "5.1.19",
     "tslib": "2.4.0"
   },
   "devDependencies": {
     "@preact/preset-vite": "2.3.0",
     "@tsconfig/strictest": "1.0.1",
-    "@typescript-eslint/eslint-plugin": "5.30.7",
-    "@typescript-eslint/parser": "5.30.7",
+    "@typescript-eslint/eslint-plugin": "5.31.0",
+    "@typescript-eslint/parser": "5.31.0",
     "@vanilla-extract/vite-plugin": "3.2.1",
     "@vitebook/client": "0.100.5",
     "@vitebook/core": "0.100.5",
     "@vitebook/preact": "0.100.5",
     "@vitebook/theme-default": "0.100.5",
-    "cspell": "6.4.0",
+    "cspell": "6.4.2",
     "eslint": "8.20.0",
     "eslint-plugin-fp-ts": "0.3.2",
-    "eslint-plugin-functional": "4.2.1",
+    "eslint-plugin-functional": "4.2.2",
     "typescript": "4.7.4",
-    "vite": "3.0.2"
+    "vite": "3.0.3",
+    "@faker-js/faker": "7.3.0"
   }
 }
