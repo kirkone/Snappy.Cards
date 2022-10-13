@@ -29,7 +29,7 @@ const CardStory = () => pipe(
         A.map(data => <div style={{ margin: 30 }}>
             <Card data={data} />
         </div>),
-        (children) => <div class={theme.defaultTheme}>{children}</div>
+        (children) => <>{children}</>
     )),
 )();
 
