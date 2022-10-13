@@ -2,7 +2,6 @@ import * as A from "fp-ts/Array";
 import * as IO from "fp-ts/IO";
 import * as O from "fp-ts/Option";
 import * as RAND from "fp-ts/Random";
-import * as theme from "../theme/variables.css";
 
 import { fakerD, permute } from "./utils";
 import { flow, pipe } from "fp-ts/function";

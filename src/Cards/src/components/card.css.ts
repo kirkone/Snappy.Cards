@@ -9,8 +9,6 @@ const ellipsisLine = {
 
 export const container = style({
     borderRadius: varsApp.space.large,
-    maxWidth: "50rem",
-    minWidth: "30rem",
 
     // bottom layout background is clipped by rounded corners
     overflow: "hidden",

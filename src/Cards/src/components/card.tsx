@@ -2,9 +2,9 @@ import * as O from "fp-ts/Option";
 import * as R from "fp-ts/Record";
 import * as styles from "./card.css";
 
-import type { FunctionComponent, FunctionalComponent } from "preact";
 import { constant, pipe } from "fp-ts/function";
 
+import type { FunctionComponent } from "preact";
 import { Glass } from "./glass";
 
 export type CardData = {
@@ -16,7 +16,7 @@ export type CardData = {
     avatar: O.Option<string>;
 };
 
-export const Card: FunctionalComponent<{ data: CardData; }> = ({
+export const Card: FunctionComponent<{ data: CardData; }> = ({
     data: { avatar, sub, ...details }
 }) => (
     <Glass className={styles.container}>
@@ -63,7 +63,7 @@ type IconProps = {
     className?: string;
 };
 
-const PhoneIcon: FunctionalComponent<IconProps> = ({ className = "" }) => (
+const PhoneIcon: FunctionComponent<IconProps> = ({ className = "" }) => (
     <svg width="24"
         height="24"
         viewBox="0 0 24 24"
@@ -75,7 +75,7 @@ const PhoneIcon: FunctionalComponent<IconProps> = ({ className = "" }) => (
     </svg>
 );
 
-const MailIcon: FunctionalComponent<IconProps> = ({ className = "" }) => (
+const MailIcon: FunctionComponent<IconProps> = ({ className = "" }) => (
     <svg width="24"
         height="24"
         viewBox="0 0 24 24"
@@ -86,7 +86,7 @@ const MailIcon: FunctionalComponent<IconProps> = ({ className = "" }) => (
     </svg>
 );
 
-const WebIcon: FunctionalComponent<IconProps> = ({ className = "" }) => (
+const WebIcon: FunctionComponent<IconProps> = ({ className = "" }) => (
     <svg width="24"
         height="24"
         viewBox="0 0 24 24"
