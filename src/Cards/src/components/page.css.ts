@@ -22,37 +22,34 @@ export const footer = style({
 });
 
 globalStyle(`${page}>div, ${footer}>div`, {
-    position: "relative",
+    // position: "relative",
 
     width: "50rem",
     minWidth: "20rem",
 
-    margin: "1rem",
-    padding: "2rem",
+    // display: "flex",
+    // flexFlow: "row wrap",
+    // justifyContent: "center",
+    // alignItems: "center",
 
-    display: "flex",
-    flexFlow: "row wrap",
-    justifyContent: "center",
-    alignItems: "center",
-
-    backgroundColor: "rgb(64 64 64 / 45%)",
-    backdropFilter: "blur(20px)",
-    WebkitBackdropFilter: "blur(20px)",
+    // backgroundColor: "rgb(64 64 64 / 45%)",
+    // backdropFilter: "blur(20px)",
+    // WebkitBackdropFilter: "blur(20px)",
 
     // @supports ( not((-webkit-backdrop-filter: none) or (backdrop-filter: none))) {
     //     background-color: rgb(64 64 64 / 85%);
     // }
 
-    boxShadow: "var(--shadow-elevation-high)",
+    // boxShadow: "var(--shadow-elevation-high)",
     // boxShadow: "0 25px 25px rgba(0,0,0,0.1)",
-    borderRadius: "20px",
+    // borderRadius: "20px",
     // borderTop: "1px solid rgba(255, 255, 255, 0.5)",
 
-    overflow: "hidden",
+    // overflow: "hidden",
 
-    transition: "background 1s",
+    // transition: "background 1s",
 
-    pointerEvents: "auto",
+    // pointerEvents: "auto",
 });
 
 //     &:hover{

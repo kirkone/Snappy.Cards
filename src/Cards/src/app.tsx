@@ -18,7 +18,7 @@ import { flow, identity, pipe } from "fp-ts/function";
 import type { Endomorphism } from "fp-ts/Endomorphism";
 import { Page } from "./components/page";
 import type { PreactView } from "@fun-ts/elmish-preact";
-import { QrCode } from "./components/qr-code";
+import { QrCodeCard } from "./components/qr-code-card";
 import { makeRemoteResultADT } from "@fun-ts/remote-result-adt";
 
 // #endregion
@@ -308,9 +308,7 @@ const QrCodeView = CurrentUrlAdt.matchStrict({
     NotLoaded: () => <></>,
     Loading: () => <>⏳</>,
     Failure: () => <>⚠ An error occurred while retrieving current URL ⚠</>,
-    Loaded: ({ href }) => <div class="qr" id="qr">
-        <QrCode border={5} text={href} className={styles.qrCode} />
-    </div>
+    Loaded: ({ href }) => <QrCodeCard href={href} />
 });
 
 // #endregion

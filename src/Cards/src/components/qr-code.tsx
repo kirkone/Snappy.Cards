@@ -1,7 +1,7 @@
 import * as A from "fp-ts/Array";
 import * as N from "fp-ts/number";
 
-import type { FunctionalComponent } from "preact";
+import type { FunctionComponent } from "preact";
 import { join } from "fp-ts-std/Array";
 import { memoize } from "fp-ts-std/Function";
 import { pipe } from "fp-ts/function";
@@ -24,7 +24,7 @@ export type QrCodeProps = {
 // based on
 // https://github.com/nayuki/QR-Code-generator/blob/720f62bddb7226106071d4728c292cb1df519ceb/typescript-javascript/qrcodegen-input-demo.ts#L177
 
-export const QrCode: FunctionalComponent<QrCodeProps> = ({
+export const QrCode: FunctionComponent<QrCodeProps> = ({
     text,
     ecc = qrCodeGen.QrCode.Ecc.LOW,
     border = 0,

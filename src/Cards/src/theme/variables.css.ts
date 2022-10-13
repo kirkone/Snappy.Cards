@@ -9,6 +9,14 @@ export const varsApp = createThemeContract({
             hex: null,
             rgb: null,
         },
+        light: {
+            hex: null,
+            rgb: null,
+        },
+        shadow: {
+            hex: null,
+            rgb: null,
+        },
         text: {
             hex: null,
             rgb: null,
@@ -29,6 +37,14 @@ const darkThemeVars = assignVars(varsApp, {
         primary: {
             hex: "#404040",
             rgb: "64,64,64"
+        },
+        light: {
+            hex: "#FFFFFF",
+            rgb: "255,255,255",
+        },
+        shadow: {
+            hex: "#001428",
+            rgb: "0,20,40",
         },
         text: {
             hex: "#FFFFFF",
