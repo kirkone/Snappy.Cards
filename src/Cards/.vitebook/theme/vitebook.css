@@ -31,7 +31,7 @@ body {
 
 @media only screen and (min-width: 992px) {
     .sidebar-open {
-        padding-left: var(--vbk--sidebar-min-width);
+        padding-left: 19rem;
     }
 }
 
