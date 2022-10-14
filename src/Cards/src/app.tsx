@@ -19,6 +19,7 @@ import { Footer } from "./components/footer";
 import { Page } from "./components/page";
 import type { PreactView } from "@fun-ts/elmish-preact";
 import { QrCodeCard } from "./components/qr-code-card";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 import { makeRemoteResultADT } from "@fun-ts/remote-result-adt";
 
 // #endregion
@@ -136,17 +137,19 @@ export const update: Update<Model, Msg> = (model, msg) => pipe(
 // #region View
 // ============================================================================
 export const view: PreactView<Model, Msg> = (_dispatch, model) => (
-    <div class={`${styles.app} ${theme.defaultTheme}`} style={{
-        backgroundImage: pipe(
-            model.appData,
-            O.fromPredicate(AppDataAdt.is.Loaded),
-            O.chain(({ background }) => background),
-            O.fold(
-                () => "none",
-                (url) => `url(${url})`
-            ),
-        )
-    }}>
+    <div class={`${styles.app} ${theme.defaultTheme}`}
+        style={assignInlineVars({
+            [styles.CssVarBackground]: pipe(
+                model.appData,
+                O.fromPredicate(AppDataAdt.is.Loaded),
+                O.chain(({ background }) => background),
+                O.fold(
+                    () => "",
+                    (url) => `url(${url})`
+                ),
+            )
+        })}
+    >
         <Page>
             <CardView {...model.appData} />
         </Page>
