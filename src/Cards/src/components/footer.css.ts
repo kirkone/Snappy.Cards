@@ -2,9 +2,8 @@ import { style } from "@vanilla-extract/css";
 import { varsApp } from "../theme/variables.css";
 
 export const container = style({
-    borderTopLeftRadius: varsApp.space.large,
-    borderTopRightRadius: varsApp.space.large,
-    padding: varsApp.space.large,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
 });
 
 export const footer = style({

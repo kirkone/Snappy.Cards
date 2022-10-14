@@ -1,4 +1,6 @@
-import { createVar, globalStyle, style } from "@vanilla-extract/css";
+import { createVar, style } from "@vanilla-extract/css";
+
+import { varsApp } from "../theme/variables.css";
 
 export const CssVarAlignment = createVar();
 
@@ -11,11 +13,8 @@ export const page = style({
     display: "flex",
     alignItems: CssVarAlignment,
 
-    maxWidth: "50rem",
+    maxWidth: "52rem",
     minWidth: "20rem",
-    margin: "0 auto"
-});
-
-globalStyle(`${page} > *`, {
-    flex: 1,
+    margin: "0 auto",
+    padding: `0 ${varsApp.space.large}`,
 });

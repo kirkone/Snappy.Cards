@@ -3,7 +3,7 @@ import * as styles from "./footer.css";
 
 import type { ADTType } from "@morphic-ts/adt";
 import type { FunctionComponent } from "preact";
-import { Glass } from "./glass";
+import { PageContent } from "./page-content";
 import { VCardDataAdt } from "../app";
 import { pipe } from "fp-ts/function";
 
@@ -16,7 +16,7 @@ export const Footer: FunctionComponent<FooterProps> = ({
     downloadUrl,
     className = "",
 }) => (
-    <Glass className={`${styles.container} ${className}`}>
+    <PageContent className={`${styles.container} ${className}`}>
         <footer className={styles.footer}>
             <a href="https://github.com/kirkone/Snappy.Cards" target="_blank">
                 <InfoIcon className={styles.link} />
@@ -39,7 +39,7 @@ export const Footer: FunctionComponent<FooterProps> = ({
                 )
             )}
         </footer>
-    </Glass>
+    </PageContent>
 );
 
 type IconProps = {
