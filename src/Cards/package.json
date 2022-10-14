@@ -61,6 +61,8 @@
     "eslint-plugin-functional": "4.2.2",
     "typescript": "4.8.2",
     "vite": "3.0.9",
-    "@faker-js/faker": "7.5.0"
+    "@faker-js/faker": "7.5.0",
+    "rollup-plugin-visualizer": "5.8.2",
+    "rollup-plugin-hypothetical": "2.1.1"
   }
 }

@@ -1,14 +1,53 @@
-import { defineConfig } from 'vite';
+import { defineConfig, splitVendorChunkPlugin } from "vite";
+
+import hypothetical from "rollup-plugin-hypothetical";
 import preact from '@preact/preset-vite';
 import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin";
+import { visualizer } from "rollup-plugin-visualizer";
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
     plugins: [
         preact(),
         vanillaExtractPlugin(),
+        splitVendorChunkPlugin(),
+        hypothetical({
+            allowFallthrough: true,
+            files: {
+                "../../node_modules/monocle-ts/es6/index.js": `
+                    export const At = {};
+                    export const Iso = {};
+                    export const Ix = {};
+                    export const Lens = {
+                        fromProp(){},
+                        fromProps(){},
+                        fromPath(){},
+                    };
+                    export const Optional = {
+                        fromOptionProp(){},
+                        fromNullableProp(){},
+                    };
+                    export const Prism = {
+                        some(){},
+                        fromPredicate(){},
+                    };
+                    export const Traversal = {};
+                    export const Index = {
+                        fromAt(){},
+                    };
+                `
+            }
+        }),
+        mode === "production" && visualizer({
+            filename: "build/stats.html"
+        }),
     ],
     esbuild: {
-        logOverride: { 'this-is-undefined-in-esm': 'silent' }
+        logOverride: { 'this-is-undefined-in-esm': 'silent' },
+    },
+    build: {
+        outDir: "../../build",
+        emptyOutDir: true,
+        minify: "terser",
     }
-});
+}));

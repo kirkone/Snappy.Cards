@@ -7,6 +7,7 @@
     "start:cards": "npm start --workspace=src/Cards",
     "build:cards": "npm run build --workspace=src/Cards",
     "check:cards": "npm run check --workspace=src/Cards",
+    "preview:cards": "npm run preview --workspace=src/Cards",
     "story:cards": "npm run vitebook:dev --workspace=src/Cards"
   },
   "repository": {
