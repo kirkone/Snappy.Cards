@@ -16,7 +16,7 @@ export const qrCode = style({
     borderRadius: varsApp.space.small,
 
     animation: `${fadeIn} 1s`,
-    backgroundColor: `rgb(${varsApp.color.light.rgb},.67)`,
+    backgroundColor: `rgb(${varsApp.color.light.rgb},.75)`,
     transition: "background 1s",
 
     boxShadow: `7px 7px 15px 0px rgb(${varsApp.color.shadow.rgb}, 0.4) inset`,

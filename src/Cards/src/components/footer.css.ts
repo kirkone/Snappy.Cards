@@ -15,5 +15,4 @@ export const footer = style({
 
 export const link = style({
     color: varsApp.color.light.hex,
-    cursor: "pointer",
 });
