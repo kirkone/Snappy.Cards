@@ -153,7 +153,7 @@ export const view: PreactView<Model, Msg> = (_dispatch, model) => (
         <Page>
             <QrCodeView {...model.currentUrl} />
         </Page>
-        <Page align="end">
+        <Page align="end" fit="content">
             <Footer downloadUrl={model.vCardData} />
         </Page>
     </div>

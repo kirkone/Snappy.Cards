@@ -3,9 +3,10 @@ import { createVar, style } from "@vanilla-extract/css";
 import { varsApp } from "../theme/variables.css";
 
 export const CssVarAlignment = createVar();
+export const CssVarFit = createVar();
 
 export const page = style({
-    height: "100vh",
+    height: CssVarFit,
 
     position: "sticky",
     top: 0,
