@@ -53,10 +53,10 @@ export const layoutBottom = style({
         calc(${varsApp.space.large} + ${varsApp.space.medium})
     `,
 
-    backgroundColor: "#0000001a", // TODO: color
+    backgroundColor: `rgba(${varsApp.color.dark.rgb}, 0.1)`,
 
     // font
-    color: "rgba(0, 0, 0, 0.09)",  // TODO: color
+    color: `rgba(${varsApp.color.dark.rgb}, 0.1)`,
     fontWeight: 900,
     fontSize: "5rem",
     minHeight: "7rem",
@@ -73,7 +73,7 @@ export const avatarCircle = style({
     overflow: "hidden",
 
     // ring
-    boxShadow: `0 0 0 ${varsApp.space.medium} rgba(${varsApp.color.text.rgb}, 0.1)`,
+    boxShadow: `0 0 0 ${varsApp.space.medium} rgba(${varsApp.color.light.rgb}, 0.1)`,
     margin: varsApp.space.medium, // box shadow does not change dimensions
 
     // to center and align contained image
@@ -110,5 +110,5 @@ export const detailLine = style({
 export const detailIcon = style({
     verticalAlign: "-18%",
     marginRight: "0.5em",
-    color: "#ffffffbb", // TODO: color
+    color: `rgba(${varsApp.color.text.rgb}, 0.75)`,
 });

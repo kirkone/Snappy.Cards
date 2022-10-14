@@ -23,3 +23,8 @@ body {
     font-weight: 300;
     font-size: 1.6rem;
 }
+
+/* cancel reset */
+a[href] {
+    cursor: pointer;
+}

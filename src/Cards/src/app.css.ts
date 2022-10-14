@@ -10,5 +10,4 @@ export const app = style({
     backgroundRepeat: "no-repeat",
 
     overflowY: "auto",
-    // visibility: "hidden",
 });
