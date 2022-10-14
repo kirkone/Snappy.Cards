@@ -7,11 +7,6 @@ const fadeIn = keyframes({
     "100%": { opacity: 1 },
 });
 
-export const container = style({
-    borderRadius: varsApp.space.large,
-    padding: varsApp.space.large,
-});
-
 export const qrCode = style({
     borderRadius: varsApp.space.small,
 

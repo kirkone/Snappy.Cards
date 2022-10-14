@@ -8,15 +8,11 @@ const ellipsisLine = {
 } as const;
 
 export const container = style({
-    borderRadius: varsApp.space.large,
-
     // bottom layout background is clipped by rounded corners
     overflow: "hidden",
 });
 
 export const card = style({
-    padding: varsApp.space.large,
-
     display: "flex",
     flexWrap: "wrap",
 });
@@ -53,10 +49,10 @@ export const layoutBottom = style({
         calc(${varsApp.space.large} + ${varsApp.space.medium})
     `,
 
-    backgroundColor: `rgba(${varsApp.color.dark.rgb}, 0.1)`,
+    backgroundColor: `rgb(${varsApp.color.dark.rgb}, 0.1)`,
 
     // font
-    color: `rgba(${varsApp.color.dark.rgb}, 0.1)`,
+    color: `rgb(${varsApp.color.dark.rgb}, 0.1)`,
     fontWeight: 900,
     fontSize: "5rem",
     minHeight: "7rem",
@@ -73,7 +69,7 @@ export const avatarCircle = style({
     overflow: "hidden",
 
     // ring
-    boxShadow: `0 0 0 ${varsApp.space.medium} rgba(${varsApp.color.light.rgb}, 0.1)`,
+    boxShadow: `0 0 0 ${varsApp.space.medium} rgb(${varsApp.color.light.rgb}, 0.1)`,
     margin: varsApp.space.medium, // box shadow does not change dimensions
 
     // to center and align contained image
@@ -110,5 +106,5 @@ export const detailLine = style({
 export const detailIcon = style({
     verticalAlign: "-18%",
     marginRight: "0.5em",
-    color: `rgba(${varsApp.color.text.rgb}, 0.75)`,
+    color: `rgb(${varsApp.color.text.rgb}, 0.75)`,
 });

@@ -5,7 +5,7 @@ import * as styles from "./card.css";
 import { constant, pipe } from "fp-ts/function";
 
 import type { FunctionComponent } from "preact";
-import { Glass } from "./glass";
+import { PageContent } from "./page-content";
 
 export type CardData = {
     name: O.Option<string>;
@@ -19,7 +19,7 @@ export type CardData = {
 export const Card: FunctionComponent<{ data: CardData; }> = ({
     data: { avatar, sub, ...details }
 }) => (
-    <Glass className={styles.container}>
+    <PageContent className={styles.container}>
         <div className={styles.card}>
 
             {pipe(
@@ -54,7 +54,7 @@ export const Card: FunctionComponent<{ data: CardData; }> = ({
             </div>
 
         </div>
-    </Glass>
+    </PageContent>
 );
 
 const Empty = constant(<></>);

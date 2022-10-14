@@ -52,7 +52,7 @@ const darkThemeVars = assignVars(varsApp, {
         },
         shadow: {
             hex: "#001428",
-            rgb: "0,20,40",
+            rgb: "0,10,20",
         },
         text: {
             hex: "#FFFFFF",
