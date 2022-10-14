@@ -1,27 +1,19 @@
-import { globalStyle, style } from "@vanilla-extract/css";
+import { createVar, globalStyle, style } from "@vanilla-extract/css";
+
+export const CssVarAlignment = createVar();
 
 export const page = style({
-    height: "100%",
+    height: "100vh",
 
     position: "sticky",
     top: 0,
 
     display: "flex",
     justifyContent: "center",
-    alignItems: "center",
-
-    pointerEvents: "none",
+    alignItems: CssVarAlignment,
 });
 
-export const footer = style({
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-
-    pointerEvents: "none",
-});
-
-globalStyle(`${page}>div, ${footer}>div`, {
+globalStyle(`${page}>div`, {
     // position: "relative",
 
     width: "50rem",
