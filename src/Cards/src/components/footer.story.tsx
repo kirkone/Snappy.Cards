@@ -1,5 +1,5 @@
 import { Footer } from "./footer";
-import { VCardDataAdt } from "../app";
+import { VCardDataAdt } from "./app";
 
 const QrCodeCardStory = () => <>
     <p>Loaded</p>

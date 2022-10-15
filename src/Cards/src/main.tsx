@@ -1,5 +1,5 @@
 import { debug, program } from "@fun-ts/elmish";
-import { init, update, view } from "./app";
+import { init, update, view } from "./components/app";
 
 import { pipe } from "fp-ts/function";
 import { withPreactSynchronous } from "@fun-ts/elmish-preact";
