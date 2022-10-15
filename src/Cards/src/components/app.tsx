@@ -7,18 +7,18 @@ import * as R from "fp-ts/Record";
 import * as S from "fp-ts/string";
 import * as T from "fp-ts/Task";
 import * as styles from "./app.css";
-import * as theme from "./theme/variables.css";
+import * as theme from "../theme/variables.css";
 
 import { ADTType, makeADT, ofType } from "@morphic-ts/adt";
-import { Card, CardData } from "./components/card";
+import { Card, CardData } from "./card";
 import { ElmishResult, Init, Update, cmd } from "@fun-ts/elmish";
 import { flow, identity, pipe } from "fp-ts/function";
 
 import type { Endomorphism } from "fp-ts/Endomorphism";
-import { Footer } from "./components/footer";
-import { Page } from "./components/page";
+import { Footer } from "./footer";
+import { Page } from "./page";
 import type { PreactView } from "@fun-ts/elmish-preact";
-import { QrCodeCard } from "./components/qr-code-card";
+import { QrCodeCard } from "./qr-code-card";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
 import { makeRemoteResultADT } from "@fun-ts/remote-result-adt";
 

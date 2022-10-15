@@ -1,6 +1,6 @@
 import { createVar, fallbackVar, style } from "@vanilla-extract/css";
 
-import { varsApp } from "./theme/variables.css";
+import { varsApp } from "../theme/variables.css";
 
 export const CssVarBackground = createVar();
 

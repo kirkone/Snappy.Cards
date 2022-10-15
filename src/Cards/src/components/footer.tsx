@@ -4,7 +4,7 @@ import * as styles from "./footer.css";
 import type { ADTType } from "@morphic-ts/adt";
 import type { FunctionComponent } from "preact";
 import { PageContent } from "./page-content";
-import { VCardDataAdt } from "../app";
+import { VCardDataAdt } from "./app";
 import { pipe } from "fp-ts/function";
 
 type FooterProps = {
