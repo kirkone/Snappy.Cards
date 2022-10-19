@@ -16,8 +16,8 @@ const makeBoxShadow = (rgb: string, s1: number, s2: number) => `
 export const content = style({
     // glass
     backgroundColor: `rgb(${varsApp.color.primary.rgb},.45)`,
-    backdropFilter: `blur(${varsApp.space.large})`,
     WebkitBackdropFilter: `blur(${varsApp.space.large})`,
+    backdropFilter: `blur(${varsApp.space.large})`,
 
     // for hover
     transition: "background 1s, box-shadow 1s",
