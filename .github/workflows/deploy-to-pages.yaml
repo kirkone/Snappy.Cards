@@ -1,28 +1,55 @@
 name: Build and Deploy
 on:
+  # Runs on pushes targeting the default branch
   push:
     branches:
-      - main
+      - $default-branch
+  
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🚛
-        uses: actions/checkout@v2.3.1
+        uses: actions/checkout@v3
 
       - name: Setup node 🔧
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: '19'
 
       - name: Install and Build 🔨
         run: |
           npm -v
           npm install
+          npm run-script check:cards
           npm run-script build:cards
 
-      - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@4.1.5
+      - name: Upload artifact 📦
+        uses: actions/upload-pages-artifact@v1
         with:
-          branch: pages/main
-          folder: build
+          # Upload the build output
+          path: './build'
+
+  deploy:
+    # Add a dependency to the build job
+    needs: build
+
+    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+
+    # Deploy to the github-pages environment
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    # Specify runner + deployment step
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages 🚀
+        id: deployment
+        uses: actions/deploy-pages@v1
