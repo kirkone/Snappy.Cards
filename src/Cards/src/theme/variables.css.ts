@@ -38,6 +38,38 @@ export const varsApp = createThemeContract({
 // ============================================================================
 // 2. assign values to css variables
 // ============================================================================
+const lightThemeVars = assignVars(varsApp, {
+    color: {
+        primary: {
+            hex: "#A4A4A4",
+            rgb: "164,164,164"
+        },
+        light: {
+            hex: "#FFFFFF",
+            rgb: "255,255,255",
+            shade: "#5A5A64",
+        },
+        dark: {
+            hex: "#000000",
+            rgb: "0,0,0",
+            tint: "#080808",
+        },
+        shadow: {
+            hex: "#001428",
+            rgb: "0,10,20",
+        },
+        text: {
+            hex: "#000000",
+            rgb: "0,0,0"
+        }
+    },
+    space: {
+        small: "0.5rem",
+        medium: "1rem",
+        large: "2rem",
+    }
+});
+
 const darkThemeVars = assignVars(varsApp, {
     color: {
         primary: {
@@ -74,8 +106,7 @@ const darkThemeVars = assignVars(varsApp, {
 // 3. export themes
 // ============================================================================
 export const defaultTheme = style({
-    // vars: lightThemeVars,
-    vars: darkThemeVars,
+    vars: lightThemeVars,
 
     "@media": {
         "(prefers-color-scheme: dark)": {

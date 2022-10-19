@@ -86,6 +86,9 @@ export const avatar = style({
 });
 
 export const detail = style({
+    // for dark / light mode switching
+    transition: "color 1s",
+
     color: varsApp.color.text.hex,
     lineHeight: 2,
 });
@@ -106,5 +109,4 @@ export const detailLine = style({
 export const detailIcon = style({
     verticalAlign: "-18%",
     marginRight: "0.5em",
-    color: `rgb(${varsApp.color.text.rgb}, 0.75)`,
 });
