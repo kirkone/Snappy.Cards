@@ -17,8 +17,8 @@ export const app = style({
         ${fallbackVar(CssVarBackground, "none")},
         -webkit-radial-gradient(
             top,
-            ${varsApp.color.light.shade},
-            ${varsApp.color.dark.tint}
+            ${varsApp.color.dark.tint},
+            ${varsApp.color.light.shade}
         )
     `,
 
