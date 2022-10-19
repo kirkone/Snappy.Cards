@@ -23,4 +23,7 @@ export const app = style({
     `,
 
     overflowY: "auto",
+    // otherwise scrollbar would make content jump
+    overflowX: "hidden",
+    minWidth: "30rem"
 });
