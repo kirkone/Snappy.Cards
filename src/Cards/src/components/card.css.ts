@@ -49,10 +49,10 @@ export const layoutBottom = style({
         calc(${varsApp.space.large} + ${varsApp.space.medium})
     `,
 
-    backgroundColor: `rgb(${varsApp.color.dark.rgb}, 0.1)`,
+    backgroundColor: `rgb(${varsApp.color.light.rgb}, 0.1)`,
 
     // font
-    color: `rgb(${varsApp.color.dark.rgb}, 0.1)`,
+    color: `rgb(${varsApp.color.light.rgb}, 0.1)`,
     fontWeight: 900,
     fontSize: "5rem",
     minHeight: "7rem",
@@ -69,7 +69,7 @@ export const avatarCircle = style({
     overflow: "hidden",
 
     // ring
-    boxShadow: `0 0 0 ${varsApp.space.medium} rgb(${varsApp.color.light.rgb}, 0.1)`,
+    boxShadow: `0 0 0 ${varsApp.space.medium} rgb(${varsApp.color.dark.rgb}, 0.1)`,
     margin: varsApp.space.medium, // box shadow does not change dimensions
 
     // to center and align contained image

@@ -13,5 +13,5 @@ export const footer = style({
 });
 
 export const link = style({
-    color: varsApp.color.light.hex,
+    color: varsApp.color.dark.hex,
 });
