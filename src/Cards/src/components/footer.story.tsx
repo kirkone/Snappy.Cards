@@ -1,14 +1,17 @@
 import { Footer } from "./footer";
-import { VCardDataAdt } from "./app";
+import { VCardDataAdt } from "../model/v-card-url";
 
 const QrCodeCardStory = () => <>
-    <p>Loaded</p>
+    <h1 style={{ backgroundColor: "white" }}>Loaded</h1>
     <Footer downloadUrl={VCardDataAdt.as.Loaded({ url: "" })}></Footer>
-    <p>NotLoaded</p>
+
+    <h1 style={{ backgroundColor: "white" }}>NotLoaded</h1>
     <Footer downloadUrl={VCardDataAdt.as.NotLoaded({ url: "" })}></Footer>
-    <p>Failure</p>
+
+    <h1 style={{ backgroundColor: "white" }}>Failure</h1>
     <Footer downloadUrl={VCardDataAdt.as.Failure({ url: "" })}></Footer>
-    <p>Loading</p>
+
+    <h1 style={{ backgroundColor: "white" }}>Loading</h1>
     <Footer downloadUrl={VCardDataAdt.as.Loading({ url: "" })}></Footer>
 </>;
 

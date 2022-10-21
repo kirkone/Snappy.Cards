@@ -1,11 +1,9 @@
-import * as O from "fp-ts/Option";
 import * as styles from "./footer.css";
 
 import type { ADTType } from "@morphic-ts/adt";
 import type { FunctionComponent } from "preact";
 import { PageContent } from "./page-content";
-import { VCardDataAdt } from "./app";
-import { pipe } from "fp-ts/function";
+import { VCardDataAdt } from "../model/v-card-url";
 
 type FooterProps = {
     downloadUrl: ADTType<typeof VCardDataAdt>;
@@ -22,25 +20,24 @@ export const Footer: FunctionComponent<FooterProps> = ({
                 <InfoIcon className={styles.link} />
             </a>
 
-            {pipe(
-                downloadUrl,
-                O.fromPredicate(VCardDataAdt.is.Loaded),
-                O.map(({ url }) => url),
-                O.fold(
-                    () => <></>,
-                    (vCardUrl) => (
-                        <a className={styles.link}
-                            download="SnappyCard.vcf"
-                            rel="noopener"
-                            href={vCardUrl}>
-                            <DownloadIcon />
-                        </a>
-                    )
-                )
-            )}
+            <DownloadLink {...downloadUrl} />
         </footer>
     </PageContent>
 );
+
+const DownloadLink = VCardDataAdt.matchStrict({
+    NotLoaded: () => <></>,
+    Loading: () => <>⏳</>,
+    Failure: () => <>⚠</>,
+    Loaded: ({ url }) => (
+        <a className={styles.link}
+            download="SnappyCard.vcf"
+            rel="noopener"
+            href={url}>
+            <DownloadIcon />
+        </a>
+    )
+});
 
 type IconProps = {
     className?: string;

@@ -1,25 +1,35 @@
 // #region Imports
 
+import * as IO from "fp-ts/IO";
 import * as O from "fp-ts/Option";
 import * as T from "fp-ts/Task";
 import * as styles from "./app.css";
 import * as theme from "../theme/variables.css";
 
 import { ADTType, makeADT, ofType } from "@morphic-ts/adt";
-import { Card, CardData } from "./card";
+import { AppData, AppDataAdt, getAppData } from "../model/app-data";
+import { Base64Data, DownloadImageError, RemoteImageAdt, downloadImageCached } from "../model/remote-image";
 import { ElmishResult, Init, Subscribe, Update, cmd } from "@fun-ts/elmish";
-import { UrlParameters, getParametersFromUrl } from "../model/url-data";
+import { VCardDataAdt, getVCardUrl } from "../model/v-card-url";
 
+import { Card } from "./card";
 import { Footer } from "./footer";
+import type { FunctionComponent } from "preact";
 import { Page } from "./page";
 import type { PreactView } from "@fun-ts/elmish-preact";
 import { QrCodeCard } from "./qr-code-card";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
-import { getCardData } from "../model/card-data";
-import { getVCardUrl } from "../model/v-card-url";
+import { getParametersFromUrl } from "../model/url-data";
 import { makeRemoteResultADT } from "@fun-ts/remote-result-adt";
+import { pick } from "fp-ts-std/Struct";
 import { pipe } from "fp-ts/function";
 
+// #endregion
+
+// ============================================================================
+// #region ADTs
+// ============================================================================
+const CurrentUrlAdt = makeRemoteResultADT<{ href: string; }>();
 // #endregion
 
 // ============================================================================
@@ -29,6 +39,8 @@ export type Model = {
     appData: ADTType<typeof AppDataAdt>;
     currentUrl: ADTType<typeof CurrentUrlAdt>;
     vCardData: ADTType<typeof VCardDataAdt>;
+    backgroundImage: ADTType<typeof RemoteImageAdt>;
+    avatarImage: ADTType<typeof RemoteImageAdt>;
 };
 
 export const init: Init<Model, Msg> = (): ElmishResult<Model, Msg> => [
@@ -36,9 +48,11 @@ export const init: Init<Model, Msg> = (): ElmishResult<Model, Msg> => [
         appData: AppDataAdt.as.NotLoaded({}),
         currentUrl: CurrentUrlAdt.as.NotLoaded({}),
         vCardData: VCardDataAdt.as.NotLoaded({}),
+        backgroundImage: VCardDataAdt.as.NotLoaded({}),
+        avatarImage: VCardDataAdt.as.NotLoaded({}),
     },
     cmd.batch(
-        cmd.ofMsg(MsgAdt.of.GetUrlData({})),
+        cmd.ofMsg(MsgAdt.of.GetAppData({})),
         cmd.ofMsg(MsgAdt.of.GetCurrentUrl({})),
     )
 ];
@@ -48,10 +62,31 @@ export const init: Init<Model, Msg> = (): ElmishResult<Model, Msg> => [
 // ============================================================================
 // #region Messages
 // ============================================================================
-type GetUrlDataMsg = { type: "GetUrlData"; };
-type GetUrlDataSucceededMsg = {
-    type: "GetUrlDataSucceeded";
-    data: UrlParameters;
+type GetAppDataMsg = { type: "GetAppData"; };
+type GetAppDataSucceededMsg = {
+    type: "GetAppDataSucceeded";
+    data: AppData;
+};
+
+type GetBackgroundImageMsg = { type: "GetBackgroundImage"; };
+type GetBackgroundImageSucceededMsg = {
+    type: "GetBackgroundImageSucceeded";
+    url: string;
+    base64: Base64Data;
+};
+type GetBackgroundImageFailedMsg = {
+    type: "GetBackgroundImageFailed";
+    e: DownloadImageError;
+};
+type GetAvatarImageMsg = { type: "GetAvatarImage"; };
+type GetAvatarImageSucceededMsg = {
+    type: "GetAvatarImageSucceeded";
+    url: string;
+    base64: Base64Data;
+};
+type GetAvatarImageFailedMsg = {
+    type: "GetAvatarImageFailed";
+    e: DownloadImageError;
 };
 
 type GetCurrentUrlMsg = { type: "GetCurrentUrl"; };
@@ -65,11 +100,19 @@ type GetCurrentUrlSucceededMsg = {
 type HashChangedMsg = { type: "HashChanged"; };
 
 const MsgAdt = makeADT("type")({
-    GetUrlData: ofType<GetUrlDataMsg>(),
-    GetUrlDataSucceeded: ofType<GetUrlDataSucceededMsg>(),
+    GetAppData: ofType<GetAppDataMsg>(),
+    GetAppDataSucceeded: ofType<GetAppDataSucceededMsg>(),
 
     GetCurrentUrl: ofType<GetCurrentUrlMsg>(),
     GetCurrentUrlSucceeded: ofType<GetCurrentUrlSucceededMsg>(),
+
+    GetBackgroundImage: ofType<GetBackgroundImageMsg>(),
+    GetBackgroundImageSucceeded: ofType<GetBackgroundImageSucceededMsg>(),
+    GetBackgroundImageFailed: ofType<GetBackgroundImageFailedMsg>(),
+
+    GetAvatarImage: ofType<GetAvatarImageMsg>(),
+    GetAvatarImageSucceeded: ofType<GetAvatarImageSucceededMsg>(),
+    GetAvatarImageFailed: ofType<GetAvatarImageFailedMsg>(),
 
     HashChanged: ofType<HashChangedMsg>(),
 });
@@ -93,33 +136,37 @@ export const sub: Subscribe<Model, Msg> = (_) => cmd.ofSub(
 export const update: Update<Model, Msg> = (model, msg) => pipe(
     msg,
     MsgAdt.matchStrict({
-        GetUrlData: (): ElmishResult<Model, Msg> => [
+        GetAppData: (): ElmishResult<Model, Msg> => [
             {
                 ...model,
                 appData: AppDataAdt.as.Loading({})
             },
             pipe(
                 getParametersFromUrl,
+                IO.map(getAppData),
                 T.fromIO,
-                cmd.OfTask.perform(data => MsgAdt.as.GetUrlDataSucceeded({ data }))
+                cmd.OfTask.perform(data => MsgAdt.as.GetAppDataSucceeded({ data }))
             )
         ],
 
-        GetUrlDataSucceeded: ({ data }): ElmishResult<Model, Msg> => [
+        GetAppDataSucceeded: ({ data }): ElmishResult<Model, Msg> => [
             {
                 ...model,
-                appData: pipe(
-                    getCardData(data),
-                    ({ background, ...card }) => AppDataAdt.as.Loaded({
-                        card,
-                        background,
-                    })
-                ),
-                vCardData: VCardDataAdt.as.Loaded({
-                    url: getVCardUrl(data)
-                }),
+                appData: AppDataAdt.as.Loaded(data),
+                vCardData:
+                    O.isSome(data.avatar) ?
+                        VCardDataAdt.as.Loading({}) :
+                        pipe(
+                            data,
+                            pick(["name", "phone", "mail", "web"]),
+                            d => getVCardUrl({ ...d, avatarBase64: O.none }),
+                            url => VCardDataAdt.as.Loaded({ url }),
+                        ),
             },
-            cmd.none
+            cmd.batch(
+                cmd.ofMsg(MsgAdt.of.GetBackgroundImage({})),
+                cmd.ofMsg(MsgAdt.of.GetAvatarImage({})),
+            )
         ],
 
         GetCurrentUrl: (): ElmishResult<Model, Msg> => [
@@ -144,10 +191,106 @@ export const update: Update<Model, Msg> = (model, msg) => pipe(
             cmd.none
         ],
 
+        GetBackgroundImage: () => pipe(
+            model.appData,
+            O.fromPredicate(AppDataAdt.is.Loaded),
+            O.chain(d => d.background),
+            O.fold(
+                () => [model, cmd.none],
+                remoteUrl => [
+                    {
+                        ...model,
+                        backgroundImage: RemoteImageAdt.of.Loading({}),
+                    },
+                    pipe(
+                        downloadImageCached(remoteUrl),
+                        cmd.OfTaskEither.either(
+                            e => MsgAdt.as.GetBackgroundImageFailed({ e }),
+                            MsgAdt.as.GetBackgroundImageSucceeded
+                        )
+                    )
+                ]
+            )
+        ),
+
+        GetBackgroundImageSucceeded: ({ url }) => [
+            {
+                ...model,
+                backgroundImage: RemoteImageAdt.as.Loaded({ url })
+            },
+            cmd.none
+        ],
+
+        GetBackgroundImageFailed: ({ e }) => [
+            {
+                ...model,
+                backgroundImage: RemoteImageAdt.as.Failure({ e })
+            },
+            cmd.none
+        ],
+
+        GetAvatarImage: () => pipe(
+            model.appData,
+            O.fromPredicate(AppDataAdt.is.Loaded),
+            O.chain(d => d.avatar),
+            O.fold(
+                () => [
+                    {
+                        ...model,
+                    },
+                    cmd.none
+                ],
+
+                remoteUrl => [
+                    {
+                        ...model,
+                        avatarImage: RemoteImageAdt.of.Loading({}),
+                    },
+                    pipe(
+                        downloadImageCached(remoteUrl),
+                        cmd.OfTaskEither.either(
+                            e => MsgAdt.of.GetAvatarImageFailed({ e }),
+                            MsgAdt.of.GetAvatarImageSucceeded
+                        )
+                    )
+                ]
+            )
+        ),
+
+        GetAvatarImageSucceeded: ({ url, base64 }) => [
+            {
+                ...model,
+                avatarImage: RemoteImageAdt.as.Loaded({ url }),
+
+                vCardData: pipe(
+                    model.appData,
+                    O.fromPredicate(AppDataAdt.is.Loaded),
+                    O.map(pick(["name", "phone", "mail", "web"])),
+                    O.fold(
+                        () => VCardDataAdt.of.NotLoaded({}),
+                        data => VCardDataAdt.of.Loaded({
+                            url: getVCardUrl({
+                                ...data,
+                                avatarBase64: O.some(base64)
+                            })
+                        })
+                    ),
+                ),
+            },
+            cmd.none
+        ],
+
+        GetAvatarImageFailed: ({ e }) => [
+            {
+                ...model,
+                avatarImage: RemoteImageAdt.as.Failure({ e })
+            },
+            cmd.none
+        ],
+
         HashChanged: init
     })
 );
-
 // #endregion
 
 // ============================================================================
@@ -157,18 +300,20 @@ export const view: PreactView<Model, Msg> = (_dispatch, model) => (
     <div class={`${styles.app} ${theme.defaultTheme}`}
         style={assignInlineVars({
             [styles.CssVarBackground]: pipe(
-                model.appData,
-                O.fromPredicate(AppDataAdt.is.Loaded),
-                O.chain(({ background }) => background),
+                model.backgroundImage,
+                O.fromPredicate(RemoteImageAdt.is.Loaded),
                 O.fold(
                     () => "",
-                    (url) => `url(${url})`
+                    ({ url }) => `url(${url})`
                 ),
             )
         })}
     >
         <Page>
-            <CardView {...model.appData} />
+            <CardView
+                appData={model.appData}
+                avatar={model.avatarImage}
+            />
         </Page>
         <Page>
             <QrCodeView {...model.currentUrl} />
@@ -182,30 +327,31 @@ export const view: PreactView<Model, Msg> = (_dispatch, model) => (
 // #endregion
 
 // ============================================================================
-// #region ADT for cardData
-// ============================================================================
-const AppDataAdt = makeRemoteResultADT<
-    {
-        card: CardData;
-        background: O.Option<string>;
-    }
->();
-
-const CurrentUrlAdt = makeRemoteResultADT<{ href: string; }>();
-
-export const VCardDataAdt = makeRemoteResultADT<{ url: string; }>();
-
-// #endregion
-
-// ============================================================================
 // #region Views
 // ============================================================================
-const CardView = AppDataAdt.matchStrict({
-    NotLoaded: () => <></>,
-    Loading: () => <>⏳</>,
-    Failure: () => <>⚠ An error occurred while getting data ⚠</>,
-    Loaded: ({ card: data }) => <Card data={data} />
-});
+type CardViewProps = {
+    appData: ADTType<typeof AppDataAdt>;
+    avatar: ADTType<typeof RemoteImageAdt>;
+};
+
+const CardView: FunctionComponent<CardViewProps> = ({
+    appData,
+    avatar,
+}) => pipe(
+    appData,
+    AppDataAdt.matchStrict({
+        NotLoaded: () => <></>,
+        Loading: () => <>⏳</>,
+        Failure: () => <>⚠ An error occurred while getting data ⚠</>,
+        Loaded: appData => <Card
+            data={pipe(
+                appData,
+                pick(["name", "phone", "mail", "web", "sub"]),
+            )}
+            avatar={avatar}
+        />
+    })
+);
 
 const QrCodeView = CurrentUrlAdt.matchStrict({
     NotLoaded: () => <></>,

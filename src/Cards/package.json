@@ -36,6 +36,7 @@
     "@fun-ts/elmish": "0.6.3",
     "@fun-ts/elmish-preact": "0.6.3",
     "@fun-ts/remote-result-adt": "0.6.3",
+    "@fun-ts/fetch": "0.6.3",
     "@morphic-ts/adt": "3.0.0",
     "@vanilla-extract/css": "1.9.1",
     "@vanilla-extract/dynamic": "2.0.2",

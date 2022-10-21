@@ -6,7 +6,9 @@ import * as RAND from "fp-ts/Random";
 import { fakerD, permute } from "./utils";
 import { flow, pipe } from "fp-ts/function";
 
+import { AppDataAdt } from "../model/app-data";
 import { Card } from "./card";
+import { RemoteImageAdt } from "../model/remote-image";
 
 const getCardData = flow(
     fakerD,
@@ -26,7 +28,19 @@ const CardStory = () => pipe(
     IO.map(flow(
         getCardData,
         A.map(data => <div style={{ margin: 30 }}>
-            <Card data={data} />
+            <Card
+                data={AppDataAdt.as.Loaded({
+                    ...data,
+                    background: O.none,
+                })}
+                avatar={pipe(
+                    data.avatar,
+                    O.fold(
+                        () => RemoteImageAdt.of.NotLoaded({}),
+                        url => RemoteImageAdt.of.Loaded({ url }),
+                    ),
+                )}
+            />
         </div>),
         (children) => <>{children}</>
     )),

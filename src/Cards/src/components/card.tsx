@@ -4,8 +4,10 @@ import * as styles from "./card.css";
 
 import { constant, pipe } from "fp-ts/function";
 
+import type { ADTType } from "@morphic-ts/adt";
 import type { FunctionComponent } from "preact";
 import { PageContent } from "./page-content";
+import { RemoteImageAdt } from "../model/remote-image";
 
 export type CardData = {
     name: O.Option<string>;
@@ -13,22 +15,29 @@ export type CardData = {
     mail: O.Option<string>;
     web: O.Option<string>;
     sub: O.Option<string>;
-    avatar: O.Option<string>;
 };
 
-export const Card: FunctionComponent<{ data: CardData; }> = ({
-    data: { avatar, sub, ...details }
+type CardProps = {
+    data: CardData;
+    avatar: ADTType<typeof RemoteImageAdt>;
+};
+
+export const Card: FunctionComponent<CardProps> = ({
+    data: { sub, ...details },
+    avatar
 }) => (
     <PageContent className={styles.container}>
         <div className={styles.card}>
 
             {pipe(
                 avatar,
+                // TODO Loading animation for Avatar
+                O.fromPredicate(RemoteImageAdt.is.Loaded),
                 O.fold(
                     Empty,
-                    (src) => <div className={styles.layoutNarrow}>
+                    ({ url }) => <div className={styles.layoutNarrow}>
                         <div className={styles.avatarCircle}>
-                            <img src={src} className={styles.avatar} alt="It's me." />
+                            <img src={url} className={styles.avatar} />
                         </div>
                     </div>
                 )
