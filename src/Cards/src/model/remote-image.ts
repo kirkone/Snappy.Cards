@@ -4,7 +4,7 @@ import * as TE from "fp-ts/TaskEither";
 import { asBlobTE, funFetch } from "@fun-ts/fetch";
 
 import { makeRemoteResultADT } from "@fun-ts/remote-result-adt";
-import { memoizeTaskK } from "../components/utils";
+import { memoizeTaskK } from "../utils/utils";
 import { pipe } from "fp-ts/function";
 
 const convertBlobToBase64P = (blob: Blob) => new Promise<string>(

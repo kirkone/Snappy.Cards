@@ -4,7 +4,7 @@ import * as RAND from "fp-ts/Random";
 import { flow, pipe } from "fp-ts/function";
 
 import { QrCodeCard } from "./qr-code-card";
-import { fakerD } from "./utils";
+import { fakerD } from "../utils/utils-vitebook";
 
 const getQrCodeCardData = flow(
     fakerD,

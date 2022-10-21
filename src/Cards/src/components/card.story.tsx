@@ -3,7 +3,7 @@ import * as IO from "fp-ts/IO";
 import * as O from "fp-ts/Option";
 import * as RAND from "fp-ts/Random";
 
-import { fakerD, permute } from "./utils";
+import { fakerD, permute } from "../utils/utils-vitebook";
 import { flow, pipe } from "fp-ts/function";
 
 import { AppDataAdt } from "../model/app-data";
