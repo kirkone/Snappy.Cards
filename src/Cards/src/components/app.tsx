@@ -7,7 +7,7 @@ import * as theme from "../theme/variables.css";
 
 import { ADTType, makeADT, ofType } from "@morphic-ts/adt";
 import { Card, CardData } from "./card";
-import { ElmishResult, Init, Update, cmd } from "@fun-ts/elmish";
+import { ElmishResult, Init, Subscribe, Update, cmd } from "@fun-ts/elmish";
 import { UrlParameters, getParametersFromUrl } from "../model/url-data";
 
 import { Footer } from "./footer";
@@ -62,16 +62,30 @@ type GetCurrentUrlSucceededMsg = {
     };
 };
 
+type HashChangedMsg = { type: "HashChanged"; };
+
 const MsgAdt = makeADT("type")({
     GetUrlData: ofType<GetUrlDataMsg>(),
     GetUrlDataSucceeded: ofType<GetUrlDataSucceededMsg>(),
 
     GetCurrentUrl: ofType<GetCurrentUrlMsg>(),
     GetCurrentUrlSucceeded: ofType<GetCurrentUrlSucceededMsg>(),
+
+    HashChanged: ofType<HashChangedMsg>(),
 });
 
 export type Msg = ADTType<typeof MsgAdt>;
 // #endregion
+
+// ============================================================================
+// #region Subscription
+// ============================================================================
+export const sub: Subscribe<Model, Msg> = (_) => cmd.ofSub(
+    dispatch => window.addEventListener("hashchange", () => {
+        dispatch(MsgAdt.as.HashChanged({}));
+    })
+);
+//#endregion
 
 // ============================================================================
 // #region Update
@@ -129,6 +143,8 @@ export const update: Update<Model, Msg> = (model, msg) => pipe(
             },
             cmd.none
         ],
+
+        HashChanged: init
     })
 );
 

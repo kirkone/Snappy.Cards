@@ -9,6 +9,8 @@ import { flow, pipe } from "fp-ts/function";
 
 import { sequenceS } from "fp-ts/Apply";
 
+const stringNotEmptyAsOption = O.fromPredicate(P.not(S.isEmpty));
+
 // ============================================================================
 // #region Image param helpers
 // ============================================================================
@@ -43,17 +45,30 @@ export const matchImageParam = ({ onUnsplash, onUrl }: matchImageParamOptions) =
 // #region Decoder
 // ============================================================================
 const lookup: <A>(k: string) => (r: Record<string, A>) => O.Option<A> = R.lookup;
+const nonEmptyStringCombinator = (
+    f: (r: Record<string, string>) => O.Option<string>
+) => flow(
+    f,
+    O.chain(stringNotEmptyAsOption)
+);
+
 const optionalString = (lookup)<string>;
 const optionalImageParam = (lookup)<ImageParam>;
 
+const optionalNonEmptyString = flow(optionalString, nonEmptyStringCombinator);
+const optionalNonEmptyImageParam = flow(
+    optionalImageParam,
+    nonEmptyStringCombinator
+);
+
 const TUrlParameters = {
-    name: optionalString("name"),
-    phone: optionalString("phone"),
-    mail: optionalString("mail"),
-    web: optionalString("web"),
-    sub: optionalString("sub"),
-    avatar: optionalImageParam("avatar"),
-    background: optionalImageParam("background"),
+    name: optionalNonEmptyString("name"),
+    phone: optionalNonEmptyString("phone"),
+    mail: optionalNonEmptyString("mail"),
+    web: optionalNonEmptyString("web"),
+    sub: optionalNonEmptyString("sub"),
+    avatar: optionalNonEmptyImageParam("avatar"),
+    background: optionalNonEmptyImageParam("background"),
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -68,11 +83,8 @@ export type UrlParameters = StructReturns<typeof TUrlParameters>;
 // ============================================================================
 // #region URL Parameters
 // ============================================================================
-const getParametersFromString = (
-    input: string
-) => pipe(
-    input,
-    O.fromPredicate(P.not(S.isEmpty)),
+const getParametersFromString = flow(
+    stringNotEmptyAsOption,
     O.map(flow(
         s => [...new URLSearchParams(s).entries()],
         R.fromEntries
@@ -80,12 +92,14 @@ const getParametersFromString = (
 );
 
 const getParametersFromSearch = pipe(
-    IO.of(document.location.search.substring(1)),
+    () => document.location.search.substring(1),
     IO.map(getParametersFromString)
 );
 
 const getParametersFromHash = pipe(
-    IO.of(document.location.hash.substring(1)),
+    // IO.of computes result only once and returns same result afterwards
+    // so it was not used here
+    () => document.location.hash.substring(1),
     IO.map(getParametersFromString)
 );
 
