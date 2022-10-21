@@ -3,7 +3,9 @@ import * as O from "fp-ts/Option";
 import { ImageParamUnsplash, UrlParameters, matchImageParam } from "./url-data";
 import { identity, pipe } from "fp-ts/function";
 
-type CardFields = {
+import { makeRemoteResultADT } from "@fun-ts/remote-result-adt";
+
+export type AppData = {
     name: O.Option<string>;
     phone: O.Option<string>;
     mail: O.Option<string>;
@@ -13,7 +15,7 @@ type CardFields = {
     background: O.Option<string>;
 };
 
-export const getCardData = (params: UrlParameters): CardFields => ({
+export const getAppData = (params: UrlParameters): AppData => ({
     name: params.name,
     phone: params.phone,
     mail: params.mail,
@@ -57,3 +59,5 @@ const makeUnsplashUrl = (
     new URLSearchParams(params),
     ps => `https://source.unsplash.com/${id}/${width}x${height}?${ps}`
 );
+
+export const AppDataAdt = makeRemoteResultADT<AppData>();
