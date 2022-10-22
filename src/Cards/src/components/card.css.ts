@@ -107,6 +107,6 @@ export const detailLine = style({
 });
 
 export const detailIcon = style({
-    verticalAlign: "-18%",
+    verticalAlign: "-17%",
     marginRight: "0.5em",
 });

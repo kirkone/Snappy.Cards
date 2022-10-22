@@ -10,6 +10,7 @@ import { ADTType, makeADT, ofType } from "@morphic-ts/adt";
 import { AppData, AppDataAdt, getAppData } from "../model/app-data";
 import { Base64Data, DownloadImageError, RemoteImageAdt, downloadImageCached } from "../model/remote-image";
 import { ElmishResult, Init, Subscribe, Update, cmd } from "@fun-ts/elmish";
+import { ErrorIcon, LoaderIcon } from "./icons";
 import { VCardDataAdt, getVCardUrl, vCardFieldsFromAppData, vCardFieldsFromAppDataLoaded } from "../model/v-card-url";
 
 import { Card } from "./card";
@@ -363,8 +364,10 @@ const CardView: FunctionComponent<CardViewProps> = ({
     appData,
     AppDataAdt.matchStrict({
         NotLoaded: () => <></>,
-        Loading: () => <>⏳</>,
-        Failure: () => <>⚠ An error occurred while getting data ⚠</>,
+        Loading: () => <LoaderIcon />,
+        Failure: () => <>
+            <ErrorIcon /> An error occurred while getting data
+        </>,
         Loaded: appData => <Card
             data={pipe(
                 appData,
@@ -377,8 +380,10 @@ const CardView: FunctionComponent<CardViewProps> = ({
 
 const QrCodeView = CurrentUrlAdt.matchStrict({
     NotLoaded: () => <></>,
-    Loading: () => <>⏳</>,
-    Failure: () => <>⚠ An error occurred while retrieving current URL ⚠</>,
+    Loading: () => <LoaderIcon />,
+    Failure: () => <>
+        <ErrorIcon /> An error occurred while retrieving current URL
+    </>,
     Loaded: ({ href }) => <QrCodeCard href={href} />
 });
 
