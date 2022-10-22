@@ -31,16 +31,17 @@ export const Card: FunctionComponent<CardProps> = ({
 
             {pipe(
                 avatar,
-                // TODO Loading animation for Avatar
-                O.fromPredicate(RemoteImageAdt.is.Loaded),
-                O.fold(
-                    Empty,
-                    ({ url }) => <div className={styles.layoutNarrow}>
-                        <div className={styles.avatarCircle}>
-                            <img src={url} className={styles.avatar} />
-                        </div>
-                    </div>
-                )
+                RemoteImageAdt.match({
+                    NotLoaded: Empty,
+                    // TODO: Loading animation for avatar
+                    Loading: Empty,
+                    Loaded: ({ objectUrl }) => <div className={styles.layoutNarrow}>
+                        <Avatar url={objectUrl} />
+                    </div>,
+                    Failure: ({ error }) => <div className={styles.layoutNarrow}>
+                        <Avatar url={error.remoteUrl} />
+                    </div>,
+                })
             )}
 
             {pipe(
@@ -160,4 +161,14 @@ const Details: FunctionComponent<DetailProps> = ({
             )}
         </ul>
     </address>
+);
+
+type AvatarProps = {
+    url: string;
+};
+
+const Avatar: FunctionComponent<AvatarProps> = ({ url }) => (
+    <div className={styles.avatarCircle}>
+        <img src={url} className={styles.avatar} />
+    </div>
 );

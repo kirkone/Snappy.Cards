@@ -37,7 +37,10 @@ const CardStory = () => pipe(
                     data.avatar,
                     O.fold(
                         () => RemoteImageAdt.of.NotLoaded({}),
-                        url => RemoteImageAdt.of.Loaded({ url }),
+                        remoteUrl => RemoteImageAdt.of.Loaded({
+                            remoteUrl,
+                            objectUrl: remoteUrl
+                        }),
                     ),
                 )}
             />
