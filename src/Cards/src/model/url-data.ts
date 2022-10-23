@@ -67,6 +67,14 @@ const TUrlParameters = {
     mail: optionalNonEmptyString("mail"),
     web: optionalNonEmptyString("web"),
     sub: optionalNonEmptyString("sub"),
+
+    twitter: optionalNonEmptyString("twt"),
+    facebook: optionalNonEmptyString("fb"),
+    youtube: optionalNonEmptyString("yt"),
+    instagram: optionalNonEmptyString("in"),
+    twitch: optionalNonEmptyString("twc"),
+    github: optionalNonEmptyString("gh"),
+
     avatar: optionalNonEmptyImageParam("avatar"),
     background: optionalNonEmptyImageParam("background"),
 };

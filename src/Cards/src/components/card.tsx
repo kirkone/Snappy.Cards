@@ -2,7 +2,7 @@ import * as O from "fp-ts/Option";
 import * as R from "fp-ts/Record";
 import * as styles from "./card.css";
 
-import { MailIcon, SmartphoneIcon, WebIcon } from "./icons";
+import { FacebookIcon, GithubIcon, InstagramIcon, MailIcon, SmartphoneIcon, SnappyIcon, TwitchIcon, TwitterIcon, WebIcon, YoutubeIcon } from "./icons";
 import { constant, pipe } from "fp-ts/function";
 
 import type { ADTType } from "@morphic-ts/adt";
@@ -12,10 +12,17 @@ import { RemoteImageAdt } from "../model/remote-image";
 
 export type CardData = {
     name: O.Option<string>;
+    sub: O.Option<string>;
+
     phone: O.Option<string>;
     mail: O.Option<string>;
     web: O.Option<string>;
-    sub: O.Option<string>;
+    twitter: O.Option<string>;
+    facebook: O.Option<string>;
+    youtube: O.Option<string>;
+    instagram: O.Option<string>;
+    twitch: O.Option<string>;
+    github: O.Option<string>;
 };
 
 type CardProps = {
@@ -70,13 +77,11 @@ export const Card: FunctionComponent<CardProps> = ({
 
 const Empty = constant(<></>);
 
-type DetailProps = Pick<CardData, "mail" | "name" | "phone" | "web">;
+type DetailProps = Omit<CardData, "avatar" | "sub">;
 
 const Details: FunctionComponent<DetailProps> = ({
-    mail,
     name,
-    phone,
-    web
+    ...details
 }) => (
     <address className={styles.layoutWide}>
         <ul class={styles.detail}>
@@ -90,38 +95,16 @@ const Details: FunctionComponent<DetailProps> = ({
                 )
             )}
 
-            {pipe(
-                phone,
-                O.fold(
-                    Empty,
-                    (p) => <li className={styles.detailLine}>
-                        <SmartphoneIcon className={styles.detailIcon} />
-                        <span>{p}</span>
-                    </li>
-                )
-            )}
+            <DetailLine caption={details.phone} icon={SmartphoneIcon} />
+            <DetailLine caption={details.mail} icon={MailIcon} />
+            <DetailLine caption={details.web} icon={WebIcon} />
+            <DetailLine caption={details.twitter} icon={TwitterIcon} />
+            <DetailLine caption={details.facebook} icon={FacebookIcon} />
+            <DetailLine caption={details.youtube} icon={YoutubeIcon} />
+            <DetailLine caption={details.instagram} icon={InstagramIcon} />
+            <DetailLine caption={details.twitch} icon={TwitchIcon} />
+            <DetailLine caption={details.github} icon={GithubIcon} />
 
-            {pipe(
-                mail,
-                O.fold(
-                    Empty,
-                    (m) => <li className={styles.detailLine}>
-                        <MailIcon className={styles.detailIcon} />
-                        <span>{m}</span>
-                    </li>
-                )
-            )}
-
-            {pipe(
-                web,
-                O.fold(
-                    Empty,
-                    (w) => <li className={styles.detailLine}>
-                        <WebIcon className={styles.detailIcon} />
-                        <span>{w}</span>
-                    </li>
-                )
-            )}
         </ul>
     </address>
 );
@@ -134,4 +117,23 @@ const Avatar: FunctionComponent<AvatarProps> = ({ url }) => (
     <div className={styles.avatarCircle}>
         <img src={url} className={styles.avatar} />
     </div>
+);
+
+type DetailLineProps = {
+    icon: SnappyIcon;
+    caption: O.Option<string>;
+};
+
+const DetailLine: FunctionComponent<DetailLineProps> = ({
+    caption,
+    icon: Icon
+}) => pipe(
+    caption,
+    O.fold(
+        Empty,
+        (caption: string) => <li className={styles.detailLine}>
+            <Icon className={styles.detailIcon} />
+            <span>{caption}</span>
+        </li>
+    )
 );

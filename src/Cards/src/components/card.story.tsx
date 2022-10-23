@@ -14,11 +14,18 @@ const getCardData = flow(
     fakerD,
     faker => ({
         name: [O.some(`${faker.name.firstName()} ${faker.name.lastName()}`), O.none],
+        sub: [O.some(faker.company.bsBuzz()), O.none],
+        avatar: [O.some(faker.internet.avatar()), O.none],
+
         phone: [O.some(faker.phone.number()), O.none],
         mail: [O.some(faker.internet.email()), O.none],
         web: [O.some(faker.internet.url()), O.none],
-        sub: [O.some(faker.company.bsBuzz()), O.none],
-        avatar: [O.some(faker.internet.avatar()), O.none],
+        twitter: [O.some(faker.hacker.noun()), O.none],
+        facebook: [O.some(faker.hacker.noun()), O.none],
+        youtube: [O.some(faker.hacker.noun()), O.none],
+        instagram: [O.some(faker.hacker.noun()), O.none],
+        twitch: [O.some(faker.hacker.noun()), O.none],
+        github: [O.some(faker.hacker.noun()), O.none],
     }),
     permute
 );

@@ -371,7 +371,19 @@ const CardView: FunctionComponent<CardViewProps> = ({
         Loaded: appData => <Card
             data={pipe(
                 appData,
-                pick(["name", "phone", "mail", "web", "sub"]),
+                pick([
+                    "name",
+                    "phone",
+                    "mail",
+                    "web",
+                    "sub",
+                    "twitter",
+                    "facebook",
+                    "youtube",
+                    "instagram",
+                    "twitch",
+                    "github",
+                ]),
             )}
             avatar={avatar}
         />

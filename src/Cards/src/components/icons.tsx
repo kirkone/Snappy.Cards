@@ -1,24 +1,39 @@
 import {
     AlertTriangle,
     Download,
+    Facebook,
+    Github,
     Globe,
     Info,
+    Instagram,
     Loader,
     LucideProps,
     Mail,
-    Smartphone
+    Smartphone,
+    Twitch,
+    Twitter,
+    Youtube
 } from "lucide-preact";
 
 import type { Endomorphism } from "fp-ts/Endomorphism";
 import type { FunctionComponent } from "preact";
 
-const makeIcon: Endomorphism<FunctionComponent<LucideProps>> =
+export type SnappyIcon = FunctionComponent<LucideProps>;
+
+const makeIcon: Endomorphism<SnappyIcon> =
     (Icon) => ({ size = "1.33em", ...rest }) => <Icon {...rest} size={size} />;
 
 export const DownloadIcon = makeIcon(Download);
 export const InfoIcon = makeIcon(Info);
+export const ErrorIcon = makeIcon(AlertTriangle);
+export const LoaderIcon = makeIcon(Loader);
+
 export const SmartphoneIcon = makeIcon(Smartphone);
 export const MailIcon = makeIcon(Mail);
 export const WebIcon = makeIcon(Globe);
-export const ErrorIcon = makeIcon(AlertTriangle);
-export const LoaderIcon = makeIcon(Loader);
+export const TwitterIcon = makeIcon(Twitter);
+export const FacebookIcon = makeIcon(Facebook);
+export const YoutubeIcon = makeIcon(Youtube);
+export const InstagramIcon = makeIcon(Instagram);
+export const TwitchIcon = makeIcon(Twitch);
+export const GithubIcon = makeIcon(Github);
