@@ -1,17 +1,24 @@
+import * as O from "fp-ts/Option";
 import * as styles from "./footer.css";
+
+import { constant, pipe } from "fp-ts/function";
 
 import type { ADTType } from "@morphic-ts/adt";
 import type { FunctionComponent } from "preact";
 import { PageContent } from "./page-content";
 import { VCardDataAdt } from "../model/v-card-url";
+import { append } from "fp-ts-std/String";
+import { sanitizeFilename } from "../utils/utils";
 
 type FooterProps = {
     downloadUrl: ADTType<typeof VCardDataAdt>;
+    name: O.Option<string>;
     className?: string;
 };
 
 export const Footer: FunctionComponent<FooterProps> = ({
     downloadUrl,
+    name,
     className = "",
 }) => (
     <PageContent className={`${styles.container} ${className}`}>
@@ -20,24 +27,42 @@ export const Footer: FunctionComponent<FooterProps> = ({
                 <InfoIcon className={styles.link} />
             </a>
 
-            <DownloadLink {...downloadUrl} />
+            <DownloadLink
+                downloadUrl={downloadUrl}
+                name={name}
+            />
         </footer>
     </PageContent>
 );
 
-const DownloadLink = VCardDataAdt.matchStrict({
-    NotLoaded: () => <></>,
-    Loading: () => <>⏳</>,
-    Failure: () => <>⚠</>,
-    Loaded: ({ url }) => (
-        <a className={styles.link}
-            download="SnappyCard.vcf"
-            rel="noopener"
-            href={url}>
-            <DownloadIcon />
-        </a>
-    )
-});
+type DownloadLinkProps = Pick<FooterProps, "downloadUrl" | "name">;
+
+const DownloadLink: FunctionComponent<DownloadLinkProps> = ({
+    downloadUrl,
+    name,
+}) => pipe(
+    downloadUrl,
+    VCardDataAdt.matchStrict({
+        NotLoaded: () => <></>,
+        Loading: () => <>⏳</>,
+        Failure: () => <>⚠</>,
+        Loaded: ({ url }) => (
+            <a className={styles.link}
+                rel="noopener"
+                download={pipe(
+                    name,
+                    O.fold(
+                        constant("SnappyCard"),
+                        sanitizeFilename,
+                    ),
+                    append(".vcf")
+                )}
+                href={url}>
+                <DownloadIcon />
+            </a>
+        )
+    })
+);
 
 type IconProps = {
     className?: string;

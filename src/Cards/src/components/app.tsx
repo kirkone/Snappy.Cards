@@ -319,7 +319,14 @@ export const view: PreactView<Model, Msg> = (_dispatch, model) => (
             <QrCodeView {...model.currentUrl} />
         </Page>
         <Page align="end" fit="content">
-            <Footer downloadUrl={model.vCardData} />
+            <Footer
+                downloadUrl={model.vCardData}
+                name={pipe(
+                    model.appData,
+                    O.fromPredicate(AppDataAdt.is.Loaded),
+                    O.chain(d => d.name)
+                )}
+            />
         </Page>
     </div>
 );

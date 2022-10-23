@@ -5,9 +5,12 @@
         "elmish",
         "endregion",
         "esbuild",
+        "filenamify",
+        "Guybrush",
         "Monoid",
         "nayuki",
         "Preact",
+        "Threepwood",
         "VCARD",
         "vite",
         "vitebook"
