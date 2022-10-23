@@ -25,19 +25,22 @@ export const convertBlobToBase64 = TE.tryCatchK(
     error => ({ type: "ConversionError" as const, error: error as Error })
 );
 
-const downloadImage = (url: string) => pipe(
-    funFetch(url),
+const downloadImage = (remoteUrl: string) => pipe(
+    funFetch(remoteUrl),
     asBlobTE,
     TE.chainW(blob => pipe(
         convertBlobToBase64(blob),
-        TE.map(content => ({
-            url: URL.createObjectURL(blob),
+        TE.map(base64Url => ({
+            objectUrl: URL.createObjectURL(blob),
+            remoteUrl,
             base64: {
                 type: blob.type,
-                content: content.replace(/^data:[^,]+,/, ""),
+                content: base64Url.replace(/^data:[^,]+,/, ""),
+                url: base64Url
             }
-        }))
-    ))
+        })),
+    )),
+    TE.mapLeft(e => ({ ...e, remoteUrl }))
 );
 
 export type Base64Data = {
@@ -53,6 +56,6 @@ export type DownloadImageError =
 export const downloadImageCached = memoizeTaskK(S.Eq)(downloadImage);
 
 export const RemoteImageAdt = makeRemoteResultADT<
-    { url: string; },
-    { e: DownloadImageError; }
+    { objectUrl: string; remoteUrl: string; },
+    { error: DownloadImageError; }
 >();

@@ -2,11 +2,12 @@ import * as O from "fp-ts/Option";
 import * as R from "fp-ts/Record";
 import * as S from "fp-ts/string";
 
+import { AppData, AppDataAdt } from "./app-data";
 import { flow, pipe } from "fp-ts/function";
 
-import type { AppData } from "./app-data";
 import type { Base64Data } from "./remote-image";
 import { makeRemoteResultADT } from "@fun-ts/remote-result-adt";
+import { pick } from "fp-ts-std/Struct";
 
 type VCardFields = {
     name: O.Option<string>;
@@ -16,14 +17,12 @@ type VCardFields = {
     avatar: O.Option<string>;
 };
 
-const vCardParamEncoder = (prefix: string) => (param: O.Option<string>) => pipe(
-    param,
-    O.map(p => `${prefix}${p}\n`)
+const vCardParamEncoder = (prefix: string) => O.map<string, string>(
+    param => `${prefix}${param}\n`
 );
 
-const vCardImageEncoder = (param: O.Option<Base64Data>) => pipe(
-    param,
-    O.map(p => `PHOTO;ENCODING=BASE64;TYPE=${p.type.toUpperCase()}:${p.content}\n\n`)
+const vCardImageEncoder = O.map<Base64Data, string>(
+    d => `PHOTO;ENCODING=BASE64;TYPE=${d.type.toUpperCase()}:${d.content}\n\n`
 );
 
 type VCardInput =
@@ -56,3 +55,13 @@ export const getVCardUrl = flow(
 );
 
 export const VCardDataAdt = makeRemoteResultADT<{ url: string; }>();
+
+export const vCardFieldsFromAppData = (a: AppData) => pipe(
+    a,
+    pick(["name", "phone", "mail", "web"]),
+);
+
+export const vCardFieldsFromAppDataLoaded = flow(
+    O.fromPredicate(AppDataAdt.is.Loaded),
+    O.map(vCardFieldsFromAppData),
+);
