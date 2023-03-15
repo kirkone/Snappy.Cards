@@ -1,4 +1,5 @@
 import * as styles from "./qr-code-card.css";
+import * as theme from "../theme/variables.css";
 
 import type { FunctionComponent } from "preact";
 import { PageContent } from "./page-content";
@@ -16,7 +17,7 @@ export const QrCodeCard: FunctionComponent<QrCodeCardProps> = ({
     <PageContent className={className}>
         <QrCode text={href}
             border={5}
-            className={styles.qrCode}
+            className={`${styles.qrCode} ${theme.lightTheme}`}
         />
     </PageContent>
 );
