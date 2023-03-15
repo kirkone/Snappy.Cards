@@ -114,3 +114,13 @@ export const defaultTheme = style({
         },
     },
 });
+
+export const lightTheme = style({
+    vars: lightThemeVars,
+
+    "@media": {
+        "(prefers-color-scheme: dark)": {
+            vars: lightThemeVars,
+        },
+    },
+});
