@@ -30,7 +30,7 @@ export const Page: FunctionComponent<PageProps> = ({
 const translateFitToCss = (fit: FitHeightTypes) => {
     switch (fit) {
         case "content": return "fit-content";
-        case "screen": return "100vh";
+        case "screen": return "100%";
 
         default: return absurd<FitHeightTypes>(fit);
     }

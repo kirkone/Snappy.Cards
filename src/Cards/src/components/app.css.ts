@@ -5,7 +5,7 @@ import { varsApp } from "../theme/variables.css";
 export const CssVarBackground = createVar();
 
 export const app = style({
-    height: "100vh",
+    height: "100%",
     width: "100vw",
 
     backgroundSize: "cover",
