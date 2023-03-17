@@ -1,7 +1,8 @@
 body,
 html {
     overscroll-behavior: none;
-    min-height: 100vh;
+    height: 100%;
+    min-height: 100%;
 
     overflow: hidden;
 
@@ -27,4 +28,8 @@ body {
 /* cancel reset */
 a[href] {
     cursor: pointer;
+}
+
+.app-container {
+    height: 100%;
 }
