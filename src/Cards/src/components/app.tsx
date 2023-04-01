@@ -19,6 +19,7 @@ import type { FunctionComponent } from "preact";
 import { Page } from "./page";
 import type { PreactView } from "@fun-ts/elmish-preact";
 import { QrCodeCard } from "./qr-code-card";
+import type { Simplify } from "type-fest";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
 import { getParametersFromUrl } from "../model/url-data";
 import { makeRemoteResultADT } from "@fun-ts/remote-result-adt";
@@ -42,6 +43,8 @@ export type Model = {
     vCardData: ADTType<typeof VCardDataAdt>;
     backgroundImage: ADTType<typeof RemoteImageAdt>;
     avatarImage: ADTType<typeof RemoteImageAdt>;
+
+    cardExpanded: boolean;
 };
 
 export const init: Init<Model, Msg> = (): ElmishResult<Model, Msg> => [
@@ -51,6 +54,7 @@ export const init: Init<Model, Msg> = (): ElmishResult<Model, Msg> => [
         vCardData: VCardDataAdt.as.NotLoaded({}),
         backgroundImage: VCardDataAdt.as.NotLoaded({}),
         avatarImage: VCardDataAdt.as.NotLoaded({}),
+        cardExpanded: false,
     },
     cmd.batch(
         cmd.ofMsg(MsgAdt.of.GetAppData({})),
@@ -102,6 +106,8 @@ type GetCurrentUrlSucceededMsg = {
 
 type HashChangedMsg = { type: "HashChanged"; };
 
+type ToggleCardExpansionMsg = { type: "ToggleCardExpansion"; };
+
 const MsgAdt = makeADT("type")({
     GetAppData: ofType<GetAppDataMsg>(),
     GetAppDataSucceeded: ofType<GetAppDataSucceededMsg>(),
@@ -118,6 +124,8 @@ const MsgAdt = makeADT("type")({
     GetAvatarImageFailed: ofType<GetAvatarImageFailedMsg>(),
 
     HashChanged: ofType<HashChangedMsg>(),
+
+    ToggleCardExpansion: ofType<ToggleCardExpansionMsg>(),
 });
 
 export type Msg = ADTType<typeof MsgAdt>;
@@ -304,7 +312,15 @@ export const update: Update<Model, Msg> = (model, msg) => pipe(
             cmd.none
         ],
 
-        HashChanged: init
+        HashChanged: init,
+
+        ToggleCardExpansion: () => [
+            {
+                ...model,
+                cardExpanded: !model.cardExpanded,
+            },
+            cmd.none
+        ]
     })
 );
 // #endregion
@@ -312,7 +328,7 @@ export const update: Update<Model, Msg> = (model, msg) => pipe(
 // ============================================================================
 // #region View
 // ============================================================================
-export const view: PreactView<Model, Msg> = (_dispatch, model) => (
+export const view: PreactView<Model, Msg> = (dispatch, model) => (
     <div class={`${styles.app} ${theme.defaultTheme}`}
         style={assignInlineVars({
             [styles.CssVarBackground]: pipe(
@@ -329,6 +345,8 @@ export const view: PreactView<Model, Msg> = (_dispatch, model) => (
             <CardView
                 appData={model.appData}
                 avatar={model.avatarImage}
+                expanded={model.cardExpanded}
+                onExpandClick={() => dispatch(MsgAdt.as.ToggleCardExpansion({}))}
             />
         </Page>
         <Page>
@@ -352,14 +370,19 @@ export const view: PreactView<Model, Msg> = (_dispatch, model) => (
 // ============================================================================
 // #region Views
 // ============================================================================
-type CardViewProps = {
-    appData: ADTType<typeof AppDataAdt>;
-    avatar: ADTType<typeof RemoteImageAdt>;
-};
+type CardViewProps = Simplify<
+    & {
+        appData: ADTType<typeof AppDataAdt>;
+        avatar: ADTType<typeof RemoteImageAdt>;
+    }
+    & Pick<Parameters<typeof Card>[0], "expanded" | "onExpandClick">
+>;
 
 const CardView: FunctionComponent<CardViewProps> = ({
     appData,
     avatar,
+    expanded,
+    onExpandClick
 }) => pipe(
     appData,
     AppDataAdt.matchStrict({
@@ -369,6 +392,8 @@ const CardView: FunctionComponent<CardViewProps> = ({
             <ErrorIcon /> An error occurred while getting data
         </>,
         Loaded: appData => <Card
+            expanded={expanded}
+            onExpandClick={onExpandClick}
             data={pipe(
                 appData,
                 pick([

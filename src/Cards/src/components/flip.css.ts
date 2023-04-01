@@ -27,8 +27,10 @@ export const cardFace = style({
 
 export const cardFaceFront = style({
     transform: "rotateY(calc(180deg * var(--flipped)))",
+    willChange: "transform",
 });
 
 export const cardFaceBack = style({
     transform: "rotateY(calc(180deg * var(--flipped) - 180deg))",
+    willChange: "transform",
 });

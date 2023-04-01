@@ -47,10 +47,14 @@ const QrCodeCardStory = () => {
 
     return <Flip
         front={<Card
+            expanded={true}
+            onExpandClick={() => { }}
             data={cardDataFront}
             avatar={RemoteImageAdt.as.Loaded({ url: cardDataFront.avatar })} />
         }
         back={<Card
+            expanded={true}
+            onExpandClick={() => { }}
             data={cardDataBack}
             avatar={RemoteImageAdt.as.Loaded({ url: cardDataBack.avatar })} />
         }
