@@ -1,8 +1,11 @@
+import * as A from "fp-ts/Array";
+import * as NEA from "fp-ts/NonEmptyArray";
 import * as O from "fp-ts/Option";
 import * as R from "fp-ts/Record";
 import * as styles from "./card.css";
 
 import {
+    ChevronDownIcon,
     FacebookIcon,
     GithubIcon,
     InstagramIcon,
@@ -14,17 +17,15 @@ import {
     WebIcon,
     YoutubeIcon
 } from "./icons";
-import { constant, pipe } from "fp-ts/function";
+import { constant, identity, pipe, tuple } from "fp-ts/function";
 
 import type { ADTType } from "@morphic-ts/adt";
 import type { FunctionComponent } from "preact";
 import { PageContent } from "./page-content";
 import { RemoteImageAdt } from "../model/remote-image";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 
-export type CardData = {
-    name: O.Option<string>;
-    sub: O.Option<string>;
-
+type Media = {
     phone: O.Option<string>;
     mail: O.Option<string>;
     web: O.Option<string>;
@@ -36,6 +37,25 @@ export type CardData = {
     github: O.Option<string>;
 };
 
+export type CardData =
+    & {
+        name: O.Option<string>;
+        sub: O.Option<string>;
+    }
+    & Media;
+
+const mediaToIcon: Record<keyof Media, SnappyIcon> = {
+    phone: SmartphoneIcon,
+    mail: MailIcon,
+    web: WebIcon,
+    twitter: TwitterIcon,
+    facebook: FacebookIcon,
+    youtube: YoutubeIcon,
+    instagram: InstagramIcon,
+    twitch: TwitchIcon,
+    github: GithubIcon,
+} as const;
+
 type CardProps = {
     data: CardData;
     avatar: ADTType<typeof RemoteImageAdt>;
@@ -44,7 +64,7 @@ type CardProps = {
 };
 
 export const Card: FunctionComponent<CardProps> = ({
-    data: { sub, ...details },
+    data: { sub, name, ...media },
     avatar,
     expanded,
 
@@ -69,11 +89,16 @@ export const Card: FunctionComponent<CardProps> = ({
             )}
 
             {pipe(
-                details,
+                media,
                 O.fromPredicate(R.some(O.isSome)),
                 O.fold(
                     Empty,
-                    (cardData) => <Details {...cardData} expanded={expanded} onExpandClick={onExpandClick} />
+                    (media) => <Details
+                        name={name}
+                        media={media}
+                        expanded={expanded}
+                        onExpandClick={onExpandClick}
+                    />
                 )
             )}
 
@@ -93,19 +118,20 @@ export const Card: FunctionComponent<CardProps> = ({
 
 const Empty = constant(<></>);
 
-type DetailProps =
-    & Omit<CardData, "avatar" | "sub">
-    & {
-        expanded: boolean;
-        onExpandClick: VoidFunction;
-    };
+type DetailProps = {
+    name: O.Option<string>;
+    media: Media;
+
+    expanded: boolean;
+    onExpandClick: VoidFunction;
+};
 
 const Details: FunctionComponent<DetailProps> = ({
+    name,
+    media,
+
     expanded,
     onExpandClick,
-
-    name,
-    ...details
 }) => (
     <address className={styles.layoutWide}>
         <ul class={styles.detail}>
@@ -119,22 +145,79 @@ const Details: FunctionComponent<DetailProps> = ({
                 )
             )}
 
-            <DetailLine caption={details.phone} icon={SmartphoneIcon} />
-            <DetailLine caption={details.mail} icon={MailIcon} />
-            <DetailLine caption={details.web} icon={WebIcon} />
+            {pipe(
+                // 1. define order, that is used for display
+                identity<Array<keyof Media>>([
+                    "phone",
+                    "mail",
+                    "web",
+                    "twitter",
+                    "facebook",
+                    "youtube",
+                    "instagram",
+                    "twitch",
+                    "github",
+                ]),
 
-            {expanded && <>
-                <DetailLine caption={details.twitter} icon={TwitterIcon} />
-                <DetailLine caption={details.facebook} icon={FacebookIcon} />
-                <DetailLine caption={details.youtube} icon={YoutubeIcon} />
-                <DetailLine caption={details.instagram} icon={InstagramIcon} />
-                <DetailLine caption={details.twitch} icon={TwitchIcon} />
-                <DetailLine caption={details.github} icon={GithubIcon} />
-            </>}
+                // 2. get the value out of details, save ordered with its key
+                A.map(k => pipe(
+                    k,
+                    k => R.lookup(k, media),
+                    O.flatten,
+                    O.map(v => tuple(k, v)),
+                )),
 
+                A.compact,
+                A.splitAt(3),
+
+                // 3. render
+                ([details, extendedDetails]) => <>
+                    {pipe(
+                        details,
+                        A.map(([name, value]) => (
+                            <DetailLine
+                                caption={value}
+                                icon={mediaToIcon[name]} />
+                        )),
+                    )}
+
+                    {pipe(
+                        extendedDetails,
+                        A.mapWithIndex((idx, [name, value]) => (
+                            <AnimatedDetailLine
+                                expanded={expanded}
+                                caption={value}
+                                icon={mediaToIcon[name]}
+                                animationIndex={idx} />
+                        )),
+                    )}
+
+                    {pipe(
+                        extendedDetails,
+                        NEA.fromArray,
+                        O.fold(
+                            Empty,
+                            a => <li>
+                                <button
+                                    onClick={onExpandClick}
+                                    class={styles.expandButton}
+                                >
+                                    <ChevronDownIcon class={`
+                                        ${styles.detailIcon}
+                                        ${styles.chevronCollapsed}
+                                        ${expanded ? styles.chevronExpanded : ""}
+                                    `}
+                                    />
+                                    {
+                                        expanded ? "collapse" : `${A.size(a)} more`
+                                    }
+                                </button>
+                            </li>
+                        )
+                    )}
+                </>
+            )}
         </ul>
-        <button onClick={onExpandClick}>Toggle</button>
-
     </address>
 );
 
@@ -150,19 +233,46 @@ const Avatar: FunctionComponent<AvatarProps> = ({ url }) => (
 
 type DetailLineProps = {
     icon: SnappyIcon;
-    caption: O.Option<string>;
+    caption: string;
 };
 
 const DetailLine: FunctionComponent<DetailLineProps> = ({
     caption,
     icon: Icon,
-}) => pipe(
+}) => (
+    <li className={styles.detailLine}>
+        <Icon className={styles.detailIcon} />
+        <span>{caption}</span>
+    </li>
+);
+
+type AnimatedDetailLineProps = {
+    icon: SnappyIcon;
+    caption: string;
+    expanded: boolean;
+    animationIndex: number;
+};
+
+const AnimatedDetailLine: FunctionComponent<AnimatedDetailLineProps> = ({
     caption,
-    O.fold(
-        Empty,
-        (caption: string) => <li className={`${styles.detailLine}`}>
-            <Icon className={styles.detailIcon} />
-            <span>{caption}</span>
-        </li>
-    )
+    icon: Icon,
+    expanded,
+    animationIndex
+}) => (
+    <li className={`
+                    ${styles.detailLine}
+                    ${styles.animatedLine}
+                    ${expanded ? styles.animatedLineExpanded : ""}
+                `}
+        style={pipe(
+            O.fromNullable(animationIndex),
+            O.fold(
+                () => ({}),
+                i => assignInlineVars({ [styles.animationIndex]: `${i}` })
+            )
+        )}
+    >
+        <Icon className={styles.detailIcon} />
+        <span>{caption}</span>
+    </li>
 );

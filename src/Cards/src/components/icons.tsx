@@ -1,5 +1,7 @@
 import {
     AlertTriangle,
+    ChevronDown,
+    ChevronUp,
     Download,
     Facebook,
     Github,
@@ -12,7 +14,7 @@ import {
     Smartphone,
     Twitch,
     Twitter,
-    Youtube
+    Youtube,
 } from "lucide-preact";
 
 import type { Endomorphism } from "fp-ts/Endomorphism";
@@ -27,6 +29,8 @@ export const DownloadIcon = makeIcon(Download);
 export const InfoIcon = makeIcon(Info);
 export const ErrorIcon = makeIcon(AlertTriangle);
 export const LoaderIcon = makeIcon(Loader);
+export const ChevronDownIcon = makeIcon(ChevronDown);
+export const ChevronUpIcon = makeIcon(ChevronUp);
 
 export const SmartphoneIcon = makeIcon(Smartphone);
 export const MailIcon = makeIcon(Mail);

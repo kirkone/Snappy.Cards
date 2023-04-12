@@ -50,13 +50,19 @@ const QrCodeCardStory = () => {
             expanded={true}
             onExpandClick={() => { }}
             data={cardDataFront}
-            avatar={RemoteImageAdt.as.Loaded({ url: cardDataFront.avatar })} />
+            avatar={RemoteImageAdt.as.Loaded({
+                remoteUrl: cardDataFront.avatar,
+                objectUrl: cardDataFront.avatar,
+            })} />
         }
         back={<Card
             expanded={true}
             onExpandClick={() => { }}
             data={cardDataBack}
-            avatar={RemoteImageAdt.as.Loaded({ url: cardDataBack.avatar })} />
+            avatar={RemoteImageAdt.as.Loaded({
+                remoteUrl: cardDataBack.avatar,
+                objectUrl: cardDataBack.avatar,
+            })} />
         }
     />;
 };
