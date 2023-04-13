@@ -28,6 +28,7 @@
         "noFallthroughCasesInSwitch": false,
         "noImplicitAny": true,
         "noImplicitThis": true,
+        "verbatimModuleSyntax": false
     },
     "include": [
         "src"
