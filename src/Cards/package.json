@@ -21,14 +21,14 @@
     "url": "https://github.com/kirkone/About.git"
   },
   "scripts": {
-    "start": "vite",
+    "start": "vite --host",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "check": "npm run -s check:eslint && npm run -s check:cspell && npm run -s check:tsc",
     "check:eslint": "eslint ./src/**/*.{ts,tsx}",
     "check:cspell": "cspell ./src/**/*.{ts,tsx}",
     "check:tsc": "tsc --noEmit --emitDeclarationOnly false",
-    "vitebook:dev": "vitebook dev",
+    "vitebook:dev": "vitebook dev --host",
     "vitebook:build": "vitebook build",
     "vitebook:preview": "vitebook preview"
   },

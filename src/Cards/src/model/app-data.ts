@@ -1,28 +1,34 @@
 import * as O from "fp-ts/Option";
 
+import { FunctionN, identity, pipe } from "fp-ts/function";
 import { ImageParamUnsplash, UrlParameters, matchImageParam } from "./url-data";
-import { identity, pipe } from "fp-ts/function";
 
 import { makeRemoteResultADT } from "@fun-ts/remote-result-adt";
 
 export type AppData = {
     name: O.Option<string>;
-    phone: O.Option<string>;
-    mail: O.Option<string>;
-    web: O.Option<string>;
     sub: O.Option<string>;
     avatar: O.Option<string>;
     background: O.Option<string>;
+    phone: O.Option<string>;
+    mail: O.Option<string>;
+    web: O.Option<string>;
+    twitter: O.Option<string>;
+    facebook: O.Option<string>;
+    youtube: O.Option<string>;
+    instagram: O.Option<string>;
+    twitch: O.Option<string>;
+    github: O.Option<string>;
 };
 
-export const getAppData = (params: UrlParameters): AppData => ({
-    name: params.name,
-    phone: params.phone,
-    mail: params.mail,
-    web: params.web,
-    sub: params.sub,
+export const getAppData: FunctionN<[UrlParameters], AppData> = ({
+    avatar,
+    background,
+    ...rest
+}) => ({
+    ...rest,
     avatar: pipe(
-        params.avatar,
+        avatar,
         O.map(matchImageParam({
             onUnsplash: makeUnsplashUrl({
                 width: 100,
@@ -33,7 +39,7 @@ export const getAppData = (params: UrlParameters): AppData => ({
         }))
     ),
     background: pipe(
-        params.background,
+        background,
         O.map(matchImageParam({
             onUnsplash: makeUnsplashUrl({
                 width: 1000,

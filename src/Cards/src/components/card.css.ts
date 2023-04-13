@@ -1,4 +1,5 @@
-import { style } from "@vanilla-extract/css";
+import { createVar, keyframes, style } from "@vanilla-extract/css";
+
 import { varsApp } from "../theme/variables.css";
 
 const ellipsisLine = {
@@ -90,7 +91,6 @@ export const detail = style({
     transition: "color 1s",
 
     color: varsApp.color.text.hex,
-    lineHeight: 2,
 });
 
 export const detailHeading = style({
@@ -104,9 +104,67 @@ export const detailHeading = style({
 export const detailLine = style({
     // control text overflow
     ...ellipsisLine,
+
+    lineHeight: 2,
 });
 
 export const detailIcon = style({
-    verticalAlign: "-18%",
+    verticalAlign: "-17%",
     marginRight: "0.5em",
+});
+
+export const expandButton = style({
+    border: `1px solid rgba(${varsApp.color.text.rgb}, 0.2)`,
+    display: "block",
+    width: "100%",
+    lineHeight: 2,
+    borderRadius: varsApp.space.small,
+    marginTop: varsApp.space.medium,
+    cursor: "pointer"
+});
+
+// ============================================================================
+// Animation
+// ============================================================================
+export const animationIndex = createVar();
+
+const ANIMATION_DURATION = "0.25s";
+
+const staggeredEnter = keyframes({
+    from: {
+        opacity: 0,
+        transform: "translateY(1em)",
+    },
+    to: {
+        opacity: 1,
+        transform: "translateY(0)",
+    }
+});
+
+export const animatedLine = style({
+    overflow: "hidden",
+    height: 0,
+
+    // transition height without staggering to prepare staggered animation
+    transition: `height ${ANIMATION_DURATION} ease`,
+});
+
+export const animatedLineExpanded = style({
+    // fixed height for animation
+    // animating to 100% content height is not possible
+    height: "2em",
+
+    animationName: staggeredEnter,
+    animationDuration: ANIMATION_DURATION,
+    animationFillMode: "both",
+    animationTimingFunction: "ease",
+    animationDelay: `calc(${animationIndex} * 0.1s)`,
+});
+
+export const chevronCollapsed = style({
+    transform: "rotate(0deg)",
+    transition: `transform ${ANIMATION_DURATION} ease`,
+});
+export const chevronExpanded = style({
+    transform: "rotate(180deg)",
 });
