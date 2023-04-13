@@ -16,7 +16,7 @@ const stringNotEmptyAsOption = O.fromPredicate(P.not(S.isEmpty));
 // ============================================================================
 export type ImageParamUnsplash =
     | "random"
-    | (string & {});
+    | (string & Readonly<{}>);
 
 export type ImageParamLink = `http${string}`;
 

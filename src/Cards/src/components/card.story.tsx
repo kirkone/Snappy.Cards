@@ -23,7 +23,7 @@ const getCardData = flow(
     permute
 );
 
-const CardStory = () => pipe(
+const CardStory = pipe(
     RAND.randomInt(0, 200),
     IO.map(flow(
         getCardData,
@@ -47,6 +47,6 @@ const CardStory = () => pipe(
         </div>),
         (children) => <>{children}</>
     )),
-)();
+);
 
 export default CardStory;

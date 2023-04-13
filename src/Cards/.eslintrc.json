@@ -5,9 +5,9 @@
     },
     "extends": [
         "eslint:recommended",
-        "plugin:functional/no-exceptions",
-        "plugin:functional/no-object-orientation",
         "plugin:functional/stylistic",
+        "plugin:functional/no-exceptions",
+        "plugin:functional/no-other-paradigms",
         "plugin:@typescript-eslint/eslint-recommended",
         "plugin:fp-ts/all"
     ],
@@ -42,7 +42,7 @@
             }
         ],
         "functional/no-mixed-type": "off",
-        "functional/no-loop-statement": "error",
+        "functional/no-loop-statements": "error",
         "fp-ts/no-module-imports": "off"
     }
 }
