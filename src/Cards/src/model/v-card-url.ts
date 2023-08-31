@@ -11,6 +11,7 @@ import { pick } from "fp-ts-std/Struct";
 
 type VCardFields = {
     name: O.Option<string>;
+    job: O.Option<string>;
     phone: O.Option<string>;
     mail: O.Option<string>;
     web: O.Option<string>;
@@ -26,14 +27,15 @@ const vCardImageEncoder = O.map<Base64Data, string>(
 );
 
 type VCardInput =
-    & Pick<AppData, "name" | "phone" | "mail" | "web">
+    & Pick<AppData, "name" | "phone" | "mail" | "web" | "job">
     & { avatarBase64: O.Option<Base64Data>; };
 
 const encodeVCardFields = (params: VCardInput): VCardFields => ({
     name: pipe(params.name, vCardParamEncoder("N:")),
+    job: pipe(params.job, vCardParamEncoder("TITLE:")),
     phone: pipe(params.phone, vCardParamEncoder("TEL;TYPE=PREF:")),
     mail: pipe(params.mail, vCardParamEncoder("EMAIL;TYPE=PREF,INTERNET:")),
-    web: pipe(params.name, vCardParamEncoder("URL:")),
+    web: pipe(params.web, vCardParamEncoder("URL:")),
     avatar: pipe(params.avatarBase64, vCardImageEncoder),
 });
 
@@ -58,7 +60,7 @@ export const VCardDataAdt = makeRemoteResultADT<{ url: string; }>();
 
 export const vCardFieldsFromAppData = (a: AppData) => pipe(
     a,
-    pick(["name", "phone", "mail", "web"]),
+    pick(["name", "phone", "mail", "web", "job"]),
 );
 
 export const vCardFieldsFromAppDataLoaded = flow(

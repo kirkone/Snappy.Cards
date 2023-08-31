@@ -38,6 +38,10 @@ https://snappy.cards/#name={name}&phone={phone}&mail={mail}&web={web}&sub={subti
 
 Your name or headline.
 
+### job
+
+Your position in your company or job title.
+
 ### phone
 
 A phone number. This line is prefixed with a phone symbol.

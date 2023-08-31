@@ -63,6 +63,7 @@ const optionalNonEmptyImageParam = flow(
 
 const TUrlParameters = {
     name: optionalNonEmptyString("name"),
+    job: optionalNonEmptyString("job"),
     phone: optionalNonEmptyString("phone"),
     mail: optionalNonEmptyString("mail"),
     web: optionalNonEmptyString("web"),

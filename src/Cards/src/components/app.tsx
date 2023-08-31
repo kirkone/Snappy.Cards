@@ -398,6 +398,7 @@ const CardView: FunctionComponent<CardViewProps> = ({
                 appData,
                 pick([
                     "name",
+                    "job",
                     "phone",
                     "mail",
                     "web",

@@ -40,6 +40,7 @@ type Media = {
 export type CardData =
     & {
         name: O.Option<string>;
+        job: O.Option<string>;
         sub: O.Option<string>;
     }
     & Media;
@@ -64,7 +65,7 @@ type CardProps = {
 };
 
 export const Card: FunctionComponent<CardProps> = ({
-    data: { sub, name, ...media },
+    data: { sub, name, job, ...media },
     avatar,
     expanded,
 
@@ -89,12 +90,13 @@ export const Card: FunctionComponent<CardProps> = ({
             )}
 
             {pipe(
-                media,
+                { ...media, name, job },
                 O.fromPredicate(R.some(O.isSome)),
                 O.fold(
                     Empty,
                     (media) => <Details
                         name={name}
+                        job={job}
                         media={media}
                         expanded={expanded}
                         onExpandClick={onExpandClick}
@@ -120,6 +122,7 @@ const Empty = constant(<></>);
 
 type DetailProps = {
     name: O.Option<string>;
+    job: O.Option<string>;
     media: Media;
 
     expanded: boolean;
@@ -128,19 +131,48 @@ type DetailProps = {
 
 const Details: FunctionComponent<DetailProps> = ({
     name,
+    job,
     media,
 
     expanded,
     onExpandClick,
-}) => (
-    <address className={styles.layoutWide}>
-        <ul class={styles.detail}>
+}) => {
+    const visibleMedia = pipe(
+        job,
+        O.fold(
+            constant(3),
+            constant(2),
+        )
+    );
+
+    const headingClassName = pipe(
+        job,
+        O.fold(
+            constant(styles.headingMarginBig),
+            constant("")
+        )
+    );
+
+    return <address className={styles.layoutWide}>
+        <ul className={styles.detail}>
             {pipe(
                 name,
                 O.fold(
                     Empty,
-                    (n) => <li className={styles.detailLine}>
-                        <h3 className={styles.detailHeading}>{n}</h3>
+                    n => <li className={styles.detailLine}>
+                        <h3 className={`${headingClassName} ${styles.detailHeading}`}>
+                            {n}
+                        </h3>
+                    </li>
+                )
+            )}
+
+            {pipe(
+                job,
+                O.fold(
+                    Empty,
+                    pos => <li className={styles.detailLine}>
+                        <h4 className={styles.detailSubHeading}>{pos}</h4>
                     </li>
                 )
             )}
@@ -164,11 +196,11 @@ const Details: FunctionComponent<DetailProps> = ({
                     k,
                     k => R.lookup(k, media),
                     O.flatten,
-                    O.map(v => tuple(k, v)),
+                    O.map(v => tuple(k, v))
                 )),
 
                 A.compact,
-                A.splitAt(3),
+                A.splitAt(visibleMedia),
 
                 // 3. render
                 ([details, extendedDetails]) => <>
@@ -178,7 +210,7 @@ const Details: FunctionComponent<DetailProps> = ({
                             <DetailLine
                                 caption={value}
                                 icon={mediaToIcon[name]} />
-                        )),
+                        ))
                     )}
 
                     {pipe(
@@ -189,7 +221,7 @@ const Details: FunctionComponent<DetailProps> = ({
                                 caption={value}
                                 icon={mediaToIcon[name]}
                                 animationIndex={idx} />
-                        )),
+                        ))
                     )}
 
                     {pipe(
@@ -206,11 +238,8 @@ const Details: FunctionComponent<DetailProps> = ({
                                         ${styles.detailIcon}
                                         ${styles.chevronCollapsed}
                                         ${expanded ? styles.chevronExpanded : ""}
-                                    `}
-                                    />
-                                    {
-                                        expanded ? "collapse" : `${A.size(a)} more`
-                                    }
+                                    `} />
+                                    {expanded ? "collapse" : `${A.size(a)} more`}
                                 </button>
                             </li>
                         )
@@ -218,8 +247,8 @@ const Details: FunctionComponent<DetailProps> = ({
                 </>
             )}
         </ul>
-    </address>
-);
+    </address>;
+};
 
 type AvatarProps = {
     url: string;
