@@ -13,7 +13,7 @@ export const memoizeTaskK =
         <B,>(f: (x: A) => Task<B>) =>
             memoizeF(eq)(flow(f, memoizeTask));
 
-export const sanitizeFilename = curry2(flip(filenamify))({
+export const sanitizeFilename = flip(curry2(filenamify))({
     replacement: "_",
     maxLength: 200
 });
