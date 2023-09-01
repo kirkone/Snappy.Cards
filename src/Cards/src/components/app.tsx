@@ -12,6 +12,7 @@ import { Base64Data, DownloadImageError, RemoteImageAdt, downloadImageCached } f
 import { ElmishResult, Init, Subscribe, Update, cmd } from "@fun-ts/elmish";
 import { ErrorIcon, LoaderIcon } from "./icons";
 import { VCardDataAdt, getVCardUrl, vCardFieldsFromAppData, vCardFieldsFromAppDataLoaded } from "../model/v-card-url";
+import { getWindowTitleFromAppData, setWindowTitle } from "../model/window-title";
 
 import { Card } from "./card";
 import { Footer } from "./footer";
@@ -177,6 +178,10 @@ export const update: Update<Model, Msg> = (model, msg) => pipe(
             cmd.batch(
                 cmd.ofMsg(MsgAdt.of.GetBackgroundImage({})),
                 cmd.ofMsg(MsgAdt.of.GetAvatarImage({})),
+                cmd.ofSub(pipe(
+                    getWindowTitleFromAppData(data),
+                    setWindowTitle
+                ))
             )
         ],
 
