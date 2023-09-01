@@ -12,6 +12,7 @@ const getCardData = flow(
     faker => {
         const baseData = {
             name: O.some(`${faker.name.firstName()} ${faker.name.lastName()}`),
+            job: O.some(faker.name.jobTitle()),
             sub: O.some(faker.company.bsBuzz()),
             avatar: faker.internet.avatar(),
             phone: O.some(faker.phone.number()),

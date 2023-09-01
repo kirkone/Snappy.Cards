@@ -7,6 +7,7 @@ import { makeRemoteResultADT } from "@fun-ts/remote-result-adt";
 
 export type AppData = {
     name: O.Option<string>;
+    job: O.Option<string>;
     sub: O.Option<string>;
     avatar: O.Option<string>;
     background: O.Option<string>;

@@ -97,8 +97,20 @@ export const detailHeading = style({
     fontSize: "2.5rem",
     fontWeight: 600,
     lineHeight: 1,
-    paddingBottom: "0.75em",
+    paddingBottom: varsApp.space.small,
+
     ...ellipsisLine,
+});
+
+export const detailSubHeading = style({
+    fontSize: "2rem",
+    paddingBottom: varsApp.space.medium,
+
+    ...ellipsisLine,
+});
+
+export const headingMarginBig = style({
+    paddingBottom: varsApp.space.large
 });
 
 export const detailLine = style({
