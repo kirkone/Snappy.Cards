@@ -70,6 +70,7 @@ const TUrlParameters = {
     sub: optionalNonEmptyString("sub"),
 
     twitter: optionalNonEmptyString("twt"),
+    x: optionalNonEmptyString("x"),
     facebook: optionalNonEmptyString("fb"),
     youtube: optionalNonEmptyString("yt"),
     instagram: optionalNonEmptyString("in"),

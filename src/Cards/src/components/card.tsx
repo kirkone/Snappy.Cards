@@ -12,8 +12,8 @@ import {
     MailIcon,
     SmartphoneIcon,
     TwitchIcon,
-    TwitterIcon,
     WebIcon,
+    XIcon,
     YoutubeIcon
 } from "./icons";
 import { constant, identity, pipe, tuple } from "fp-ts/function";
@@ -223,7 +223,7 @@ const Details: FunctionComponent<DetailProps> = ({
                                     onClick={onExpandClick}
                                     class={styles.expandButton}
                                 >
-                                    <ChevronDownIcon class={`
+                                    <ChevronDownIcon className={`
                                         ${styles.detailIcon}
                                         ${styles.chevronCollapsed}
                                         ${expanded ? styles.chevronExpanded : ""}
@@ -310,7 +310,7 @@ const getLinkForMedium = getUnionTypeMatcherStrict<keyof Media>()({
         <a href={`https://twitter.com/${encodeURIComponent(value)}`}
             target="_blank">
 
-            <TwitterIcon className={styles.detailIcon} />
+            <XIcon className={styles.detailIcon} />
             <span>{value}</span>
         </a>
     ),
