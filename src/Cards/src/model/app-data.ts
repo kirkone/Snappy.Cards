@@ -1,6 +1,6 @@
 import * as O from "fp-ts/Option";
 
-import { FunctionN, identity, pipe } from "fp-ts/function";
+import { FunctionN, constant, identity, pipe } from "fp-ts/function";
 import { ImageParamUnsplash, UrlParameters, matchImageParam } from "./url-data";
 
 import { makeRemoteResultADT } from "@fun-ts/remote-result-adt";
@@ -25,9 +25,17 @@ export type AppData = {
 export const getAppData: FunctionN<[UrlParameters], AppData> = ({
     avatar,
     background,
+    twitter,
+    x,
     ...rest
 }) => ({
     ...rest,
+
+    twitter: pipe(
+        x,
+        O.alt(constant(twitter))
+    ),
+
     avatar: pipe(
         avatar,
         O.map(matchImageParam({
@@ -39,6 +47,7 @@ export const getAppData: FunctionN<[UrlParameters], AppData> = ({
             onUrl: identity,
         }))
     ),
+
     background: pipe(
         background,
         O.map(matchImageParam({

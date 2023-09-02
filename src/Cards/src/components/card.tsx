@@ -11,10 +11,9 @@ import {
     InstagramIcon,
     MailIcon,
     SmartphoneIcon,
-    SnappyIcon,
     TwitchIcon,
-    TwitterIcon,
     WebIcon,
+    XIcon,
     YoutubeIcon
 } from "./icons";
 import { constant, identity, pipe, tuple } from "fp-ts/function";
@@ -24,6 +23,7 @@ import type { FunctionComponent } from "preact";
 import { PageContent } from "./page-content";
 import { RemoteImageAdt } from "../model/remote-image";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
+import { getUnionTypeMatcherStrict } from "../utils/utils";
 
 type Media = {
     phone: O.Option<string>;
@@ -44,18 +44,6 @@ export type CardData =
         sub: O.Option<string>;
     }
     & Media;
-
-const mediaToIcon: Record<keyof Media, SnappyIcon> = {
-    phone: SmartphoneIcon,
-    mail: MailIcon,
-    web: WebIcon,
-    twitter: TwitterIcon,
-    facebook: FacebookIcon,
-    youtube: YoutubeIcon,
-    instagram: InstagramIcon,
-    twitch: TwitchIcon,
-    github: GithubIcon,
-} as const;
 
 type CardProps = {
     data: CardData;
@@ -207,9 +195,9 @@ const Details: FunctionComponent<DetailProps> = ({
                     {pipe(
                         details,
                         A.map(([name, value]) => (
-                            <DetailLine
-                                caption={value}
-                                icon={mediaToIcon[name]} />
+                            <DetailLine>
+                                <LinkForMedium name={name} caption={value} />
+                            </DetailLine>
                         ))
                     )}
 
@@ -218,9 +206,10 @@ const Details: FunctionComponent<DetailProps> = ({
                         A.mapWithIndex((idx, [name, value]) => (
                             <AnimatedDetailLine
                                 expanded={expanded}
-                                caption={value}
-                                icon={mediaToIcon[name]}
-                                animationIndex={idx} />
+                                animationIndex={idx}>
+
+                                <LinkForMedium name={name} caption={value} />
+                            </AnimatedDetailLine>
                         ))
                     )}
 
@@ -234,7 +223,7 @@ const Details: FunctionComponent<DetailProps> = ({
                                     onClick={onExpandClick}
                                     class={styles.expandButton}
                                 >
-                                    <ChevronDownIcon class={`
+                                    <ChevronDownIcon className={`
                                         ${styles.detailIcon}
                                         ${styles.chevronCollapsed}
                                         ${expanded ? styles.chevronExpanded : ""}
@@ -260,33 +249,21 @@ const Avatar: FunctionComponent<AvatarProps> = ({ url }) => (
     </div>
 );
 
-type DetailLineProps = {
-    icon: SnappyIcon;
-    caption: string;
-};
-
-const DetailLine: FunctionComponent<DetailLineProps> = ({
-    caption,
-    icon: Icon,
-}) => (
+const DetailLine: FunctionComponent = ({ children }) => (
     <li className={styles.detailLine}>
-        <Icon className={styles.detailIcon} />
-        <span>{caption}</span>
+        {children}
     </li>
 );
 
 type AnimatedDetailLineProps = {
-    icon: SnappyIcon;
-    caption: string;
     expanded: boolean;
     animationIndex: number;
 };
 
 const AnimatedDetailLine: FunctionComponent<AnimatedDetailLineProps> = ({
-    caption,
-    icon: Icon,
     expanded,
-    animationIndex
+    animationIndex,
+    children
 }) => (
     <li className={`
                     ${styles.detailLine}
@@ -301,7 +278,94 @@ const AnimatedDetailLine: FunctionComponent<AnimatedDetailLineProps> = ({
             )
         )}
     >
-        <Icon className={styles.detailIcon} />
-        <span>{caption}</span>
+        {children}
     </li>
 );
+
+const getLinkForMedium = getUnionTypeMatcherStrict<keyof Media>()({
+    phone: () => (value: string) => (
+        <a href={`tel:${value}`}>
+            <SmartphoneIcon className={styles.detailIcon} />
+            <span>{value}</span>
+        </a>
+    ),
+
+    mail: () => (value: string) => (
+        <a href={`mailto:${value}`}>
+            <MailIcon className={styles.detailIcon} />
+            <span>{value}</span>
+        </a>
+    ),
+
+    web: () => (value: string) => (
+        <a href={value.match(/^https?:\/\//) ? value : `http://${value}`}
+            target="_blank">
+
+            <WebIcon className={styles.detailIcon} />
+            <span>{value}</span>
+        </a>
+    ),
+
+    twitter: () => (value: string) => (
+        <a href={`https://twitter.com/${encodeURIComponent(value)}`}
+            target="_blank">
+
+            <XIcon className={styles.detailIcon} />
+            <span>{value}</span>
+        </a>
+    ),
+
+    facebook: () => (value: string) => (
+        <a href={`https://www.facebook.com/${encodeURIComponent(value)}`}
+            target="_blank">
+
+            <FacebookIcon className={styles.detailIcon} />
+            <span>{value}</span>
+        </a>
+    ),
+
+    youtube: () => (value: string) => (
+        <a href={`https://www.youtube.com/${encodeURIComponent(value)}`}
+            target="_blank">
+
+            <YoutubeIcon className={styles.detailIcon} />
+            <span>{value}</span>
+        </a>
+    ),
+
+    instagram: () => (value: string) => (
+        <a href={`https://www.instagram.com/${encodeURIComponent(value)}`}
+            target="_blank">
+
+            <InstagramIcon className={styles.detailIcon} />
+            <span>{value}</span>
+        </a>
+    ),
+
+    twitch: () => (value: string) => (
+        <a href={`https://www.twitch.tv/${encodeURIComponent(value)}`}
+            target="_blank">
+
+            <TwitchIcon className={styles.detailIcon} />
+            <span>{value}</span>
+        </a>
+    ),
+
+    github: () => (value: string) => (
+        <a href={`https://github.com/${encodeURIComponent(value)}`}
+            target="_blank">
+
+            <GithubIcon className={styles.detailIcon} />
+            <span>{value}</span>
+        </a>
+    ),
+});
+
+type LinkForMediumProps = {
+    name: keyof Media;
+    caption: string;
+};
+
+const LinkForMedium: FunctionComponent<LinkForMediumProps> = ({
+    name, caption
+}) => getLinkForMedium(name)(caption);

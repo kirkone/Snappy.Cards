@@ -76,9 +76,13 @@ This is the background image of the card. There are the following options:
 **Image URL** You can provide an URL to your own image.
 **blank** Leaf the parameter empty or omit it complete and the background will be blank.
 
-### twt
+### twt - *deprecated, use "x" instead*
 
 Your handle on twitter.
+
+### x
+
+Your handle on x, formerly known as twitter.
 
 ### fb
 

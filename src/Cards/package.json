@@ -43,7 +43,6 @@
     "filenamify": "5.1.1",
     "fp-ts": "2.13.1",
     "fp-ts-std": "0.16.0",
-    "lucide-preact": "0.144.0",
     "nayuki-qr-code-generator": "1.8.0",
     "preact": "10.13.2",
     "tslib": "2.5.0"
