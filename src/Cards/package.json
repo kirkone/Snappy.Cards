@@ -45,7 +45,8 @@
     "fp-ts-std": "0.17.1",
     "nayuki-qr-code-generator": "1.8.0",
     "preact": "10.18.0",
-    "tslib": "2.6.2"
+    "tslib": "2.6.2",
+    "lz-ts": "1.1.2"
   },
   "devDependencies": {
     "@preact/preset-vite": "2.5.0",

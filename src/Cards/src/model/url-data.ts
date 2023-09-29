@@ -5,9 +5,11 @@ import * as R from "fp-ts/Record";
 import * as RE from "fp-ts/Reader";
 import * as S from "fp-ts/string";
 
-import { flow, pipe } from "fp-ts/function";
+import { constant, flow, pipe } from "fp-ts/function";
 
 import { sequenceS } from "fp-ts/Apply";
+import { decompressFromURI } from "lz-ts";
+import { Simplify } from "type-fest";
 
 const stringNotEmptyAsOption = O.fromPredicate(P.not(S.isEmpty));
 
@@ -82,9 +84,9 @@ const TUrlParameters = {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type StructReturns<T extends Record<string, (...a: any) => any>> = {
+type StructReturns<T extends Record<string, (...a: any) => any>> = Simplify<{
     [K in keyof T]: ReturnType<T[K]>
-};
+}>;
 
 export type UrlParameters = StructReturns<typeof TUrlParameters>;
 
@@ -126,9 +128,48 @@ const decodeUrlParameters = pipe(
     sequenceS(RE.Apply),
 );
 
-export const getParametersFromUrl = flow(
-    getRecordFromUrl,
-    decodeUrlParameters
+//#endregion
+
+// ============================================================================
+// #region compressed URL params
+// ============================================================================
+const TUrlParametersCompressed = {
+    data: optionalNonEmptyString("data")
+};
+
+type UrlParametersCompressed = StructReturns<typeof TUrlParametersCompressed>;
+
+const decompress = flow(
+    decompressFromURI,
+    O.fromNullable,
+    O.chain(stringNotEmptyAsOption),
 );
 
+const decompressCompressedUrlParameter = flow(
+    ({ data }: UrlParametersCompressed) => data,
+    O.chain(decompress),
+    O.chain(getParametersFromString),
+);
+
+const decodeCompressedUrlParameter = pipe(
+    TUrlParametersCompressed,
+    sequenceS(RE.Apply),
+);
+
+const getRecordFromCompressedUrlParameter = flow(
+    decodeCompressedUrlParameter,
+    decompressCompressedUrlParameter,
+);
 //#endregion
+
+export const getParametersFromUrl = flow(
+    getRecordFromUrl,
+    urlParams => pipe(
+        // try decompressing compressed url data
+        getRecordFromCompressedUrlParameter(urlParams),
+
+        // fall back to decoding plain url parameters if decompress fails
+        O.getOrElse(constant(urlParams)),
+    ),
+    decodeUrlParameters
+);
