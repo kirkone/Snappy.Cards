@@ -12,6 +12,6 @@ export const footer = style({
     alignItems: "center",
 });
 
-export const link = style({
+export const textColor = style({
     color: varsApp.color.dark.hex,
 });

@@ -23,7 +23,7 @@ export const Footer: FunctionComponent<FooterProps> = ({
     className = "",
 }) => (
     <PageContent className={`${styles.container} ${className}`}>
-        <footer className={styles.footer}>
+        <footer className={`${styles.footer} ${styles.textColor}`}>
             <a href="https://github.com/kirkone/Snappy.Cards" target="_blank">
                 <InfoIcon />
             </a>
@@ -48,8 +48,7 @@ const DownloadLink: FunctionComponent<DownloadLinkProps> = ({
         Loading: () => <LoaderIcon />,
         Failure: () => <ErrorIcon />,
         Loaded: ({ url }) => (
-            <a className={styles.link}
-                rel="noopener"
+            <a rel="noopener"
                 download={pipe(
                     name,
                     O.fold(
