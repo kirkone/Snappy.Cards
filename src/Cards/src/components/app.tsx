@@ -7,11 +7,12 @@ import * as styles from "./app.css";
 import * as theme from "../theme/variables.css";
 
 import { ADTType, makeADT, ofType } from "@morphic-ts/adt";
-import { AppData, AppDataAdt, getAppData } from "../model/app-data";
+import { AppData, AppDataAdt, appDataToUrlParams, getAppDataFromUrlParams } from "../model/app-data";
 import { Base64Data, DownloadImageError, RemoteImageAdt, downloadImageCached } from "../model/remote-image";
 import { ElmishResult, Init, Subscribe, Update, cmd } from "@fun-ts/elmish";
 import { ErrorIcon, LoaderIcon } from "./icons";
 import { VCardDataAdt, getVCardUrl, vCardFieldsFromAppData, vCardFieldsFromAppDataLoaded } from "../model/v-card-url";
+import { compressToUrlParam, getParametersFromUrl } from "../model/url-data";
 import { getWindowTitleFromAppData, setWindowTitle } from "../model/window-title";
 
 import { Card } from "./card";
@@ -22,7 +23,6 @@ import type { PreactView } from "@fun-ts/elmish-preact";
 import { QrCodeCard } from "./qr-code-card";
 import type { Simplify } from "type-fest";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
-import { getParametersFromUrl } from "../model/url-data";
 import { makeRemoteResultADT } from "@fun-ts/remote-result-adt";
 import { pick } from "fp-ts-std/Struct";
 import { pipe } from "fp-ts/function";
@@ -109,6 +109,8 @@ type HashChangedMsg = { type: "HashChanged"; };
 
 type ToggleCardExpansionMsg = { type: "ToggleCardExpansion"; };
 
+type ShareMsg = { type: "Share"; };
+
 const MsgAdt = makeADT("type")({
     GetAppData: ofType<GetAppDataMsg>(),
     GetAppDataSucceeded: ofType<GetAppDataSucceededMsg>(),
@@ -127,6 +129,8 @@ const MsgAdt = makeADT("type")({
     HashChanged: ofType<HashChangedMsg>(),
 
     ToggleCardExpansion: ofType<ToggleCardExpansionMsg>(),
+
+    Share: ofType<ShareMsg>(),
 });
 
 export type Msg = ADTType<typeof MsgAdt>;
@@ -155,7 +159,7 @@ export const update: Update<Model, Msg> = (model, msg) => pipe(
             },
             pipe(
                 getParametersFromUrl,
-                IO.map(getAppData),
+                IO.map(getAppDataFromUrlParams),
                 T.fromIO,
                 cmd.OfTask.perform(data => MsgAdt.as.GetAppDataSucceeded({ data }))
             )
@@ -219,7 +223,7 @@ export const update: Update<Model, Msg> = (model, msg) => pipe(
                         backgroundImage: RemoteImageAdt.of.Loading({}),
                     },
                     pipe(
-                        downloadImageCached(remoteUrl),
+                        downloadImageCached(remoteUrl.url),
                         cmd.OfTaskEither.either(
                             error => MsgAdt.as.GetBackgroundImageFailed({ error }),
                             MsgAdt.as.GetBackgroundImageSucceeded
@@ -263,7 +267,7 @@ export const update: Update<Model, Msg> = (model, msg) => pipe(
                         avatarImage: RemoteImageAdt.of.Loading({}),
                     },
                     pipe(
-                        downloadImageCached(remoteUrl),
+                        downloadImageCached(remoteUrl.url),
                         cmd.OfTaskEither.either(
                             error => MsgAdt.of.GetAvatarImageFailed({ error }),
                             MsgAdt.of.GetAvatarImageSucceeded
@@ -325,7 +329,27 @@ export const update: Update<Model, Msg> = (model, msg) => pipe(
                 cardExpanded: !model.cardExpanded,
             },
             cmd.none
-        ]
+        ],
+
+        Share: () => {
+            const appData = model.appData;
+
+            return [
+                model,
+
+                AppDataAdt.is.Loaded(appData) ?
+                    cmd.ofSub(() => {
+                        const url = pipe(
+                            appData,
+                            appDataToUrlParams,
+                            compressToUrlParam
+                        );
+
+                        navigator.canShare({ url }) && navigator.share({ url });
+                    }) :
+                    cmd.none
+            ];
+        }
     })
 );
 // #endregion

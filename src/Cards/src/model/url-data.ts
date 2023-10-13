@@ -1,15 +1,18 @@
+import * as A from "fp-ts/Array";
 import * as IO from "fp-ts/IO";
 import * as O from "fp-ts/Option";
 import * as P from "fp-ts/Predicate";
 import * as R from "fp-ts/Record";
 import * as RE from "fp-ts/Reader";
 import * as S from "fp-ts/string";
+import * as URL_SP from "fp-ts-std/URLSearchParams";
 
-import { constant, flow, pipe } from "fp-ts/function";
+import { compressToURI, decompressFromURI } from "lz-ts";
+import { constant, flow, identity, pipe } from "fp-ts/function";
+import { sortStringEntriesByKey } from "../utils/utils";
 
-import { sequenceS } from "fp-ts/Apply";
-import { decompressFromURI } from "lz-ts";
 import { Simplify } from "type-fest";
+import { sequenceS } from "fp-ts/Apply";
 
 const stringNotEmptyAsOption = O.fromPredicate(P.not(S.isEmpty));
 
@@ -31,12 +34,12 @@ export type ImageParam =
     | ImageParamLink
     ;
 
-interface matchImageParamOptions {
-    onUnsplash: (imgParam: ImageParamUnsplash) => string;
-    onUrl: (imgParam: ImageParamLink) => string;
-}
+type MatchImageParamOptions<R> = {
+    onUnsplash: (imgParam: ImageParamUnsplash) => R;
+    onUrl: (imgParam: ImageParamLink) => R;
+};
 
-export const matchImageParam = ({ onUnsplash, onUrl }: matchImageParamOptions) =>
+export const matchImageParam = <R>({ onUnsplash, onUrl }: MatchImageParamOptions<R>) =>
     (ipv: ImageParam) =>
         isImageParamLink(ipv) ?
             onUrl(ipv) :
@@ -95,10 +98,29 @@ export type UrlParameters = StructReturns<typeof TUrlParameters>;
 // ============================================================================
 // #region URL Parameters
 // ============================================================================
-const getParametersFromString = flow(
+// TODO: introduce iso for parameter <=> stringification
+/**
+ * @private exported only for testing
+ */
+export const getStableStringFromParameters = flow(
+    identity<UrlParameters>,
+    R.filterMap(identity),
+    R.toEntries,
+    A.sort(sortStringEntriesByKey),
+    // TODO: improve URL handling to return type of `URL_SP.fromString`
+    URL_SP.fromTuples,
+    URL_SP.toString
+);
+
+/**
+ * @private exported only for testing
+ */
+export const getParametersFromString = flow(
     stringNotEmptyAsOption,
     O.map(flow(
-        s => [...new URLSearchParams(s).entries()],
+        // TODO: improve URL handling to return type of `URL_SP.fromString`
+        URL_SP.fromString,
+        URL_SP.toTuples,
         R.fromEntries
     )),
 );
@@ -159,6 +181,15 @@ const decodeCompressedUrlParameter = pipe(
 const getRecordFromCompressedUrlParameter = flow(
     decodeCompressedUrlParameter,
     decompressCompressedUrlParameter,
+);
+
+const compress = compressToURI;
+
+export const compressToUrlParam = flow(
+    getStableStringFromParameters,
+    compress,
+    data => ({ data }),
+    r => new URLSearchParams(r).toString(),
 );
 //#endregion
 
