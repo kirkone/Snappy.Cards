@@ -30,7 +30,8 @@
     "check:tsc": "tsc --noEmit --emitDeclarationOnly false",
     "vitebook:dev": "vitebook dev --host",
     "vitebook:build": "vitebook build",
-    "vitebook:preview": "vitebook preview"
+    "vitebook:preview": "vitebook preview",
+    "test": "vitest"
   },
   "dependencies": {
     "@fun-ts/elmish": "0.8.5",
@@ -68,6 +69,7 @@
     "rollup-plugin-visualizer": "5.9.2",
     "rollup-plugin-hypothetical": "2.1.1",
     "type-fest": "4.3.2",
-    "terser": "5.20.0"
+    "terser": "5.20.0",
+    "vitest": "0.34.6"
   }
 }
