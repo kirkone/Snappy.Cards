@@ -9,10 +9,11 @@ import * as theme from "../theme/variables.css";
 import { ADTType, makeADT, ofType } from "@morphic-ts/adt";
 import { AppData, AppDataAdt, appDataToUrlParams, getAppDataFromUrlParams } from "../model/app-data";
 import { Base64Data, DownloadImageError, RemoteImageAdt, downloadImageCached } from "../model/remote-image";
+import { BrowserData, BrowserDataAdt, getBrowserData, shareUrl } from "../model/browser-data";
 import { ElmishResult, Init, Subscribe, Update, cmd } from "@fun-ts/elmish";
 import { ErrorIcon, LoaderIcon } from "./icons";
 import { VCardDataAdt, getVCardUrl, vCardFieldsFromAppData, vCardFieldsFromAppDataLoaded } from "../model/v-card-url";
-import { compressToUrlParam, getParametersFromUrl } from "../model/url-data";
+import { compressToUrlParam, getParametersFromUrl, makeCurrentUrl } from "../model/url-data";
 import { getWindowTitleFromAppData, setWindowTitle } from "../model/window-title";
 
 import { Card } from "./card";
@@ -23,7 +24,6 @@ import type { PreactView } from "@fun-ts/elmish-preact";
 import { QrCodeCard } from "./qr-code-card";
 import type { Simplify } from "type-fest";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
-import { makeRemoteResultADT } from "@fun-ts/remote-result-adt";
 import { pick } from "fp-ts-std/Struct";
 import { pipe } from "fp-ts/function";
 
@@ -32,7 +32,6 @@ import { pipe } from "fp-ts/function";
 // ============================================================================
 // #region ADTs
 // ============================================================================
-const CurrentUrlAdt = makeRemoteResultADT<{ href: string; }>();
 // #endregion
 
 // ============================================================================
@@ -40,10 +39,12 @@ const CurrentUrlAdt = makeRemoteResultADT<{ href: string; }>();
 // ============================================================================
 export type Model = {
     appData: ADTType<typeof AppDataAdt>;
-    currentUrl: ADTType<typeof CurrentUrlAdt>;
     vCardData: ADTType<typeof VCardDataAdt>;
     backgroundImage: ADTType<typeof RemoteImageAdt>;
     avatarImage: ADTType<typeof RemoteImageAdt>;
+    browserData: ADTType<typeof BrowserDataAdt>;
+
+    // FIXME: redirect from share link
 
     cardExpanded: boolean;
 };
@@ -51,15 +52,15 @@ export type Model = {
 export const init: Init<Model, Msg> = (): ElmishResult<Model, Msg> => [
     {
         appData: AppDataAdt.as.NotLoaded({}),
-        currentUrl: CurrentUrlAdt.as.NotLoaded({}),
         vCardData: VCardDataAdt.as.NotLoaded({}),
         backgroundImage: VCardDataAdt.as.NotLoaded({}),
         avatarImage: VCardDataAdt.as.NotLoaded({}),
+        browserData: BrowserDataAdt.as.NotLoaded({}),
         cardExpanded: false,
     },
     cmd.batch(
         cmd.ofMsg(MsgAdt.of.GetAppData({})),
-        cmd.ofMsg(MsgAdt.of.GetCurrentUrl({})),
+        cmd.ofMsg(MsgAdt.of.GetBrowserData({})),
     )
 ];
 
@@ -97,12 +98,10 @@ type GetAvatarImageFailedMsg = {
     error: DownloadImageError;
 };
 
-type GetCurrentUrlMsg = { type: "GetCurrentUrl"; };
-type GetCurrentUrlSucceededMsg = {
-    type: "GetCurrentUrlSucceeded";
-    location: {
-        href: string;
-    };
+type GetBrowserDataMsg = { type: "GetBrowserData"; };
+type GetBrowserDataSucceededMsg = {
+    type: "GetBrowserDataSucceeded";
+    data: BrowserData;
 };
 
 type HashChangedMsg = { type: "HashChanged"; };
@@ -115,8 +114,8 @@ const MsgAdt = makeADT("type")({
     GetAppData: ofType<GetAppDataMsg>(),
     GetAppDataSucceeded: ofType<GetAppDataSucceededMsg>(),
 
-    GetCurrentUrl: ofType<GetCurrentUrlMsg>(),
-    GetCurrentUrlSucceeded: ofType<GetCurrentUrlSucceededMsg>(),
+    GetBrowserData: ofType<GetBrowserDataMsg>(),
+    GetBrowserDataSucceeded: ofType<GetBrowserDataSucceededMsg>(),
 
     GetBackgroundImage: ofType<GetBackgroundImageMsg>(),
     GetBackgroundImageSucceeded: ofType<GetBackgroundImageSucceededMsg>(),
@@ -189,24 +188,22 @@ export const update: Update<Model, Msg> = (model, msg) => pipe(
             )
         ],
 
-        GetCurrentUrl: (): ElmishResult<Model, Msg> => [
+        GetBrowserData: (): ElmishResult<Model, Msg> => [
             {
                 ...model,
-                currentUrl: CurrentUrlAdt.as.Loading({})
+                browserData: BrowserDataAdt.as.Loading({})
             },
             cmd.ofSub(dispatch => dispatch(
-                MsgAdt.as.GetCurrentUrlSucceeded({
-                    location: {
-                        href: window.location.href
-                    }
+                MsgAdt.as.GetBrowserDataSucceeded({
+                    data: getBrowserData()
                 })
             ))
         ],
 
-        GetCurrentUrlSucceeded: ({ location }): ElmishResult<Model, Msg> => [
+        GetBrowserDataSucceeded: ({ data }): ElmishResult<Model, Msg> => [
             {
                 ...model,
-                currentUrl: CurrentUrlAdt.as.Loaded(location)
+                browserData: BrowserDataAdt.as.Loaded(data)
             },
             cmd.none
         ],
@@ -332,20 +329,20 @@ export const update: Update<Model, Msg> = (model, msg) => pipe(
         ],
 
         Share: () => {
-            const appData = model.appData;
+            const { appData, browserData } = model;
 
             return [
                 model,
 
-                AppDataAdt.is.Loaded(appData) ?
+                AppDataAdt.is.Loaded(appData) && BrowserDataAdt.is.Loaded(browserData) ?
                     cmd.ofSub(() => {
-                        const url = pipe(
+                        pipe(
                             appData,
                             appDataToUrlParams,
-                            compressToUrlParam
+                            compressToUrlParam,
+                            makeCurrentUrl(browserData.location),
+                            shareUrl(browserData.shareMode)
                         );
-
-                        navigator.canShare({ url }) && navigator.share({ url });
                     }) :
                     cmd.none
             ];
@@ -379,7 +376,10 @@ export const view: PreactView<Model, Msg> = (dispatch, model) => (
             />
         </Page>
         <Page>
-            <QrCodeView {...model.currentUrl} />
+            <QrCodeView
+                appData={model.appData}
+                browserData={model.browserData}
+            />
         </Page>
         <Page align="end" fit="content">
             <Footer
@@ -389,6 +389,8 @@ export const view: PreactView<Model, Msg> = (dispatch, model) => (
                     O.fromPredicate(AppDataAdt.is.Loaded),
                     O.chain(d => d.name)
                 )}
+                browserData={model.browserData}
+                onShareClick={() => dispatch(MsgAdt.as.Share({}))}
             />
         </Page>
     </div>
@@ -445,13 +447,44 @@ const CardView: FunctionComponent<CardViewProps> = ({
     })
 );
 
-const QrCodeView = CurrentUrlAdt.matchStrict({
-    NotLoaded: () => <></>,
-    Loading: () => <LoaderIcon />,
-    Failure: () => <>
-        <ErrorIcon /> An error occurred while retrieving current URL
-    </>,
-    Loaded: ({ href }) => <QrCodeCard href={href} />
-});
+type QrCodeViewProps = {
+    appData: ADTType<typeof AppDataAdt>;
+    browserData: ADTType<typeof BrowserDataAdt>;
+};
 
+const QrCodeView: FunctionComponent<QrCodeViewProps> = ({
+    appData,
+    browserData,
+}) => pipe(
+    browserData,
+    BrowserDataAdt.matchStrict({
+        NotLoaded: () => <></>,
+
+        Loading: () => <LoaderIcon />,
+
+        Failure: () => <>
+            <ErrorIcon /> An error occurred while loading browser information.
+        </>,
+
+        Loaded: ({ location }) => pipe(
+            appData,
+            AppDataAdt.matchStrict({
+                NotLoaded: () => <></>,
+                Loading: () => <LoaderIcon />,
+                Failure: () => <>
+                    <ErrorIcon /> An error occurred while loading application data.
+                </>,
+                Loaded: (appDataLoaded) => (
+                    <QrCodeCard
+                        href={pipe(
+                            appDataLoaded,
+                            appDataToUrlParams,
+                            makeCurrentUrl(location)
+                        )}
+                    />
+                )
+            })
+        ),
+    })
+);
 //#endregion

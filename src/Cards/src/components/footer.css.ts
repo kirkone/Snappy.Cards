@@ -8,8 +8,16 @@ export const container = style({
 
 export const footer = style({
     display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
+
+});
+
+export const linkLeft = style({
+    padding: `0 ${varsApp.space.small}`,
+    marginRight: "auto"
+});
+
+export const linkRight = style({
+    padding: `0 ${varsApp.space.small}`,
 });
 
 export const textColor = style({

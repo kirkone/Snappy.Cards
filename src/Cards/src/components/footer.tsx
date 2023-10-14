@@ -1,7 +1,8 @@
 import * as O from "fp-ts/Option";
 import * as styles from "./footer.css";
 
-import { DownloadIcon, ErrorIcon, InfoIcon, LoaderIcon } from "./icons";
+import { BrowserDataAdt, matchOsMode, matchShareMode } from "../model/browser-data";
+import { ClipboardIcon, DownloadIcon, ErrorIcon, InfoIcon, LoaderIcon, ShareIosIcon, ShareMdIcon } from "./icons";
 import { constant, pipe } from "fp-ts/function";
 
 import type { ADTType } from "@morphic-ts/adt";
@@ -13,20 +14,34 @@ import { sanitizeFilename } from "../utils/utils";
 
 type FooterProps = {
     downloadUrl: ADTType<typeof VCardDataAdt>;
+    browserData: ADTType<typeof BrowserDataAdt>;
     name: O.Option<string>;
     className?: string;
+
+    onShareClick: VoidFunction;
 };
 
 export const Footer: FunctionComponent<FooterProps> = ({
     downloadUrl,
+    browserData,
     name,
     className = "",
+
+    onShareClick,
 }) => (
     <PageContent className={`${styles.container} ${className}`}>
         <footer className={`${styles.footer} ${styles.textColor}`}>
-            <a href="https://github.com/kirkone/Snappy.Cards" target="_blank">
+            <a href="https://github.com/kirkone/Snappy.Cards"
+                target="_blank"
+                className={styles.linkLeft}
+            >
                 <InfoIcon />
             </a>
+
+            <ShareLink
+                browserData={browserData}
+                onShareClick={onShareClick}
+            />
 
             <DownloadLink
                 downloadUrl={downloadUrl}
@@ -48,7 +63,8 @@ const DownloadLink: FunctionComponent<DownloadLinkProps> = ({
         Loading: () => <LoaderIcon />,
         Failure: () => <ErrorIcon />,
         Loaded: ({ url }) => (
-            <a rel="noopener"
+            <a className={styles.linkRight}
+                rel="noopener"
                 download={pipe(
                     name,
                     O.fold(
@@ -61,5 +77,40 @@ const DownloadLink: FunctionComponent<DownloadLinkProps> = ({
                 <DownloadIcon />
             </a>
         )
+    })
+);
+
+type ShareLinkProps = Pick<FooterProps, "browserData" | "onShareClick">;
+
+const ShareLink: FunctionComponent<ShareLinkProps> = ({
+    browserData,
+    onShareClick
+}) => pipe(
+    browserData,
+    BrowserDataAdt.matchStrict({
+        NotLoaded: () => <></>,
+        Loading: () => <LoaderIcon />,
+        Failure: () => <ErrorIcon />,
+        Loaded: ({ shareMode, osMode }) => shareMode === "none" ?
+            <></> :
+            <a href="#"
+                onClick={(e) => { e.preventDefault(); onShareClick(); }}
+                className={styles.linkRight}
+            >
+                {pipe(
+                    shareMode,
+                    matchShareMode({
+                        none: constant(<></>),
+                        clipboard: constant(<ClipboardIcon />),
+                        share: () => pipe(
+                            osMode,
+                            matchOsMode({
+                                ios: constant(<ShareIosIcon />),
+                                other: constant(<ShareMdIcon />),
+                            })
+                        )
+                    })
+                )}
+            </a>
     })
 );

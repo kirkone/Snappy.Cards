@@ -10,6 +10,7 @@ import * as URL_SP from "fp-ts-std/URLSearchParams";
 import { compressToURI, decompressFromURI } from "lz-ts";
 import { constant, flow, identity, pipe } from "fp-ts/function";
 import { sortStringEntriesByKey } from "../utils/utils";
+import type { BrowserData } from "./browser-data";
 
 import { Simplify } from "type-fest";
 import { sequenceS } from "fp-ts/Apply";
@@ -103,7 +104,7 @@ export type UrlParameters = StructReturns<typeof TUrlParameters>;
  * @private exported only for testing
  */
 export const getStableStringFromParameters = flow(
-    identity<UrlParameters>,
+    identity<UrlParameters | UrlParametersCompressed>,
     R.filterMap(identity),
     R.toEntries,
     A.sort(sortStringEntriesByKey),
@@ -188,8 +189,7 @@ const compress = compressToURI;
 export const compressToUrlParam = flow(
     getStableStringFromParameters,
     compress,
-    data => ({ data }),
-    r => new URLSearchParams(r).toString(),
+    data => ({ data: stringNotEmptyAsOption(data) }),
 );
 //#endregion
 
@@ -203,4 +203,9 @@ export const getParametersFromUrl = flow(
         O.getOrElse(constant(urlParams)),
     ),
     decodeUrlParameters
+);
+
+export const makeCurrentUrl = (location: BrowserData["location"]) => flow(
+    getStableStringFromParameters,
+    urlParamString => `${location.origin}#${urlParamString}`,
 );
