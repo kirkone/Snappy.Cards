@@ -40,3 +40,6 @@ export const YoutubeIcon = makeIcon("youtube-line");
 export const InstagramIcon = makeIcon("instagram-line");
 export const TwitchIcon = makeIcon("twitch-fill");
 export const GithubIcon = makeIcon("github-line");
+export const ClipboardIcon = makeIcon("clipboard-line");
+export const ShareMdIcon = makeIcon("share-fill");
+export const ShareIosIcon = makeIcon("share-box-fill");
