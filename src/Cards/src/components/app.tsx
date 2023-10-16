@@ -12,8 +12,9 @@ import { Base64Data, DownloadImageError, RemoteImageAdt, downloadImageCached } f
 import { BrowserData, BrowserDataAdt, getBrowserData, shareUrl } from "../model/browser-data";
 import { ElmishResult, Init, Subscribe, Update, cmd } from "@fun-ts/elmish";
 import { ErrorIcon, LoaderIcon } from "./icons";
+import { UrlDataOrigin, UrlDataOriginAdt, compressToUrlParam, getParametersFromUrl, getStableStringFromParameters, makeCurrentUrl } from "../model/url-data";
 import { VCardDataAdt, getVCardUrl, vCardFieldsFromAppData, vCardFieldsFromAppDataLoaded } from "../model/v-card-url";
-import { compressToUrlParam, getParametersFromUrl, makeCurrentUrl } from "../model/url-data";
+import { constant, identity, pipe } from "fp-ts/function";
 import { getWindowTitleFromAppData, setWindowTitle } from "../model/window-title";
 
 import { Card } from "./card";
@@ -24,8 +25,8 @@ import type { PreactView } from "@fun-ts/elmish-preact";
 import { QrCodeCard } from "./qr-code-card";
 import type { Simplify } from "type-fest";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
+import { evolve } from "fp-ts/struct";
 import { pick } from "fp-ts-std/Struct";
-import { pipe } from "fp-ts/function";
 
 // #endregion
 
@@ -43,8 +44,6 @@ export type Model = {
     backgroundImage: ADTType<typeof RemoteImageAdt>;
     avatarImage: ADTType<typeof RemoteImageAdt>;
     browserData: ADTType<typeof BrowserDataAdt>;
-
-    // FIXME: redirect from share link
 
     cardExpanded: boolean;
 };
@@ -72,6 +71,7 @@ export const init: Init<Model, Msg> = (): ElmishResult<Model, Msg> => [
 type GetAppDataMsg = { type: "GetAppData"; };
 type GetAppDataSucceededMsg = {
     type: "GetAppDataSucceeded";
+    origin: UrlDataOrigin;
     data: AppData;
 };
 
@@ -143,6 +143,10 @@ export const sub: Subscribe<Model, Msg> = (_) => cmd.ofSub(
         dispatch(MsgAdt.as.HashChanged({}));
     })
 );
+
+export const pushUrlParametersCmd = (hash: string) =>
+    cmd.ofSub<never>(() => location.hash = hash);
+
 //#endregion
 
 // ============================================================================
@@ -158,13 +162,21 @@ export const update: Update<Model, Msg> = (model, msg) => pipe(
             },
             pipe(
                 getParametersFromUrl,
-                IO.map(getAppDataFromUrlParams),
+                IO.map(evolve({
+                    origin: identity<UrlDataOrigin>,
+                    urlParams: getAppDataFromUrlParams
+                })),
                 T.fromIO,
-                cmd.OfTask.perform(data => MsgAdt.as.GetAppDataSucceeded({ data }))
+                cmd.OfTask.perform(
+                    ({ origin, urlParams }) => MsgAdt.as.GetAppDataSucceeded({
+                        origin,
+                        data: urlParams,
+                    })
+                )
             )
         ],
 
-        GetAppDataSucceeded: ({ data }): ElmishResult<Model, Msg> => [
+        GetAppDataSucceeded: ({ origin, data }): ElmishResult<Model, Msg> => [
             {
                 ...model,
                 appData: AppDataAdt.as.Loaded(data),
@@ -178,14 +190,28 @@ export const update: Update<Model, Msg> = (model, msg) => pipe(
                             url => VCardDataAdt.as.Loaded({ url }),
                         ),
             },
-            cmd.batch(
-                cmd.ofMsg(MsgAdt.of.GetBackgroundImage({})),
-                cmd.ofMsg(MsgAdt.of.GetAvatarImage({})),
-                cmd.ofSub(pipe(
-                    getWindowTitleFromAppData(data),
-                    setWindowTitle
-                ))
+            pipe(
+                origin,
+                UrlDataOriginAdt.matchStrict({
+                    FromUrl: constant(
+                        cmd.batch(
+                            cmd.ofMsg(MsgAdt.of.GetBackgroundImage({})),
+                            cmd.ofMsg(MsgAdt.of.GetAvatarImage({})),
+                            cmd.ofSub(pipe(
+                                getWindowTitleFromAppData(data),
+                                setWindowTitle
+                            ))
+                        )
+                    ),
+                    FromCompressed: constant(pipe(
+                        data,
+                        appDataToUrlParams,
+                        getStableStringFromParameters,
+                        pushUrlParametersCmd,
+                    ))
+                })
             )
+
         ],
 
         GetBrowserData: (): ElmishResult<Model, Msg> => [

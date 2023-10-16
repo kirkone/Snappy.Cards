@@ -9,10 +9,11 @@ import * as URL_SP from "fp-ts-std/URLSearchParams";
 
 import { compressToURI, decompressFromURI } from "lz-ts";
 import { constant, flow, identity, pipe } from "fp-ts/function";
-import { sortStringEntriesByKey } from "../utils/utils";
-import type { BrowserData } from "./browser-data";
+import { getUnionTypeMatcherStrict, sortStringEntriesByKey } from "../utils/utils";
 
+import type { BrowserData } from "./browser-data";
 import { Simplify } from "type-fest";
+import { evolve } from "fp-ts/struct";
 import { sequenceS } from "fp-ts/Apply";
 
 const stringNotEmptyAsOption = O.fromPredicate(P.not(S.isEmpty));
@@ -193,16 +194,37 @@ export const compressToUrlParam = flow(
 );
 //#endregion
 
+export type UrlDataOrigin = "FromCompressed" | "FromUrl";
+
+export const UrlDataOriginAdt = {
+    matchStrict: getUnionTypeMatcherStrict<UrlDataOrigin>(),
+    of: {
+        FromCompressed: "FromCompressed" as UrlDataOrigin,
+        FromUrl: "FromUrl" as UrlDataOrigin,
+    }
+};
+
 export const getParametersFromUrl = flow(
     getRecordFromUrl,
     urlParams => pipe(
         // try decompressing compressed url data
         getRecordFromCompressedUrlParameter(urlParams),
+        O.map(urlParams => ({
+            origin: UrlDataOriginAdt.of.FromCompressed,
+            urlParams
+        })),
 
         // fall back to decoding plain url parameters if decompress fails
-        O.getOrElse(constant(urlParams)),
+        O.getOrElse(constant({
+            origin: UrlDataOriginAdt.of.FromUrl,
+            urlParams
+        })),
     ),
-    decodeUrlParameters
+
+    evolve({
+        origin: identity<UrlDataOrigin>,
+        urlParams: decodeUrlParameters
+    }),
 );
 
 export const makeCurrentUrl = (location: BrowserData["location"]) => flow(
