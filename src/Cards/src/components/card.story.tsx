@@ -6,7 +6,6 @@ import * as RAND from "fp-ts/Random";
 import { fakerD, permute } from "../utils/utils-vitebook";
 import { flow, pipe } from "fp-ts/function";
 
-import { AppDataAdt } from "../model/app-data";
 import { Card } from "./card";
 import { RemoteImageAdt } from "../model/remote-image";
 import { Variant } from "@vitebook/preact";
@@ -16,9 +15,9 @@ import { useState } from "preact/hooks";
 const getCardData = flow(
     fakerD,
     faker => ({
-        name: [O.some(`${faker.name.firstName()} ${faker.name.lastName()}`), O.none],
-        job: [O.some(faker.name.jobTitle()), O.none],
-        sub: [O.some(faker.company.bsBuzz()), O.none],
+        name: [O.some(`${faker.person.firstName()} ${faker.person.lastName()}`), O.none],
+        job: [O.some(faker.person.jobTitle()), O.none],
+        sub: [O.some(faker.company.buzzVerb()), O.none],
         avatar: [O.some(faker.internet.avatar()), O.none],
 
         phone: [O.some(faker.phone.number()), O.none],
@@ -75,11 +74,10 @@ const SingleCardAll = pipe(
                 <Card
                     expanded={expanded}
                     onExpandClick={() => { setExpanded(!expanded); }}
-                    data={AppDataAdt.as.Loaded({
-                        name: O.some(`${faker.name.firstName()} ${faker.name.lastName()}`),
-                        job: O.some(faker.name.jobTitle()),
-                        sub: O.some(faker.company.bsBuzz()),
-                        avatar: O.some(avatar),
+                    data={{
+                        name: O.some(`${faker.person.firstName()} ${faker.person.lastName()}`),
+                        job: O.some(faker.person.jobTitle()),
+                        sub: O.some(faker.company.buzzVerb()),
 
                         phone: O.some(faker.phone.number()),
                         mail: O.some(faker.internet.email()),
@@ -90,8 +88,7 @@ const SingleCardAll = pipe(
                         instagram: O.some(faker.hacker.noun()),
                         twitch: O.some(faker.hacker.noun()),
                         github: O.some(faker.hacker.noun()),
-                        background: O.none,
-                    })}
+                    }}
                     avatar={RemoteImageAdt.of.Loaded({
                         remoteUrl: avatar,
                         objectUrl: avatar
@@ -114,11 +111,10 @@ export const SingleCardOnlyThree = pipe(
                 <Card
                     expanded={expanded}
                     onExpandClick={() => { setExpanded(!expanded); }}
-                    data={AppDataAdt.as.Loaded({
-                        name: O.some(`${faker.name.firstName()} ${faker.name.lastName()}`),
+                    data={{
+                        name: O.some(`${faker.person.firstName()} ${faker.person.lastName()}`),
                         job: O.none,
-                        sub: O.some(faker.company.bsBuzz()),
-                        avatar: O.some(avatar),
+                        sub: O.some(faker.company.buzzVerb()),
 
                         phone: O.none,
                         mail: O.none,
@@ -129,8 +125,7 @@ export const SingleCardOnlyThree = pipe(
                         instagram: O.none,
                         twitch: O.none,
                         github: O.none,
-                        background: O.none,
-                    })}
+                    }}
                     avatar={RemoteImageAdt.of.Loaded({
                         remoteUrl: avatar,
                         objectUrl: avatar
@@ -153,11 +148,10 @@ export const SingleCardWithJobOnlyTwo = pipe(
                 <Card
                     expanded={expanded}
                     onExpandClick={() => { setExpanded(!expanded); }}
-                    data={AppDataAdt.as.Loaded({
-                        name: O.some(`${faker.name.firstName()} ${faker.name.lastName()}`),
-                        job: O.some(faker.name.jobTitle()),
-                        sub: O.some(faker.company.bsBuzz()),
-                        avatar: O.some(avatar),
+                    data={{
+                        name: O.some(`${faker.person.firstName()} ${faker.person.lastName()}`),
+                        job: O.some(faker.person.jobTitle()),
+                        sub: O.some(faker.company.buzzVerb()),
 
                         phone: O.none,
                         mail: O.none,
@@ -168,8 +162,7 @@ export const SingleCardWithJobOnlyTwo = pipe(
                         instagram: O.none,
                         twitch: O.none,
                         github: O.none,
-                        background: O.none,
-                    })}
+                    }}
                     avatar={RemoteImageAdt.of.Loaded({
                         remoteUrl: avatar,
                         objectUrl: avatar
@@ -192,11 +185,10 @@ export const SingleCardWithJobOnlyThree = pipe(
                 <Card
                     expanded={expanded}
                     onExpandClick={() => { setExpanded(!expanded); }}
-                    data={AppDataAdt.as.Loaded({
-                        name: O.some(`${faker.name.firstName()} ${faker.name.lastName()}`),
-                        job: O.some(faker.name.jobTitle()),
-                        sub: O.some(faker.company.bsBuzz()),
-                        avatar: O.some(avatar),
+                    data={{
+                        name: O.some(`${faker.person.firstName()} ${faker.person.lastName()}`),
+                        job: O.some(faker.person.jobTitle()),
+                        sub: O.some(faker.company.buzzVerb()),
 
                         phone: O.none,
                         mail: O.none,
@@ -207,8 +199,7 @@ export const SingleCardWithJobOnlyThree = pipe(
                         instagram: O.none,
                         twitch: O.none,
                         github: O.none,
-                        background: O.none,
-                    })}
+                    }}
                     avatar={RemoteImageAdt.of.Loaded({
                         remoteUrl: avatar,
                         objectUrl: avatar
@@ -230,10 +221,7 @@ const Permutations = pipe(
                 <Card
                     expanded={expanded}
                     onExpandClick={() => { setExpanded(!expanded); }}
-                    data={AppDataAdt.as.Loaded({
-                        ...data,
-                        background: O.none,
-                    })}
+                    data={data}
 
                     avatar={pipe(
                         data.avatar,

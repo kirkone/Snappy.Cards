@@ -1,4 +1,6 @@
-{
+const path = require("path");
+
+module.exports = {
     "env": {
         "browser": true,
         "es6": true
@@ -21,7 +23,8 @@
             "jsx": true
         },
         "ecmaVersion": 2018,
-        "sourceType": "module"
+        "sourceType": "module",
+        "project": path.resolve(__dirname, "tsconfig.json")
     },
     "plugins": [
         "functional",
@@ -45,4 +48,4 @@
         "functional/no-loop-statements": "error",
         "fp-ts/no-module-imports": "off"
     }
-}
+};

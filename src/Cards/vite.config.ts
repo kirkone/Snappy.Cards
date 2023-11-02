@@ -35,6 +35,10 @@ export default defineConfig(({ mode }) => ({
                     export const Index = {
                         fromAt(){},
                     };
+                `,
+
+                "../../node_modules/filenamify/filenamify-path.js": `
+                    export default function filenamifyPath(filePath, options) {}
                 `
             }
         }),

@@ -1,5 +1,8 @@
+import * as ORD from "fp-ts/Ord";
+import * as S from "fp-ts/string";
+
 import { curry2, memoize as memoizeF } from "fp-ts-std/Function";
-import { flip, flow } from "fp-ts/function";
+import { flip, flow, pipe } from "fp-ts/function";
 
 import type { Eq } from "fp-ts/Eq";
 import { Simplify } from "type-fest";
@@ -36,3 +39,8 @@ export const getUnionTypeMatcherStrict = <
     // eslint-disable-next-line functional/prefer-tacit
     return shape => pattern[shape](shape);
 };
+
+export const sortStringEntriesByKey = pipe(
+    S.Ord,
+    ORD.contramap(([key,]: [string, unknown]) => key),
+);

@@ -1,12 +1,19 @@
+import * as A from "fp-ts/Array";
 import * as IO from "fp-ts/IO";
 import * as O from "fp-ts/Option";
 import * as P from "fp-ts/Predicate";
 import * as R from "fp-ts/Record";
 import * as RE from "fp-ts/Reader";
 import * as S from "fp-ts/string";
+import * as URL_SP from "fp-ts-std/URLSearchParams";
 
-import { flow, pipe } from "fp-ts/function";
+import { compressToURI, decompressFromURI } from "lz-ts";
+import { constant, flow, identity, pipe } from "fp-ts/function";
+import { getUnionTypeMatcherStrict, sortStringEntriesByKey } from "../utils/utils";
 
+import type { BrowserData } from "./browser-data";
+import { Simplify } from "type-fest";
+import { evolve } from "fp-ts/struct";
 import { sequenceS } from "fp-ts/Apply";
 
 const stringNotEmptyAsOption = O.fromPredicate(P.not(S.isEmpty));
@@ -29,12 +36,12 @@ export type ImageParam =
     | ImageParamLink
     ;
 
-interface matchImageParamOptions {
-    onUnsplash: (imgParam: ImageParamUnsplash) => string;
-    onUrl: (imgParam: ImageParamLink) => string;
-}
+type MatchImageParamOptions<R> = {
+    onUnsplash: (imgParam: ImageParamUnsplash) => R;
+    onUrl: (imgParam: ImageParamLink) => R;
+};
 
-export const matchImageParam = ({ onUnsplash, onUrl }: matchImageParamOptions) =>
+export const matchImageParam = <R>({ onUnsplash, onUrl }: MatchImageParamOptions<R>) =>
     (ipv: ImageParam) =>
         isImageParamLink(ipv) ?
             onUrl(ipv) :
@@ -82,9 +89,9 @@ const TUrlParameters = {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type StructReturns<T extends Record<string, (...a: any) => any>> = {
+type StructReturns<T extends Record<string, (...a: any) => any>> = Simplify<{
     [K in keyof T]: ReturnType<T[K]>
-};
+}>;
 
 export type UrlParameters = StructReturns<typeof TUrlParameters>;
 
@@ -93,10 +100,29 @@ export type UrlParameters = StructReturns<typeof TUrlParameters>;
 // ============================================================================
 // #region URL Parameters
 // ============================================================================
-const getParametersFromString = flow(
+// TODO: introduce iso for parameter <=> stringification
+/**
+ * @private exported only for testing
+ */
+export const getStableStringFromParameters = flow(
+    identity<UrlParameters | UrlParametersCompressed>,
+    R.filterMap(identity),
+    R.toEntries,
+    A.sort(sortStringEntriesByKey),
+    // TODO: improve URL handling to return type of `URL_SP.fromString`
+    URL_SP.fromTuples,
+    URL_SP.toString
+);
+
+/**
+ * @private exported only for testing
+ */
+export const getParametersFromString = flow(
     stringNotEmptyAsOption,
     O.map(flow(
-        s => [...new URLSearchParams(s).entries()],
+        // TODO: improve URL handling to return type of `URL_SP.fromString`
+        URL_SP.fromString,
+        URL_SP.toTuples,
         R.fromEntries
     )),
 );
@@ -126,9 +152,82 @@ const decodeUrlParameters = pipe(
     sequenceS(RE.Apply),
 );
 
-export const getParametersFromUrl = flow(
-    getRecordFromUrl,
-    decodeUrlParameters
+//#endregion
+
+// ============================================================================
+// #region compressed URL params
+// ============================================================================
+const TUrlParametersCompressed = {
+    data: optionalNonEmptyString("data")
+};
+
+type UrlParametersCompressed = StructReturns<typeof TUrlParametersCompressed>;
+
+const decompress = flow(
+    decompressFromURI,
+    O.fromNullable,
+    O.chain(stringNotEmptyAsOption),
 );
 
+const decompressCompressedUrlParameter = flow(
+    ({ data }: UrlParametersCompressed) => data,
+    O.chain(decompress),
+    O.chain(getParametersFromString),
+);
+
+const decodeCompressedUrlParameter = pipe(
+    TUrlParametersCompressed,
+    sequenceS(RE.Apply),
+);
+
+const getRecordFromCompressedUrlParameter = flow(
+    decodeCompressedUrlParameter,
+    decompressCompressedUrlParameter,
+);
+
+const compress = compressToURI;
+
+export const compressToUrlParam = flow(
+    getStableStringFromParameters,
+    compress,
+    data => ({ data: stringNotEmptyAsOption(data) }),
+);
 //#endregion
+
+export type UrlDataOrigin = "FromCompressed" | "FromUrl";
+
+export const UrlDataOriginAdt = {
+    matchStrict: getUnionTypeMatcherStrict<UrlDataOrigin>(),
+    of: {
+        FromCompressed: "FromCompressed" as UrlDataOrigin,
+        FromUrl: "FromUrl" as UrlDataOrigin,
+    }
+};
+
+export const getParametersFromUrl = flow(
+    getRecordFromUrl,
+    urlParams => pipe(
+        // try decompressing compressed url data
+        getRecordFromCompressedUrlParameter(urlParams),
+        O.map(urlParams => ({
+            origin: UrlDataOriginAdt.of.FromCompressed,
+            urlParams
+        })),
+
+        // fall back to decoding plain url parameters if decompress fails
+        O.getOrElse(constant({
+            origin: UrlDataOriginAdt.of.FromUrl,
+            urlParams
+        })),
+    ),
+
+    evolve({
+        origin: identity<UrlDataOrigin>,
+        urlParams: decodeUrlParameters
+    }),
+);
+
+export const makeCurrentUrl = (location: BrowserData["location"]) => flow(
+    getStableStringFromParameters,
+    urlParamString => `${location.origin}#${urlParamString}`,
+);

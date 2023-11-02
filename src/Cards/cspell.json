@@ -2,6 +2,7 @@
     "version": "0.2",
     "language": "en",
     "words": [
+        "contramap",
         "elmish",
         "endregion",
         "esbuild",
@@ -11,6 +12,8 @@
         "nayuki",
         "Preact",
         "remixicon",
+        "riteway",
+        "stringification",
         "Threepwood",
         "VCARD",
         "vite",

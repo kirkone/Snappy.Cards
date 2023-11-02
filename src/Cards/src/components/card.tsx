@@ -22,6 +22,7 @@ import type { ADTType } from "@morphic-ts/adt";
 import type { FunctionComponent } from "preact";
 import { PageContent } from "./page-content";
 import { RemoteImageAdt } from "../model/remote-image";
+import { Simplify } from "type-fest";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
 import { getUnionTypeMatcherStrict } from "../utils/utils";
 
@@ -37,13 +38,14 @@ type Media = {
     github: O.Option<string>;
 };
 
-export type CardData =
+export type CardData = Simplify<
     & {
         name: O.Option<string>;
         job: O.Option<string>;
         sub: O.Option<string>;
     }
-    & Media;
+    & Media
+>;
 
 type CardProps = {
     data: CardData;
