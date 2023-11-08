@@ -38,15 +38,26 @@ export type AppData = {
 export const getAppDataFromUrlParams: FunctionN<[UrlParameters], AppData> = ({
     avatar,
     background,
-    twitter,
+    twt,
     x,
+    fb,
+    yt,
+    in: ins,
+    twc,
+    gh,
     ...rest
 }) => ({
     ...rest,
 
+    facebook: fb,
+    youtube: yt,
+    instagram: ins,
+    twitch: twc,
+    github: gh,
+
     twitter: pipe(
         x,
-        O.alt(constant(twitter))
+        O.alt(constant(twt))
     ),
 
     avatar: pipe(
@@ -90,12 +101,23 @@ export const appDataToUrlParams: FunctionN<[AppData], UrlParameters> = ({
     avatar,
     background,
     twitter,
+    facebook,
+    youtube,
+    instagram,
+    twitch,
+    github,
     ...rest
 }) => ({
     x: twitter,
 
     // deprecated, mapped to x
-    twitter: O.none,
+    twt: O.none,
+
+    fb: facebook,
+    yt: youtube,
+    in: instagram,
+    twc: twitch,
+    gh: github,
 
     avatar: pipe(
         avatar,
