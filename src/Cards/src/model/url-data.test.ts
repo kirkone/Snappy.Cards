@@ -14,22 +14,21 @@ describe("getStableStringFromParameters", () => {
             mail: O.some("2mail"),
             web: O.some("3web"),
             x: O.some("4twitter"),
-            instagram: O.some("5instagram"),
-            github: O.some("6github"),
-            twitter: O.some("7twitter"),
+            in: O.some("5instagram"),
+            gh: O.some("6github"),
             name: O.some("8name"),
             avatar: O.none,
-            youtube: O.some("9youtube"),
+            yt: O.some("9youtube"),
             phone: O.some("101234"),
-            facebook: O.some("11facebook"),
-            twitch: O.some("12twitch"),
+            fb: O.some("11facebook"),
+            twc: O.some("12twitch"),
             job: O.some("13job"),
             background: O.none,
         }),
         expected:
-            "facebook=11facebook&github=6github&instagram=5instagram&job=13job" +
-            "&mail=2mail&name=8name&phone=101234&sub=1sub&twitch=12twitch" +
-            "&twitter=7twitter&web=3web&x=4twitter&youtube=9youtube"
+            "fb=11facebook&gh=6github&in=5instagram&job=13job" +
+            "&mail=2mail&name=8name&phone=101234&sub=1sub&twc=12twitch" +
+            "&web=3web&x=4twitter&yt=9youtube"
     });
 
 });

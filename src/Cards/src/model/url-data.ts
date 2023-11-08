@@ -76,13 +76,13 @@ const TUrlParameters = {
     web: optionalNonEmptyString("web"),
     sub: optionalNonEmptyString("sub"),
 
-    twitter: optionalNonEmptyString("twt"),
+    twt: optionalNonEmptyString("twt"),
     x: optionalNonEmptyString("x"),
-    facebook: optionalNonEmptyString("fb"),
-    youtube: optionalNonEmptyString("yt"),
-    instagram: optionalNonEmptyString("in"),
-    twitch: optionalNonEmptyString("twc"),
-    github: optionalNonEmptyString("gh"),
+    fb: optionalNonEmptyString("fb"),
+    yt: optionalNonEmptyString("yt"),
+    in: optionalNonEmptyString("in"),
+    twc: optionalNonEmptyString("twc"),
+    gh: optionalNonEmptyString("gh"),
 
     avatar: optionalNonEmptyImageParam("avatar"),
     background: optionalNonEmptyImageParam("background"),
@@ -105,7 +105,7 @@ export type UrlParameters = StructReturns<typeof TUrlParameters>;
  * @private exported only for testing
  */
 export const getStableStringFromParameters = flow(
-    identity<UrlParameters | UrlParametersCompressed>,
+    identity<Omit<UrlParameters, "twt"> | UrlParametersCompressed>,
     R.filterMap(identity),
     R.toEntries,
     A.sort(sortStringEntriesByKey),
