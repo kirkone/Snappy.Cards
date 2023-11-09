@@ -6,19 +6,30 @@ import * as styles from "./card.css";
 
 import {
     ChevronDownIcon,
+    CpanIcon,
     FacebookIcon,
     GithubIcon,
     InstagramIcon,
+    LinkedInIcon,
     MailIcon,
+    NpmIcon,
+    PatreonIcon,
+    PaypalIcon,
+    PinterestIcon,
     SmartphoneIcon,
+    SnapchatIcon,
+    SoundcloudIcon,
+    SteamIcon,
     TwitchIcon,
     WebIcon,
     XIcon,
+    XingIcon,
     YoutubeIcon
 } from "./icons";
 import { constant, identity, pipe, tuple } from "fp-ts/function";
 
 import type { ADTType } from "@morphic-ts/adt";
+import { AppData } from "../model/app-data";
 import type { FunctionComponent } from "preact";
 import { PageContent } from "./page-content";
 import { RemoteImageAdt } from "../model/remote-image";
@@ -26,24 +37,30 @@ import { Simplify } from "type-fest";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
 import { getUnionTypeMatcherStrict } from "../utils/utils";
 
-type Media = {
-    phone: O.Option<string>;
-    mail: O.Option<string>;
-    web: O.Option<string>;
-    twitter: O.Option<string>;
-    facebook: O.Option<string>;
-    youtube: O.Option<string>;
-    instagram: O.Option<string>;
-    twitch: O.Option<string>;
-    github: O.Option<string>;
-};
+type Media = Pick<AppData,
+    | "phone"
+    | "mail"
+    | "web"
+    | "twitter"
+    | "facebook"
+    | "youtube"
+    | "instagram"
+    | "twitch"
+    | "github"
+    | "linkedIn"
+    | "xing"
+    | "paypal"
+    | "patreon"
+    | "pinterest"
+    | "npm"
+    | "soundcloud"
+    | "snapchat"
+    | "steam"
+    | "cpan"
+>;
 
 export type CardData = Simplify<
-    & {
-        name: O.Option<string>;
-        job: O.Option<string>;
-        sub: O.Option<string>;
-    }
+    & Pick<AppData, "name" | "job" | "sub">
     & Media
 >;
 
@@ -170,15 +187,36 @@ const Details: FunctionComponent<DetailProps> = ({
             {pipe(
                 // 1. define order, that is used for display
                 identity<Array<keyof Media>>([
+                    // business
                     "phone",
                     "mail",
                     "web",
+                    "linkedIn",
+                    "xing",
+
+                    // social media
                     "twitter",
                     "facebook",
                     "youtube",
                     "instagram",
-                    "twitch",
+                    "pinterest",
+                    "snapchat",
+
+                    // dev
                     "github",
+                    "npm",
+                    "cpan",
+
+                    // payment
+                    "paypal",
+                    "patreon",
+
+                    // gaming
+                    "twitch",
+                    "steam",
+
+                    // media
+                    "soundcloud",
                 ]),
 
                 // 2. get the value out of details, save ordered with its key
@@ -361,6 +399,97 @@ const getLinkForMedium = getUnionTypeMatcherStrict<keyof Media>()({
             <span>{value}</span>
         </a>
     ),
+
+    linkedIn: () => (value: string) => (
+        <a href={`https://www.linkedin.com/in/${encodeURIComponent(value)}`}
+            target="_blank">
+
+            <LinkedInIcon className={styles.detailIcon} />
+            <span>{value}</span>
+        </a>
+    ),
+
+    xing: () => (value: string) => (
+        <a href={`https://www.xing.com/profile/${encodeURIComponent(value)}`}
+            target="_blank">
+
+            <XingIcon className={styles.detailIcon} />
+            <span>{value}</span>
+        </a>
+    ),
+
+    paypal: () => (value: string) => (
+        <a href={`https://www.paypal.com/paypalme/${encodeURIComponent(value)}`}
+            target="_blank">
+
+            <PaypalIcon className={styles.detailIcon} />
+            <span>{value}</span>
+        </a>
+    ),
+
+    patreon: () => (value: string) => (
+        <a href={`https://www.patreon.com/${encodeURIComponent(value)}`}
+            target="_blank">
+
+            <PatreonIcon className={styles.detailIcon} />
+            <span>{value}</span>
+        </a>
+    ),
+
+    pinterest: () => (value: string) => (
+        <a href={`https://www.pinterest.com/${encodeURIComponent(value)}`}
+            target="_blank">
+
+            <PinterestIcon className={styles.detailIcon} />
+            <span>{value}</span>
+        </a>
+    ),
+
+    npm: () => (value: string) => (
+        <a href={`https://www.npmjs.com/~${encodeURIComponent(value)}`}
+            target="_blank">
+
+            <NpmIcon className={styles.detailIcon} />
+            <span>{value}</span>
+        </a>
+    ),
+
+    soundcloud: () => (value: string) => (
+        <a href={`https://soundcloud.com/${encodeURIComponent(value)}`}
+            target="_blank">
+
+            <SoundcloudIcon className={styles.detailIcon} />
+            <span>{value}</span>
+        </a>
+    ),
+
+    snapchat: () => (value: string) => (
+        <a href={`https://www.snapchat.com/add/${encodeURIComponent(value)}`}
+            target="_blank">
+
+            <SnapchatIcon className={styles.detailIcon} />
+            <span>{value}</span>
+        </a>
+    ),
+
+    steam: () => (value: string) => (
+        <a href={`https://steamcommunity.com/id/${encodeURIComponent(value)}`}
+            target="_blank">
+
+            <SteamIcon className={styles.detailIcon} />
+            <span>{value}</span>
+        </a>
+    ),
+
+    cpan: () => (value: string) => (
+        <a href={`https://metacpan.org/author/${encodeURIComponent(value)}`}
+            target="_blank">
+
+            <CpanIcon className={styles.detailIcon} />
+            <span>{value}</span>
+        </a>
+    ),
+
 });
 
 type LinkForMediumProps = {

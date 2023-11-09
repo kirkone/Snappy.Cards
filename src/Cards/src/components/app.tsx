@@ -466,6 +466,15 @@ const CardView: FunctionComponent<CardViewProps> = ({
                     "instagram",
                     "twitch",
                     "github",
+                    "linkedIn",
+                    "xing",
+                    "paypal",
+                    "patreon",
+                    "pinterest",
+                    "npm",
+                    "soundcloud",
+                    "snapchat",
+                    "steam",
                 ]),
             )}
             avatar={avatar}
