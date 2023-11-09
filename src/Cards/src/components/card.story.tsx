@@ -134,7 +134,7 @@ export const SingleCardOnlyThree = pipe(
                     data={{
                         name: O.some(`${faker.person.firstName()} ${faker.person.lastName()}`),
                         job: O.none,
-                        sub: O.some(faker.company.buzzVerb()),
+                        sub: O.none,
 
                         phone: O.none,
                         mail: O.none,
