@@ -2,7 +2,7 @@ import * as O from "fp-ts/Option";
 import * as styles from "./footer.css";
 
 import { BrowserDataAdt, matchOsMode, matchShareMode } from "../model/browser-data";
-import { ClipboardIcon, DownloadIcon, ErrorIcon, InfoIcon, LoaderIcon, ShareIosIcon, ShareMdIcon } from "./icons";
+import { CopyIcon, DownloadIcon, ErrorIcon, GithubFillIcon, LoaderIcon, ShareIosIcon, ShareMdIcon } from "./icons";
 import { constant, pipe } from "fp-ts/function";
 
 import type { ADTType } from "@morphic-ts/adt";
@@ -35,7 +35,7 @@ export const Footer: FunctionComponent<FooterProps> = ({
                 target="_blank"
                 className={styles.linkLeft}
             >
-                <InfoIcon />
+                <GithubFillIcon />
             </a>
 
             <ShareLink
@@ -101,7 +101,7 @@ const ShareLink: FunctionComponent<ShareLinkProps> = ({
                     shareMode,
                     matchShareMode({
                         none: constant(<></>),
-                        clipboard: constant(<ClipboardIcon />),
+                        clipboard: constant(<CopyIcon />),
                         share: () => pipe(
                             osMode,
                             matchOsMode({
