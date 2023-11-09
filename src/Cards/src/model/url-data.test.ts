@@ -23,12 +23,24 @@ describe("getStableStringFromParameters", () => {
             fb: O.some("11facebook"),
             twc: O.some("12twitch"),
             job: O.some("13job"),
+            li: O.some("14linkedIn"),
+            xi: O.some("15xing"),
+            pp: O.some("16paypal"),
+            pa: O.some("17patreon"),
+            pi: O.some("18pinterest"),
+            npm: O.some("19npm"),
+            sc: O.some("20soundcloud"),
+            sn: O.some("21snapchat"),
+            st: O.some("22steam"),
+            mc: O.some("23metacpan"),
             background: O.none,
         }),
         expected:
-            "fb=11facebook&gh=6github&in=5instagram&job=13job" +
-            "&mail=2mail&name=8name&phone=101234&sub=1sub&twc=12twitch" +
-            "&web=3web&x=4twitter&yt=9youtube"
+            "fb=11facebook&gh=6github&in=5instagram&job=13job&li=14linkedIn" +
+            "&mail=2mail&mc=23metacpan&name=8name&npm=19npm&pa=17patreon" +
+            "&phone=101234&pi=18pinterest&pp=16paypal&sc=20soundcloud" +
+            "&sn=21snapchat&st=22steam&sub=1sub&twc=12twitch&web=3web" +
+            "&x=4twitter&xi=15xing&yt=9youtube"
     });
 
 });
