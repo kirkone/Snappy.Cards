@@ -86,24 +86,63 @@ Your handle on x, formerly known as twitter.
 
 ### fb
 
-Your handle on facebook.
+Your handle on Facebook.
 
 ### yt
 
-Your handle on youtube.
+Your handle on Youtube.
 
 ### in
 
-Your handle on instagram.
+Your handle on Instagram.
 
 ### twc
 
-Your handle on twitch.
+Your handle on Twitch.
 
 ### gh
 
-Your handle on github.
+Your handle on Github.
 
+### li
+
+Your handle on LinkedIn.
+
+### xi
+
+Your handle on Xing.
+
+### pp
+
+Your handle for Paypal.me
+
+### pa
+
+Your handle on Patreon.
+
+### pi
+
+Your handle on Pinterest.
+
+### npm
+
+Your handle on npmjs.com
+
+### sc
+
+Your handle on Soundcloud.
+
+### sn
+
+Your handle on Snapchat.
+
+### st
+
+Your handle on Steam.
+
+### mc
+
+Your handle on metacpan.
 
 ## Authors
 
