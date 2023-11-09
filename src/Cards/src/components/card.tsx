@@ -111,15 +111,15 @@ export const Card: FunctionComponent<CardProps> = ({
                 )
             )}
 
-            <div className={styles.layoutBottom}>
-                {pipe(
-                    sub,
-                    O.fold(
-                        Empty,
-                        (s) => <span>{s}</span>
-                    )
-                )}
-            </div>
+            {pipe(
+                sub,
+                O.fold(
+                    Empty,
+                    (s) => <div className={styles.layoutBottom}>
+                        <span>{s}</span>
+                    </div>
+                )
+            )}
 
         </div>
     </PageContent>
