@@ -33,6 +33,16 @@ export type AppData = {
     instagram: O.Option<string>;
     twitch: O.Option<string>;
     github: O.Option<string>;
+    linkedIn: O.Option<string>;
+    xing: O.Option<string>;
+    paypal: O.Option<string>;
+    patreon: O.Option<string>;
+    pinterest: O.Option<string>;
+    npm: O.Option<string>;
+    soundcloud: O.Option<string>;
+    snapchat: O.Option<string>;
+    steam: O.Option<string>;
+    cpan: O.Option<string>;
 };
 
 export const getAppDataFromUrlParams: FunctionN<[UrlParameters], AppData> = ({
@@ -45,6 +55,16 @@ export const getAppDataFromUrlParams: FunctionN<[UrlParameters], AppData> = ({
     in: ins,
     twc,
     gh,
+    li,
+    xi,
+    pp,
+    pa,
+    pi,
+    npm,
+    sc,
+    sn,
+    st,
+    mc,
     ...rest
 }) => ({
     ...rest,
@@ -54,6 +74,16 @@ export const getAppDataFromUrlParams: FunctionN<[UrlParameters], AppData> = ({
     instagram: ins,
     twitch: twc,
     github: gh,
+    linkedIn: li,
+    xing: xi,
+    paypal: pp,
+    patreon: pa,
+    pinterest: pi,
+    npm: npm,
+    soundcloud: sc,
+    snapchat: sn,
+    steam: st,
+    cpan: mc,
 
     twitter: pipe(
         x,
@@ -106,6 +136,16 @@ export const appDataToUrlParams: FunctionN<[AppData], UrlParameters> = ({
     instagram,
     twitch,
     github,
+    linkedIn,
+    xing,
+    paypal,
+    patreon,
+    pinterest,
+    npm,
+    soundcloud,
+    snapchat,
+    steam,
+    cpan,
     ...rest
 }) => ({
     x: twitter,
@@ -118,6 +158,16 @@ export const appDataToUrlParams: FunctionN<[AppData], UrlParameters> = ({
     in: instagram,
     twc: twitch,
     gh: github,
+    li: linkedIn,
+    xi: xing,
+    pp: paypal,
+    pa: patreon,
+    pi: pinterest,
+    npm: npm,
+    sc: soundcloud,
+    sn: snapchat,
+    st: steam,
+    mc: cpan,
 
     avatar: pipe(
         avatar,

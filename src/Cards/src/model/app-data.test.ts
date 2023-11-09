@@ -6,7 +6,7 @@ import { assert } from "../utils/riteway";
 import { describe } from "vitest";
 import { pipe } from "fp-ts/function";
 
-describe("appData should survive a round trip to url params", () => {
+describe("appData", () => {
     const testData: AppData = {
         name: O.some("name"),
         job: O.some("job"),
@@ -22,11 +22,21 @@ describe("appData should survive a round trip to url params", () => {
         instagram: O.some("instagram"),
         twitch: O.some("twitch"),
         github: O.some("github"),
+        linkedIn: O.some("linkedIn"),
+        xing: O.some("xing"),
+        paypal: O.some("paypal"),
+        patreon: O.some("patreon"),
+        pinterest: O.some("pinterest"),
+        npm: O.some("npm"),
+        soundcloud: O.some("soundcloud"),
+        snapchat: O.some("snapchat"),
+        steam: O.some("steam"),
+        cpan: O.some("cpan"),
     };
 
     assert({
         given: "appData",
-        should: "survive appDataToUrlParams => getAppDataFromUrlParams",
+        should: "survive a round trip serializing to and from url data",
         actual: pipe(
             testData,
             appDataToUrlParams,
