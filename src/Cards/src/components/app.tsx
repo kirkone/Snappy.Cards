@@ -439,6 +439,7 @@ const CardView: FunctionComponent<CardViewProps> = ({
     appData,
     avatar,
     expanded,
+
     onExpandClick
 }) => pipe(
     appData,
@@ -450,7 +451,9 @@ const CardView: FunctionComponent<CardViewProps> = ({
         </>,
         Loaded: appData => <Card
             expanded={expanded}
+            maximumDetailsVisible={appData.config.maximumDetailsVisible}
             onExpandClick={onExpandClick}
+
             data={pipe(
                 appData,
                 pick([

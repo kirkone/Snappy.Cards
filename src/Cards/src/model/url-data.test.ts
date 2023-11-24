@@ -34,6 +34,7 @@ describe("getStableStringFromParameters", () => {
             st: O.some("22steam"),
             mc: O.some("23metacpan"),
             background: O.none,
+            cfgMaxDetails: O.none
         }),
         expected:
             "fb=11facebook&gh=6github&in=5instagram&job=13job&li=14linkedIn" +
