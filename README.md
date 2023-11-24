@@ -144,6 +144,14 @@ Your handle on Steam.
 
 Your handle on metacpan.
 
+### cfgMaxDetails
+
+Configuration option to determine, how many detail lines are going te be shown.
+If the number of detail lines exceeds this configuration option, a button for
+toggling the visibility of the remaining detail lines will be shown.
+
+Default is to display all detail lines.
+
 ## Authors
 
 -   **Kirsten Kluge** - _Initial work_ - [kirkone](https://github.com/kirkone)
