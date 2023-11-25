@@ -68,6 +68,8 @@ type CardProps = {
     data: CardData;
     avatar: ADTType<typeof RemoteImageAdt>;
     expanded: boolean;
+    maximumDetailsVisible: O.Option<number>;
+
     onExpandClick: VoidFunction;
 };
 
@@ -75,6 +77,7 @@ export const Card: FunctionComponent<CardProps> = ({
     data: { sub, name, job, ...media },
     avatar,
     expanded,
+    maximumDetailsVisible,
 
     onExpandClick,
 }) => (
@@ -106,6 +109,7 @@ export const Card: FunctionComponent<CardProps> = ({
                         job={job}
                         media={media}
                         expanded={expanded}
+                        maximumDetailsVisible={maximumDetailsVisible}
                         onExpandClick={onExpandClick}
                     />
                 )
@@ -131,6 +135,7 @@ type DetailProps = {
     name: O.Option<string>;
     job: O.Option<string>;
     media: Media;
+    maximumDetailsVisible: O.Option<number>;
 
     expanded: boolean;
     onExpandClick: VoidFunction;
@@ -140,16 +145,17 @@ const Details: FunctionComponent<DetailProps> = ({
     name,
     job,
     media,
+    maximumDetailsVisible,
 
     expanded,
     onExpandClick,
 }) => {
-    const visibleMedia = pipe(
-        job,
+    const splitDetails = pipe(
+        maximumDetailsVisible,
         O.fold(
-            constant(3),
-            constant(2),
-        )
+            constant(a => [a, []]),
+            A.splitAt,
+        ),
     );
 
     const headingClassName = pipe(
@@ -228,7 +234,7 @@ const Details: FunctionComponent<DetailProps> = ({
                 )),
 
                 A.compact,
-                A.splitAt(visibleMedia),
+                splitDetails,
 
                 // 3. render
                 ([details, extendedDetails]) => <>

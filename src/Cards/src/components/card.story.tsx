@@ -113,6 +113,7 @@ const SingleCardAll = pipe(
                         remoteUrl: avatar,
                         objectUrl: avatar
                     })}
+                    maximumDetailsVisible={O.some(5)}
                 />
             </div>;
         }
@@ -160,6 +161,7 @@ export const SingleCardOnlyThree = pipe(
                         remoteUrl: avatar,
                         objectUrl: avatar
                     })}
+                    maximumDetailsVisible={O.none}
                 />
             </div>;
         }
@@ -207,6 +209,7 @@ export const SingleCardWithJobOnlyTwo = pipe(
                         remoteUrl: avatar,
                         objectUrl: avatar
                     })}
+                    maximumDetailsVisible={O.none}
                 />
             </div>;
         }
@@ -254,6 +257,7 @@ export const SingleCardWithJobOnlyThree = pipe(
                         remoteUrl: avatar,
                         objectUrl: avatar
                     })}
+                    maximumDetailsVisible={O.none}
                 />
             </div>;
         }
@@ -283,6 +287,7 @@ const Permutations = pipe(
                             }),
                         ),
                     )}
+                    maximumDetailsVisible={O.none}
                 />
             </div>;
         }),

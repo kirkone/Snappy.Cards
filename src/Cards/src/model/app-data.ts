@@ -43,6 +43,10 @@ export type AppData = {
     snapchat: O.Option<string>;
     steam: O.Option<string>;
     cpan: O.Option<string>;
+
+    config: {
+        maximumDetailsVisible: O.Option<number>;
+    };
 };
 
 export const getAppDataFromUrlParams: FunctionN<[UrlParameters], AppData> = ({
@@ -65,6 +69,9 @@ export const getAppDataFromUrlParams: FunctionN<[UrlParameters], AppData> = ({
     sn,
     st,
     mc,
+
+    cfgMaxDetails,
+
     ...rest
 }) => ({
     ...rest,
@@ -125,6 +132,10 @@ export const getAppDataFromUrlParams: FunctionN<[UrlParameters], AppData> = ({
             onUrl: url => ImageDataAdt.of.Url({ url }),
         }))
     ),
+
+    config: {
+        maximumDetailsVisible: cfgMaxDetails
+    }
 });
 
 export const appDataToUrlParams: FunctionN<[AppData], UrlParameters> = ({
@@ -146,6 +157,9 @@ export const appDataToUrlParams: FunctionN<[AppData], UrlParameters> = ({
     snapchat,
     steam,
     cpan,
+
+    config,
+
     ...rest
 }) => ({
     x: twitter,
@@ -184,6 +198,8 @@ export const appDataToUrlParams: FunctionN<[AppData], UrlParameters> = ({
             Url: ({ url }) => url,
         })),
     ),
+
+    cfgMaxDetails: config.maximumDetailsVisible,
 
     ...rest,
 });

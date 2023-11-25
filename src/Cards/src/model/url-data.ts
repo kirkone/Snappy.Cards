@@ -6,6 +6,7 @@ import * as R from "fp-ts/Record";
 import * as RE from "fp-ts/Reader";
 import * as S from "fp-ts/string";
 import * as URL_SP from "fp-ts-std/URLSearchParams";
+import * as NUM from "fp-ts-std/Number";
 
 import { compressToURI, decompressFromURI } from "lz-ts";
 import { constant, flow, identity, pipe } from "fp-ts/function";
@@ -59,8 +60,15 @@ const nonEmptyStringCombinator = (
     O.chain(stringNotEmptyAsOption)
 );
 
-const optionalString = (lookup)<string>;
-const optionalImageParam = (lookup)<ImageParam>;
+const optionalString = lookup<string>;
+const optionalImageParam = lookup<ImageParam>;
+const optionalPositiveSmallInt = flow(
+    optionalString,
+    RE.map(O.chain(flow(
+        NUM.fromString, // implementation based on parseInt
+        O.chain(O.fromPredicate(x => x >= 1 && x <= 128))
+    ))),
+);
 
 const optionalNonEmptyString = flow(optionalString, nonEmptyStringCombinator);
 const optionalNonEmptyImageParam = flow(
@@ -94,6 +102,8 @@ const TUrlParameters = {
     st: optionalNonEmptyString("st"),
     mc: optionalNonEmptyString("mc"),
 
+    cfgMaxDetails: optionalPositiveSmallInt("cfgMaxDetails"),
+
     avatar: optionalNonEmptyImageParam("avatar"),
     background: optionalNonEmptyImageParam("background"),
 };
@@ -116,7 +126,7 @@ export type UrlParameters = StructReturns<typeof TUrlParameters>;
  */
 export const getStableStringFromParameters = flow(
     identity<Omit<UrlParameters, "twt"> | UrlParametersCompressed>,
-    R.filterMap(identity),
+    R.filterMap(O.map((x: string | number) => `${x}`)),
     R.toEntries,
     A.sort(sortStringEntriesByKey),
     // TODO: improve URL handling to return type of `URL_SP.fromString`
