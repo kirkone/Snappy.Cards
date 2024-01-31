@@ -1,4 +1,4 @@
-import { createVar, style } from "@vanilla-extract/css";
+import { createVar, globalStyle, style } from "@vanilla-extract/css";
 
 import { varsApp } from "../theme/variables.css";
 
@@ -18,4 +18,11 @@ export const page = style({
     minWidth: "20rem",
     margin: "0 auto",
     padding: `0 ${varsApp.space.large}`,
+
+    // click through page
+    pointerEvents: "none"
+});
+
+globalStyle(`${page} > *`, {
+    pointerEvents: "auto"
 });
