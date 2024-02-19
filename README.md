@@ -62,19 +62,19 @@ A water mark showed on the bottom of the card. Can be any sort of text.
 
 This is the avatar image on the card. There are the following options:
 
-**Unsplash Image** Use an ID from [unsplash.com](https://unsplash.com/). You could copy it easily from the URL of a specific image.
-**random** A image of a person will randomly taken from [unsplash.com](https://unsplash.com/)
-**Image URL** You can provide an URL to your own image.
-**blank** Leaf the parameter empty or omit it complete and no avatar will be shown.
+**Unsplash Image**: Use an ID from [unsplash.com](https://unsplash.com/). You could copy it easily from the URL of a specific image.  
+**random**: A image of a person will randomly taken from [unsplash.com](https://unsplash.com/)  
+**Image URL**: You can provide an URL to your own image.  
+**empty**: Leave the parameter empty or omit it completely and no avatar will be shown.
 
 ### background
 
 This is the background image of the card. There are the following options:
 
-**Unsplash Image** Use an ID from [unsplash.com](https://unsplash.com/). You could copy it easily from the URL of a specific image.
-**random** A somewhat blurry image will randomly taken from [unsplash.com](https://unsplash.com/)
-**Image URL** You can provide an URL to your own image.
-**blank** Leaf the parameter empty or omit it complete and the background will be blank.
+**Unsplash Image**: Use an ID from [unsplash.com](https://unsplash.com/). You could copy it easily from the URL of a specific image.  
+**random**: A somewhat blurry image will randomly taken from [unsplash.com](https://unsplash.com/)  
+**Image URL**: You can provide an URL to your own image.  
+**empty**: Leave the parameter empty or omit it completely and the background will be blank.
 
 ### twt - *deprecated, use "x" instead*
 
