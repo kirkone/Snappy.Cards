@@ -407,7 +407,7 @@ export const view: PreactView<Model, Msg> = (dispatch, model) => (
                 browserData={model.browserData}
             />
         </Page>
-        <Page align="end" fit="content">
+        <Page align="end">
             <Footer
                 downloadUrl={model.vCardData}
                 name={pipe(
