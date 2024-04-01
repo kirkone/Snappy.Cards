@@ -34,6 +34,8 @@ export const CopyIcon = makeIcon("file-copy-line");
 export const ShareMdIcon = makeIcon("share-fill");
 export const ShareIosIcon = makeIcon("share-box-line");
 export const GithubFillIcon = makeIcon("github-fill");
+export const CardIcon = makeIcon("id-card-line");
+export const QrCodeIcon = makeIcon("qr-code-line");
 
 export const SmartphoneIcon = makeIcon("smartphone-line");
 export const MailIcon = makeIcon("mail-line");

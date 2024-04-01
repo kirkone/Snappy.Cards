@@ -1,4 +1,4 @@
-import { createVar, fallbackVar, globalStyle, style } from "@vanilla-extract/css";
+import { createVar, fallbackVar, style } from "@vanilla-extract/css";
 
 import { varsApp } from "../theme/variables.css";
 

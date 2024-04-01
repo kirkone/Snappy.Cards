@@ -29,7 +29,7 @@ export const Footer: FunctionComponent<FooterProps> = ({
 
     onShareClick,
 }) => (
-    <PageContent className={`${styles.container} ${className}`}>
+    <PageContent className={className}>
         <footer className={`${styles.footer} ${styles.textColor}`}>
             <a href="https://github.com/kirkone/Snappy.Cards"
                 target="_blank"
