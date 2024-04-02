@@ -13,22 +13,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🚛
-        uses: actions/checkout@v3
+        uses: actions/checkout@master
 
       - name: Setup node 🔧
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@master
         with:
-          node-version: '19'
+          node-version: 'lts/*'
+          check-latest: true
 
       - name: Install and Build 🔨
         run: |
           npm -v
-          npm install
+          npm install --no-fund
           npm run-script check:cards
           npm run-script build:cards
 
       - name: Upload artifact 📦
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@master
         with:
           # Upload the build output
           path: './build'
@@ -52,4 +53,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages 🚀
         id: deployment
-        uses: actions/deploy-pages@v1
+        uses: actions/deploy-pages@master
