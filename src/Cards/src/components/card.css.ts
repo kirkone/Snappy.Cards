@@ -86,13 +86,6 @@ export const avatar = style({
     objectFit: "cover",
 });
 
-export const detail = style({
-    // for dark / light mode switching
-    transition: "color 1s",
-
-    color: varsApp.color.text.hex,
-});
-
 export const detailHeading = style({
     fontSize: "2.5rem",
     fontWeight: 600,
@@ -111,13 +104,6 @@ export const detailSubHeading = style({
 
 export const headingMarginBig = style({
     paddingBottom: varsApp.space.large
-});
-
-export const detailLine = style({
-    // control text overflow
-    ...ellipsisLine,
-
-    lineHeight: 2,
 });
 
 export const detailIcon = style({

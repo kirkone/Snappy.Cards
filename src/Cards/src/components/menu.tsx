@@ -1,22 +1,26 @@
 import * as Routes from "../model/routes";
 import * as styles from "./menu.css";
 
-import { CardIcon, GithubFillIcon, InfoIcon, QrCodeIcon, ShareMdIcon, TwitchIcon } from "./icons";
+import { CardIcon, QrCodeIcon, ShareIosIcon, ShareMdIcon } from "./icons";
+import { constant, flow, pipe } from "fp-ts/function";
 
+import { ADTType } from "@morphic-ts/adt";
+import { BrowserDataAdt } from "../model/browser-data";
 import type { FunctionComponent } from "preact";
 import { PageContent } from "./page-content";
 import type { Route } from "../model/routes";
-import { flow } from "fp-ts/function";
 
 // eslint-disable-next-line functional/no-mixed-types
 type MenuProps = {
     className?: string;
+    browserData: ADTType<typeof BrowserDataAdt>;
 
     onClick: (clicked: Route) => void;
 };
 
 export const Menu: FunctionComponent<MenuProps> = ({
     className = "",
+    browserData,
 
     onClick,
 }) => (
@@ -39,9 +43,19 @@ export const Menu: FunctionComponent<MenuProps> = ({
 
                 <a href="" onClick={flow(
                     preventDefault,
-                    () => onClick(Routes.as.Info),
+                    () => onClick(Routes.as.Share),
                 )} >
-                    <InfoIcon />
+                    {pipe(
+                        browserData,
+                        BrowserDataAdt.matchStrict({
+                            NotLoaded: constant(<ShareMdIcon />),
+                            Loading: constant(<ShareMdIcon />),
+                            Failure: constant(<ShareMdIcon />),
+                            Loaded: ({ osMode }) => osMode === "ios" ?
+                                <ShareIosIcon /> :
+                                <ShareMdIcon />,
+                        }),
+                    )}
                 </a>
             </menu>
         </PageContent>
