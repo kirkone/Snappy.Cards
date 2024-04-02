@@ -18,7 +18,7 @@ import { constant, identity, pipe } from "fp-ts/function";
 import { getWindowTitleFromAppData, setWindowTitle } from "../model/window-title";
 
 import { Card } from "./card";
-import { Footer } from "./footer";
+import { SharePage } from "./share-page";
 import type { FunctionComponent } from "preact";
 import { Page } from "./page";
 import type { PreactView } from "@fun-ts/elmish-preact";
@@ -418,8 +418,8 @@ export const view: PreactView<Model, Msg> = (dispatch, model) => (
                 browserData={model.browserData}
             />
         </Page>
-        <Page route={Routes.of.Info}>
-            <Footer
+        <Page route={Routes.of.Share}>
+            <SharePage
                 downloadUrl={model.vCardData}
                 name={pipe(
                     model.appData,
@@ -430,7 +430,10 @@ export const view: PreactView<Model, Msg> = (dispatch, model) => (
                 onShareClick={() => dispatch(MsgAdt.as.Share({}))}
             />
         </Page>
-        <Menu onClick={route => dispatch(MsgAdt.as.Navigate({ route }))} />
+        <Menu
+            browserData={model.browserData}
+            onClick={route => dispatch(MsgAdt.as.Navigate({ route }))}
+        />
     </div>
 );
 

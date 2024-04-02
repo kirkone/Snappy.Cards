@@ -7,7 +7,7 @@ export type Route = ValueOf<typeof Routes>;
 const Routes = {
     Card: "Card",
     Qr: "Qr",
-    Info: "Info",
+    Share: "Share",
 } as const;
 
 export const as = Routes;
@@ -15,14 +15,14 @@ export const as = Routes;
 export const of: Record<Route, Route> = Routes;
 
 export const match = <R>(
-    { Card, Qr, Info }: { [T in Route]: (v: T) => R }
+    { Card, Qr, Share }: { [T in Route]: (v: T) => R }
 ) => (
     value: Route
 ) => {
         switch (value) {
             case "Card": return Card(value);
             case "Qr": return Qr(value);
-            case "Info": return Info(value);
+            case "Share": return Share(value);
             default: return absurd<Route>(value);
         }
     };

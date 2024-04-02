@@ -1,4 +1,5 @@
-import type { FunctionComponent } from "preact";
+import type { FunctionComponent, JSX } from "preact";
+
 import sprite from "../assets/remixicon.symbol.svg";
 
 // Following https://dev.to/askrodney/deno-fresh-svg-sprites-optimized-icons-3dpg
@@ -8,7 +9,7 @@ import sprite from "../assets/remixicon.symbol.svg";
 // 3. Copy remixicon.symbol.svg to src/assets
 
 type IconProps = {
-    className?: string;
+    className?: JSX.HTMLAttributes["className"];
     size?: number;
 };
 
