@@ -1,0 +1,17 @@
+name: Delete deployment on PR Close
+
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  delete_folder:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete Folder in Azure Blob Storage
+        uses: azure/cli@v2
+        with:
+          inlineScript: |
+            # Use Azure CLI to delete the folder
+            az storage blob delete-batch --source '$web' --pattern "pr-${{ github.event.pull_request.number }}*" --account-name snappycards --sas-token "${{ secrets.AZURE_SAS_TOKEN }}"
