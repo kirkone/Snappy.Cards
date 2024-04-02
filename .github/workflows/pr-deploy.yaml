@@ -1,0 +1,84 @@
+name: Deploy to Azure Blob Storage
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🚛
+        uses: actions/checkout@master
+
+      - name: Setup node 🔧
+        uses: actions/setup-node@master
+        with:
+          node-version: 'lts/*'
+          check-latest: true
+
+      - name: Install and Build 🔨
+        run: |
+          npm -v
+          npm install --no-fund
+          npm run-script check:cards
+          npm run-script build:cards -- -- --base=/pr-${{ github.event.pull_request.number }}/
+
+      - name: Upload artifact 📦
+        uses: actions/upload-artifact@master
+        with:
+          # Upload the build output
+          name: pr-build
+          path: './build'
+  deploy:
+    name: Deploy
+    # Add a dependency to the build job
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download artifact 📦
+        uses: actions/download-artifact@master
+        with:
+          # Download the build output
+          name: pr-build
+          path: './build'
+
+      - name: Upload to Azure Blob Storage
+        run: |
+          az storage blob upload-batch --source ./build --destination '$web/pr-${{ github.event.pull_request.number }}' --account-name snappycards --overwrite --sas-token "${{ secrets.AZURE_SAS_TOKEN }}"
+
+  update-pr:
+    name: Update PR
+    # Add a dependency to the deploy job
+    needs: deploy
+    runs-on: ubuntu-latest
+
+    # Deploy to the development environment
+    environment:
+      name: development
+      url: ${{ steps.environment.outputs.result }}
+    steps:
+      - name: Create environment URL 🥁
+        id: environment
+        uses: actions/github-script@master
+        with:
+          script: |
+            const prNumber = context.payload.pull_request.number;
+            const staticWebAppUrl = `https://snappycards.z1.web.core.windows.net/pr-${prNumber}/`;
+            const staticWebAppParameter = "#name=Max%20Mustermann&phone=%2b49%20123%204567890&mail=me@mail.com&web=awesomesite.com&avatar=ygEyXBClJhA&background=grOCtxtBrDg&job=Toller%20Typ&sub==^..^=";
+            /*
+            const comment = `The preview for this PR is deployed!  
+            You can access it here:  
+            [${staticWebAppUrl}](${staticWebAppUrl}${staticWebAppParameter})`;
+            github.rest.issues.createComment({
+              issue_number: prNumber,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment,
+            });
+            */
+
+            return staticWebAppUrl + staticWebAppParameter
+          result-encoding: string
