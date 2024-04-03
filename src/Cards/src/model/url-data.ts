@@ -5,6 +5,7 @@ import * as P from "fp-ts/Predicate";
 import * as R from "fp-ts/Record";
 import * as RE from "fp-ts/Reader";
 import * as S from "fp-ts/string";
+import * as URL from "fp-ts-std/URL";
 import * as URL_SP from "fp-ts-std/URLSearchParams";
 import * as NUM from "fp-ts-std/Number";
 
@@ -249,5 +250,12 @@ export const getParametersFromUrl = flow(
 
 export const makeCurrentUrl = (location: BrowserData["location"]) => flow(
     getStableStringFromParameters,
-    urlParamString => `${location.origin}#${urlParamString}`,
+    urlParamString => pipe(
+        URL.unsafeParse(location.href),
+        url => {
+            url.hash = urlParamString;
+            return url;
+        },
+        url => url.toString(),
+    ),
 );
