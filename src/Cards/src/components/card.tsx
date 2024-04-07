@@ -92,10 +92,10 @@ export const Card: FunctionComponent<CardProps> = ({
                     // TODO: Loading animation for avatar
                     Loading: Empty,
                     Loaded: ({ objectUrl }) => <div className={styles.layoutNarrow}>
-                        <Avatar url={objectUrl} />
+                        <Avatar url={objectUrl} name={name} />
                     </div>,
                     Failure: ({ error }) => <div className={styles.layoutNarrow}>
-                        <Avatar url={error.remoteUrl} />
+                        <Avatar url={error.remoteUrl} name={name} />
                     </div>,
                 })
             )}
@@ -288,11 +288,21 @@ const Details: FunctionComponent<DetailProps> = ({
 
 type AvatarProps = {
     url: string;
+    name: O.Option<string>;
 };
 
-const Avatar: FunctionComponent<AvatarProps> = ({ url }) => (
+const Avatar: FunctionComponent<AvatarProps> = ({ url, name }) => (
     <div className={styles.avatarCircle}>
-        <img src={url} className={styles.avatar} />
+        <img src={url}
+            className={styles.avatar}
+            alt={pipe(
+                name,
+                O.fold(
+                    constant("Avatar"),
+                    name => `Avatar of ${name}`
+                )
+            )}
+        />
     </div>
 );
 

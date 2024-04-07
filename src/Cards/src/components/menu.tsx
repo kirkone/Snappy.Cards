@@ -29,24 +29,36 @@ export const Menu: FunctionComponent<MenuProps> = ({
     <header className={styles.header}>
         <PageContent className={`${className} ${styles.wrapper}`}>
             <menu className={`${styles.menu}`}>
-                <a href="" onClick={flow(
-                    preventDefault,
-                    () => onClick(Routes.as.Card),
-                )} >
+                <a name={`LinkTo${Routes.as.Card}`}
+                    aria-label={`Navigate to ${Routes.as.Card}`}
+                    href={`#${Routes.as.Card}`}
+                    onClick={flow(
+                        preventDefault,
+                        () => onClick(Routes.as.Card),
+                    )}
+                >
                     <CardIcon />
                 </a>
 
-                <a href="" onClick={flow(
-                    preventDefault,
-                    () => onClick(Routes.as.Qr),
-                )} >
+                <a name={`LinkTo${Routes.as.Qr}`}
+                    aria-label={`Navigate to ${Routes.as.Qr}`}
+                    href={`#${Routes.as.Qr}`}
+                    onClick={flow(
+                        preventDefault,
+                        () => onClick(Routes.as.Qr),
+                    )}
+                >
                     <QrCodeIcon />
                 </a>
 
-                <a href="" onClick={flow(
-                    preventDefault,
-                    () => onClick(Routes.as.Share),
-                )} >
+                <a name={`LinkTo${Routes.as.Share}`}
+                    aria-label={`Navigate to ${Routes.as.Share}`}
+                    href={`#${Routes.as.Share}`}
+                    onClick={flow(
+                        preventDefault,
+                        () => onClick(Routes.as.Share),
+                    )}
+                >
                     {pipe(
                         browserData,
                         BrowserDataAdt.matchStrict({
