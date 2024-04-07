@@ -1,14 +1,16 @@
+import * as A from "fp-ts/Array";
 import * as Routes from "../model/routes";
 import * as styles from "./menu.css";
 
 import { CardIcon, QrCodeIcon, ShareIosIcon, ShareMdIcon } from "./icons";
-import { constant, flow, pipe } from "fp-ts/function";
+import { constant, flow, identity, pipe } from "fp-ts/function";
 
 import { ADTType } from "@morphic-ts/adt";
 import { BrowserDataAdt } from "../model/browser-data";
 import type { FunctionComponent } from "preact";
 import { PageContent } from "./page-content";
 import type { Route } from "../model/routes";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 
 // eslint-disable-next-line functional/no-mixed-types
 type MenuProps = {
@@ -58,9 +60,29 @@ export const Menu: FunctionComponent<MenuProps> = ({
                     )}
                 </a>
             </menu>
+            <div className={styles.navActiveWrapper}>
+                <svg className={styles.svg} viewBox="0 0 86 8">
+                    {pipe(
+                        dotArray,
+                        A.map(
+                            i => <circle
+                                style={assignInlineVars({
+                                    [styles.CSSVarAnimationIndex]: `${i}`
+                                })}
+
+                                className={styles.dot}
+                                r={4}
+                                cy={4}
+                            />
+                        )
+                    )}
+                </svg>
+            </div>
         </PageContent>
     </header>
 );
+
+const dotArray = A.makeBy(3, identity);
 
 const preventDefault = (e: JSX.TargetedMouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();

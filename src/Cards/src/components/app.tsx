@@ -29,6 +29,7 @@ import { evolve } from "fp-ts/struct";
 import { pick } from "fp-ts-std/Struct";
 import { Menu } from "./menu";
 import * as Routes from "../model/routes";
+import { CSSVarScrollPercentage } from "./menu.css";
 
 // #endregion
 
@@ -393,6 +394,7 @@ export const update: Update<Model, Msg> = (model, msg) => pipe(
 // ============================================================================
 export const view: PreactView<Model, Msg> = (dispatch, model) => (
     <div class={`${styles.app} ${theme.defaultTheme}`}
+        onScroll={synchronizeScrollToCSS}
         style={assignInlineVars({
             [styles.CssVarBackground]: pipe(
                 model.backgroundImage,
@@ -541,4 +543,32 @@ const QrCodeView: FunctionComponent<QrCodeViewProps> = ({
         ),
     })
 );
+//#endregion
+
+// ============================================================================
+// #region Helper replacing scroll-timeline with CSS Variable
+// ============================================================================
+const CSSVarScrollPercentageName = pipe(
+    CSSVarScrollPercentage,
+    s => s.replace(/var\(([^)]+)\)/, (_, name) => name)
+);
+
+const synchronizeScrollToCSS = ({
+    currentTarget: ct
+}: JSX.TargetedUIEvent<HTMLDivElement>) => {
+    const scrolled = ct.scrollHeight > ct.scrollWidth ?
+        ct.scrollTop / (ct.scrollHeight - window.innerHeight) :
+        ct.scrollLeft / (ct.scrollWidth - window.innerWidth);
+
+    const scrollPercent = `${scrolled * 100}%`;
+
+    // bypass render loop of preact, not to trigger reconciliation
+    // 60 times a second only for animation purposes
+    requestAnimationFrame(() => {
+        document
+            .documentElement
+            .style
+            .setProperty(CSSVarScrollPercentageName, scrollPercent);
+    });
+};
 //#endregion

@@ -1,4 +1,5 @@
-import { style } from "@vanilla-extract/css";
+import { createVar, fallbackVar, style } from "@vanilla-extract/css";
+
 import { varsApp } from "../theme/variables.css";
 
 export const header = style({
@@ -25,4 +26,30 @@ export const menu = style({
     gap: varsApp.space.medium,
 
     color: varsApp.color.dark.hex,
+});
+
+// ============================================================================
+// Animation
+// scroll-timeline is widely supported yet as of 2024-04-07
+// otherwise scroll-timeline could replace css CSSVarScrollPercentage
+// ============================================================================
+export const CSSVarScrollPercentage = createVar();
+export const CSSVarAnimationIndex = createVar();
+
+export const navActiveWrapper = style({
+    color: varsApp.color.dark.hex,
+});
+
+export const dot = style({
+    fill: "currentcolor",
+    transform: `translateX(${fallbackVar(CSSVarScrollPercentage, "0%")})`,
+    transitionDelay: `calc(${CSSVarAnimationIndex} * 5ms)`,
+    transitionTimingFunction: "linear",
+    willChange: "transform"
+});
+
+export const svg = style({
+    height: 6,
+    width: 86,
+    display: "block"
 });
