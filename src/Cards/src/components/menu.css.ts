@@ -1,5 +1,6 @@
 import { createVar, fallbackVar, style } from "@vanilla-extract/css";
 
+import { calc } from "@vanilla-extract/css-utils";
 import { varsApp } from "../theme/variables.css";
 
 export const header = style({
@@ -43,7 +44,7 @@ export const navActiveWrapper = style({
 export const dot = style({
     fill: "currentcolor",
     transform: `translateX(${fallbackVar(CSSVarScrollPercentage, "0%")})`,
-    transitionDelay: `calc(${CSSVarAnimationIndex} * 5ms)`,
+    transitionDelay: calc.multiply(CSSVarAnimationIndex, "2ms"),
     transitionTimingFunction: "linear",
     willChange: "transform"
 });
