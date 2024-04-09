@@ -28,7 +28,7 @@
   "devDependencies": {
   },
   "overrides": {
-    "vite": "4.4.9",
-    "typescript": "5.2.2"
+    "vite": "5.2.8",
+    "typescript": "5.4.4"
   }
 }

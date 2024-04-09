@@ -44,7 +44,7 @@ module.exports = {
                 "argsIgnorePattern": "^_"
             }
         ],
-        "functional/no-mixed-type": "off",
+        "functional/no-mixed-types": "off",
         "functional/no-loop-statements": "error",
         "fp-ts/no-module-imports": "off"
     }
