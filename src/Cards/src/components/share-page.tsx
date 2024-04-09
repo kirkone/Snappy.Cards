@@ -45,7 +45,8 @@ export const SharePage: FunctionComponent<SharePageProps> = ({
             <DetailLine>
                 <DetailLink
                     icon={GithubFillIcon}
-                    caption="Open Source on github"
+                    caption="Documentation and code on GitHub"
+
                     href="https://github.com/kirkone/Snappy.Cards"
                     target="_blank"
                 />
@@ -86,7 +87,8 @@ const DownloadLink: FunctionComponent<DownloadLinkProps> = ({
             <DetailLine className={className}>
                 <DetailLink
                     icon={DownloadIcon}
-                    caption="Download contact"
+                    caption="Download this snappy.card as vCard"
+
                     rel="noopener"
                     download={pipe(
                         name,
@@ -150,8 +152,9 @@ const ShareLink: FunctionComponent<ShareLinkProps> = ({
                         shareMode,
                         matchShareMode({
                             none: constant(""),
-                            clipboard: constant("Copy snappy card link"),
-                            share: constant("Share snappy card link"),
+                            clipboard: constant("Copy snappy.card link"),
+                            share: constant("Share snappy.card link"),
+
                         })
                     )}
                     href="#"
