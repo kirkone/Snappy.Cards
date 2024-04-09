@@ -18,7 +18,7 @@ import { constant, identity, pipe } from "fp-ts/function";
 import { getWindowTitleFromAppData, setWindowTitle } from "../model/window-title";
 
 import { Card } from "./card";
-import { Footer } from "./footer";
+import { SharePage } from "./share-page";
 import type { FunctionComponent } from "preact";
 import { Page } from "./page";
 import type { PreactView } from "@fun-ts/elmish-preact";
@@ -27,6 +27,9 @@ import type { Simplify } from "type-fest";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
 import { evolve } from "fp-ts/struct";
 import { pick } from "fp-ts-std/Struct";
+import { Menu } from "./menu";
+import * as Routes from "../model/routes";
+import { CSSVarScrollPercentage } from "./menu.css";
 
 // #endregion
 
@@ -110,6 +113,8 @@ type ToggleCardExpansionMsg = { type: "ToggleCardExpansion"; };
 
 type ShareMsg = { type: "Share"; };
 
+type NavigateMsg = { type: "Navigate"; route: Routes.Route; };
+
 const MsgAdt = makeADT("type")({
     GetAppData: ofType<GetAppDataMsg>(),
     GetAppDataSucceeded: ofType<GetAppDataSucceededMsg>(),
@@ -130,6 +135,8 @@ const MsgAdt = makeADT("type")({
     ToggleCardExpansion: ofType<ToggleCardExpansionMsg>(),
 
     Share: ofType<ShareMsg>(),
+
+    Navigate: ofType<NavigateMsg>(),
 });
 
 export type Msg = ADTType<typeof MsgAdt>;
@@ -372,7 +379,12 @@ export const update: Update<Model, Msg> = (model, msg) => pipe(
                     }) :
                     cmd.none
             ];
-        }
+        },
+
+        Navigate: ({ route }) => [
+            model,
+            Routes.goToRouteCmd(route)
+        ]
     })
 );
 // #endregion
@@ -382,6 +394,7 @@ export const update: Update<Model, Msg> = (model, msg) => pipe(
 // ============================================================================
 export const view: PreactView<Model, Msg> = (dispatch, model) => (
     <div class={`${styles.app} ${theme.defaultTheme}`}
+        onScroll={synchronizeScrollToCSS}
         style={assignInlineVars({
             [styles.CssVarBackground]: pipe(
                 model.backgroundImage,
@@ -393,7 +406,7 @@ export const view: PreactView<Model, Msg> = (dispatch, model) => (
             )
         })}
     >
-        <Page>
+        <Page route={Routes.of.Card}>
             <CardView
                 appData={model.appData}
                 avatar={model.avatarImage}
@@ -401,14 +414,14 @@ export const view: PreactView<Model, Msg> = (dispatch, model) => (
                 onExpandClick={() => dispatch(MsgAdt.as.ToggleCardExpansion({}))}
             />
         </Page>
-        <Page>
+        <Page route={Routes.of.Qr}>
             <QrCodeView
                 appData={model.appData}
                 browserData={model.browserData}
             />
         </Page>
-        <Page align="end" fit="content">
-            <Footer
+        <Page route={Routes.of.Share}>
+            <SharePage
                 downloadUrl={model.vCardData}
                 name={pipe(
                     model.appData,
@@ -419,6 +432,10 @@ export const view: PreactView<Model, Msg> = (dispatch, model) => (
                 onShareClick={() => dispatch(MsgAdt.as.Share({}))}
             />
         </Page>
+        <Menu
+            browserData={model.browserData}
+            onClick={route => dispatch(MsgAdt.as.Navigate({ route }))}
+        />
     </div>
 );
 
@@ -526,4 +543,32 @@ const QrCodeView: FunctionComponent<QrCodeViewProps> = ({
         ),
     })
 );
+//#endregion
+
+// ============================================================================
+// #region Helper replacing scroll-timeline with CSS Variable
+// ============================================================================
+const CSSVarScrollPercentageName = pipe(
+    CSSVarScrollPercentage,
+    s => s.replace(/var\(([^)]+)\)/, (_, name) => name)
+);
+
+const synchronizeScrollToCSS = ({
+    currentTarget: ct
+}: JSX.TargetedUIEvent<HTMLDivElement>) => {
+    const scrolled = ct.scrollHeight > ct.scrollWidth ?
+        ct.scrollTop / (ct.scrollHeight - window.innerHeight) :
+        ct.scrollLeft / (ct.scrollWidth - window.innerWidth);
+
+    const scrollPercent = `${scrolled * 100}%`;
+
+    // bypass render loop of preact, not to trigger reconciliation
+    // 60 times a second only for animation purposes
+    requestAnimationFrame(() => {
+        document
+            .documentElement
+            .style
+            .setProperty(CSSVarScrollPercentageName, scrollPercent);
+    });
+};
 //#endregion

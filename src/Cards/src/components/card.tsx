@@ -26,6 +26,7 @@ import {
     XingIcon,
     YoutubeIcon
 } from "./icons";
+import { DetailLine, DetailLink, DetailList } from "./detail-list";
 import { constant, identity, pipe, tuple } from "fp-ts/function";
 
 import type { ADTType } from "@morphic-ts/adt";
@@ -91,10 +92,10 @@ export const Card: FunctionComponent<CardProps> = ({
                     // TODO: Loading animation for avatar
                     Loading: Empty,
                     Loaded: ({ objectUrl }) => <div className={styles.layoutNarrow}>
-                        <Avatar url={objectUrl} />
+                        <Avatar url={objectUrl} name={name} />
                     </div>,
                     Failure: ({ error }) => <div className={styles.layoutNarrow}>
-                        <Avatar url={error.remoteUrl} />
+                        <Avatar url={error.remoteUrl} name={name} />
                     </div>,
                 })
             )}
@@ -167,16 +168,16 @@ const Details: FunctionComponent<DetailProps> = ({
     );
 
     return <address className={styles.layoutWide}>
-        <ul className={styles.detail}>
+        <DetailList>
             {pipe(
                 name,
                 O.fold(
                     Empty,
-                    n => <li className={styles.detailLine}>
+                    n => <DetailLine>
                         <h3 className={`${headingClassName} ${styles.detailHeading}`}>
                             {n}
                         </h3>
-                    </li>
+                    </DetailLine>
                 )
             )}
 
@@ -184,9 +185,9 @@ const Details: FunctionComponent<DetailProps> = ({
                 job,
                 O.fold(
                     Empty,
-                    pos => <li className={styles.detailLine}>
+                    pos => <DetailLine>
                         <h4 className={styles.detailSubHeading}>{pos}</h4>
-                    </li>
+                    </DetailLine>
                 )
             )}
 
@@ -281,24 +282,28 @@ const Details: FunctionComponent<DetailProps> = ({
                     )}
                 </>
             )}
-        </ul>
+        </DetailList>
     </address>;
 };
 
 type AvatarProps = {
     url: string;
+    name: O.Option<string>;
 };
 
-const Avatar: FunctionComponent<AvatarProps> = ({ url }) => (
+const Avatar: FunctionComponent<AvatarProps> = ({ url, name }) => (
     <div className={styles.avatarCircle}>
-        <img src={url} className={styles.avatar} />
+        <img src={url}
+            className={styles.avatar}
+            alt={pipe(
+                name,
+                O.fold(
+                    constant("Avatar"),
+                    name => `Avatar of ${name}`
+                )
+            )}
+        />
     </div>
-);
-
-const DetailLine: FunctionComponent = ({ children }) => (
-    <li className={styles.detailLine}>
-        {children}
-    </li>
 );
 
 type AnimatedDetailLineProps = {
@@ -311,11 +316,11 @@ const AnimatedDetailLine: FunctionComponent<AnimatedDetailLineProps> = ({
     animationIndex,
     children
 }) => (
-    <li className={`
-                    ${styles.detailLine}
-                    ${styles.animatedLine}
-                    ${expanded ? styles.animatedLineExpanded : ""}
-                `}
+    <DetailLine
+        className={`
+            ${styles.animatedLine}
+            ${expanded ? styles.animatedLineExpanded : ""}
+        `}
         style={pipe(
             O.fromNullable(animationIndex),
             O.fold(
@@ -325,175 +330,177 @@ const AnimatedDetailLine: FunctionComponent<AnimatedDetailLineProps> = ({
         )}
     >
         {children}
-    </li>
+    </DetailLine>
 );
 
 const getLinkForMedium = getUnionTypeMatcherStrict<keyof Media>()({
     phone: () => (value: string) => (
-        <a href={`tel:${value}`}>
-            <SmartphoneIcon className={styles.detailIcon} />
-            <span>{value}</span>
-        </a>
+        <DetailLink
+            caption={value}
+            icon={SmartphoneIcon}
+            href={`tel:${value}`}
+        />
     ),
 
     mail: () => (value: string) => (
-        <a href={`mailto:${value}`}>
-            <MailIcon className={styles.detailIcon} />
-            <span>{value}</span>
-        </a>
+        <DetailLink
+            caption={value}
+            icon={MailIcon}
+            href={`mailto:${value}`}
+        />
     ),
 
     web: () => (value: string) => (
-        <a href={value.match(/^https?:\/\//) ? value : `http://${value}`}
-            target="_blank">
-
-            <WebIcon className={styles.detailIcon} />
-            <span>{value}</span>
-        </a>
+        <DetailLink
+            caption={value}
+            icon={WebIcon}
+            href={value.match(/^https?:\/\//) ? value : `https://${value}`}
+            target="_blank"
+        />
     ),
 
     twitter: () => (value: string) => (
-        <a href={`https://twitter.com/${encodeURIComponent(value)}`}
-            target="_blank">
-
-            <XIcon className={styles.detailIcon} />
-            <span>{value}</span>
-        </a>
+        <DetailLink
+            caption={value}
+            icon={XIcon}
+            href={`https://twitter.com/${encodeURIComponent(value)}`}
+            target="_blank"
+        />
     ),
 
     facebook: () => (value: string) => (
-        <a href={`https://www.facebook.com/${encodeURIComponent(value)}`}
-            target="_blank">
-
-            <FacebookIcon className={styles.detailIcon} />
-            <span>{value}</span>
-        </a>
+        <DetailLink
+            caption={value}
+            icon={FacebookIcon}
+            href={`https://www.facebook.com/${encodeURIComponent(value)}`}
+            target="_blank"
+        />
     ),
 
     youtube: () => (value: string) => (
-        <a href={`https://www.youtube.com/${encodeURIComponent(value)}`}
-            target="_blank">
-
-            <YoutubeIcon className={styles.detailIcon} />
-            <span>{value}</span>
-        </a>
+        <DetailLink
+            caption={value}
+            icon={YoutubeIcon}
+            href={`https://www.youtube.com/${encodeURIComponent(value)}`}
+            target="_blank"
+        />
     ),
 
     instagram: () => (value: string) => (
-        <a href={`https://www.instagram.com/${encodeURIComponent(value)}`}
-            target="_blank">
-
-            <InstagramIcon className={styles.detailIcon} />
-            <span>{value}</span>
-        </a>
+        <DetailLink
+            caption={value}
+            icon={InstagramIcon}
+            href={`https://www.instagram.com/${encodeURIComponent(value)}`}
+            target="_blank"
+        />
     ),
 
     twitch: () => (value: string) => (
-        <a href={`https://www.twitch.tv/${encodeURIComponent(value)}`}
-            target="_blank">
-
-            <TwitchIcon className={styles.detailIcon} />
-            <span>{value}</span>
-        </a>
+        <DetailLink
+            caption={value}
+            icon={TwitchIcon}
+            href={`https://www.twitch.tv/${encodeURIComponent(value)}`}
+            target="_blank"
+        />
     ),
 
     github: () => (value: string) => (
-        <a href={`https://github.com/${encodeURIComponent(value)}`}
-            target="_blank">
-
-            <GithubIcon className={styles.detailIcon} />
-            <span>{value}</span>
-        </a>
+        <DetailLink
+            caption={value}
+            icon={GithubIcon}
+            href={`https://github.com/${encodeURIComponent(value)}`}
+            target="_blank"
+        />
     ),
 
     linkedIn: () => (value: string) => (
-        <a href={`https://www.linkedin.com/in/${encodeURIComponent(value)}`}
-            target="_blank">
-
-            <LinkedInIcon className={styles.detailIcon} />
-            <span>{value}</span>
-        </a>
+        <DetailLink
+            caption={value}
+            icon={LinkedInIcon}
+            href={`https://www.linkedin.com/in/${encodeURIComponent(value)}`}
+            target="_blank"
+        />
     ),
 
     xing: () => (value: string) => (
-        <a href={`https://www.xing.com/profile/${encodeURIComponent(value)}`}
-            target="_blank">
-
-            <XingIcon className={styles.detailIcon} />
-            <span>{value}</span>
-        </a>
+        <DetailLink
+            caption={value}
+            icon={XingIcon}
+            href={`https://www.xing.com/profile/${encodeURIComponent(value)}`}
+            target="_blank"
+        />
     ),
 
     paypal: () => (value: string) => (
-        <a href={`https://www.paypal.com/paypalme/${encodeURIComponent(value)}`}
-            target="_blank">
-
-            <PaypalIcon className={styles.detailIcon} />
-            <span>{value}</span>
-        </a>
+        <DetailLink
+            caption={value}
+            icon={PaypalIcon}
+            href={`https://www.paypal.com/paypalme/${encodeURIComponent(value)}`}
+            target="_blank"
+        />
     ),
 
     patreon: () => (value: string) => (
-        <a href={`https://www.patreon.com/${encodeURIComponent(value)}`}
-            target="_blank">
-
-            <PatreonIcon className={styles.detailIcon} />
-            <span>{value}</span>
-        </a>
+        <DetailLink
+            caption={value}
+            icon={PatreonIcon}
+            href={`https://www.patreon.com/${encodeURIComponent(value)}`}
+            target="_blank"
+        />
     ),
 
     pinterest: () => (value: string) => (
-        <a href={`https://www.pinterest.com/${encodeURIComponent(value)}`}
-            target="_blank">
-
-            <PinterestIcon className={styles.detailIcon} />
-            <span>{value}</span>
-        </a>
+        <DetailLink
+            caption={value}
+            icon={PinterestIcon}
+            href={`https://www.pinterest.com/${encodeURIComponent(value)}`}
+            target="_blank"
+        />
     ),
 
     npm: () => (value: string) => (
-        <a href={`https://www.npmjs.com/~${encodeURIComponent(value)}`}
-            target="_blank">
-
-            <NpmIcon className={styles.detailIcon} />
-            <span>{value}</span>
-        </a>
+        <DetailLink
+            caption={value}
+            icon={NpmIcon}
+            href={`https://www.npmjs.com/~${encodeURIComponent(value)}`}
+            target="_blank"
+        />
     ),
 
     soundcloud: () => (value: string) => (
-        <a href={`https://soundcloud.com/${encodeURIComponent(value)}`}
-            target="_blank">
-
-            <SoundcloudIcon className={styles.detailIcon} />
-            <span>{value}</span>
-        </a>
+        <DetailLink
+            caption={value}
+            icon={SoundcloudIcon}
+            href={`https://soundcloud.com/${encodeURIComponent(value)}`}
+            target="_blank"
+        />
     ),
 
     snapchat: () => (value: string) => (
-        <a href={`https://www.snapchat.com/add/${encodeURIComponent(value)}`}
-            target="_blank">
-
-            <SnapchatIcon className={styles.detailIcon} />
-            <span>{value}</span>
-        </a>
+        <DetailLink
+            caption={value}
+            icon={SnapchatIcon}
+            href={`https://www.snapchat.com/add/${encodeURIComponent(value)}`}
+            target="_blank"
+        />
     ),
 
     steam: () => (value: string) => (
-        <a href={`https://steamcommunity.com/id/${encodeURIComponent(value)}`}
-            target="_blank">
-
-            <SteamIcon className={styles.detailIcon} />
-            <span>{value}</span>
-        </a>
+        <DetailLink
+            caption={value}
+            icon={SteamIcon}
+            href={`https://steamcommunity.com/id/${encodeURIComponent(value)}`}
+            target="_blank"
+        />
     ),
 
     cpan: () => (value: string) => (
-        <a href={`https://metacpan.org/author/${encodeURIComponent(value)}`}
-            target="_blank">
-
-            <CpanIcon className={styles.detailIcon} />
-            <span>{value}</span>
-        </a>
+        <DetailLink
+            caption={value}
+            icon={CpanIcon}
+            href={`https://metacpan.org/author/${encodeURIComponent(value)}`}
+            target="_blank"
+        />
     ),
 
 });

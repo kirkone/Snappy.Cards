@@ -28,6 +28,7 @@ export const content = style({
     // layout
     borderRadius: varsApp.space.large,
     padding: varsApp.space.large,
+    maxWidth: "48rem",
 
     boxShadow: makeBoxShadow(varsApp.color.shadow.rgb, 0.1, 0.09),
 

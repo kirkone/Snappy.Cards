@@ -22,8 +22,22 @@ export const app = style({
         )
     `,
 
-    overflowY: "auto",
-    // otherwise scrollbar would make content jump
-    overflowX: "hidden",
-    minWidth: "30rem"
+    overflow: "auto",
+    minWidth: "30rem",
+
+    scrollSnapType: "both mandatory",
+    scrollBehavior: "smooth",
+
+    display: "flex",
+    flexWrap: "wrap",
+    // horizontal on mobile ...
+    flexDirection: "row",
+    gap: "10rem",
+
+    "@media": {
+        "(hover: none)": {
+            // ...and vertical on desktop
+            flexDirection: "column"
+        }
+    }
 });

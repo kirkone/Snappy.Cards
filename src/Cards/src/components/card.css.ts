@@ -1,5 +1,6 @@
 import { createVar, keyframes, style } from "@vanilla-extract/css";
 
+import { calc } from "@vanilla-extract/css-utils";
 import { varsApp } from "../theme/variables.css";
 
 const ellipsisLine = {
@@ -41,13 +42,13 @@ export const layoutBottom = style({
     // padding of card works really well with layoutNarrow and layoutWide
     // so keep padding of card and work against it here to reach edge of card
     // 1. first cancel container padding, left, right and bottom
-    margin: `calc(${varsApp.space.large} * -1)`,
+    margin: calc.negate(varsApp.space.large),
     marginTop: 0,
 
     // 2. bring back paddings similar to container plus layout{Wide,Narrow}
     padding: `
         0
-        calc(${varsApp.space.large} + ${varsApp.space.medium})
+        ${calc.add(varsApp.space.large, varsApp.space.medium)}
     `,
 
     backgroundColor: `rgb(${varsApp.color.light.rgb}, 0.1)`,
@@ -86,13 +87,6 @@ export const avatar = style({
     objectFit: "cover",
 });
 
-export const detail = style({
-    // for dark / light mode switching
-    transition: "color 1s",
-
-    color: varsApp.color.text.hex,
-});
-
 export const detailHeading = style({
     fontSize: "2.5rem",
     fontWeight: 600,
@@ -111,13 +105,6 @@ export const detailSubHeading = style({
 
 export const headingMarginBig = style({
     paddingBottom: varsApp.space.large
-});
-
-export const detailLine = style({
-    // control text overflow
-    ...ellipsisLine,
-
-    lineHeight: 2,
 });
 
 export const detailIcon = style({
@@ -170,7 +157,7 @@ export const animatedLineExpanded = style({
     animationDuration: ANIMATION_DURATION,
     animationFillMode: "both",
     animationTimingFunction: "ease",
-    animationDelay: `calc(${animationIndex} * 0.1s)`,
+    animationDelay: calc.multiply(animationIndex, "0.1s"),
 });
 
 export const chevronCollapsed = style({

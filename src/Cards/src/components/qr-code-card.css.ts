@@ -15,8 +15,6 @@ export const qrCode = style({
     color: varsApp.color.dark.hex,
     transition: "background 1s, color 1s",
 
-    boxShadow: `7px 7px 15px 0px rgb(${varsApp.color.shadow.rgb}, 0.4) inset`,
-
     selectors: {
         "&:hover": {
             backgroundColor: varsApp.color.light.hex,
