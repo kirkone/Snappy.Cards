@@ -13,8 +13,8 @@ import { BrowserData, BrowserDataAdt, getBrowserData, shareUrl } from "../model/
 import { ElmishResult, Init, Subscribe, Update, cmd } from "@fun-ts/elmish";
 import { ErrorIcon, LoaderIcon } from "./icons";
 import { UrlDataOrigin, UrlDataOriginAdt, compressToUrlParam, getParametersFromUrl, getStableStringFromParameters, makeCurrentUrl } from "../model/url-data";
-import { VCardDataAdt, getVCardUrl, vCardFieldsFromAppData, vCardFieldsFromAppDataLoaded } from "../model/v-card-url";
-import { constant, identity, pipe } from "fp-ts/function";
+import { VCardDataAdt, getVCardString, getVCardUrl, vCardFieldsFromAppData, vCardFieldsFromAppDataLoaded, vCardStringAsUrl } from "../model/v-card-url";
+import { constant, flow, identity, pipe } from "fp-ts/function";
 import { getWindowTitleFromAppData, setWindowTitle } from "../model/window-title";
 
 import { Card } from "./card";
@@ -193,8 +193,12 @@ export const update: Update<Model, Msg> = (model, msg) => pipe(
                         pipe(
                             data,
                             vCardFieldsFromAppData,
-                            d => getVCardUrl({ ...d, avatarBase64: O.none }),
-                            url => VCardDataAdt.as.Loaded({ url }),
+                            d => getVCardString({ ...d, avatarBase64: O.none }),
+                            vCardString => VCardDataAdt.as.Loaded({
+                                url: vCardStringAsUrl(vCardString),
+                                vCard: vCardString,
+                                vCardNoImage: vCardString,
+                            }),
                         ),
             },
             pipe(
@@ -317,12 +321,20 @@ export const update: Update<Model, Msg> = (model, msg) => pipe(
                     vCardFieldsFromAppDataLoaded,
                     O.fold(
                         () => VCardDataAdt.of.NotLoaded({}),
-                        data => VCardDataAdt.of.Loaded({
-                            url: getVCardUrl({
+                        flow(
+                            data => ({
                                 ...data,
                                 avatarBase64: O.some(imageData.base64)
+                            }),
+                            dataWithImg => VCardDataAdt.of.Loaded({
+                                url: getVCardUrl(dataWithImg),
+                                vCard: getVCardString(dataWithImg),
+                                vCardNoImage: getVCardString({
+                                    ...dataWithImg,
+                                    avatarBase64: O.none
+                                })
                             })
-                        })
+                        )
                     ),
                 ),
             },
@@ -339,13 +351,17 @@ export const update: Update<Model, Msg> = (model, msg) => pipe(
                     vCardFieldsFromAppDataLoaded,
                     O.fold(
                         () => VCardDataAdt.of.NotLoaded({}),
-                        data => VCardDataAdt.of.Loaded({
-                            url: getVCardUrl({
+                        flow(
+                            data => ({
                                 ...data,
-                                avatarBase64: O.none
+                                avatarBase64: O.none,
+                            }),
+                            dataWithoutImg => VCardDataAdt.of.Loaded({
+                                url: getVCardUrl(dataWithoutImg),
+                                vCard: getVCardString(dataWithoutImg),
+                                vCardNoImage: getVCardString(dataWithoutImg),
                             })
-                        })
-                    ),
+                        )),
                 ),
             },
             cmd.none
@@ -418,6 +434,7 @@ export const view: PreactView<Model, Msg> = (dispatch, model) => (
             <QrCodeView
                 appData={model.appData}
                 browserData={model.browserData}
+                vCardData={model.vCardData}
             />
         </Page>
         <Page route={Routes.of.Share}>
@@ -506,11 +523,14 @@ const CardView: FunctionComponent<CardViewProps> = ({
 type QrCodeViewProps = {
     appData: ADTType<typeof AppDataAdt>;
     browserData: ADTType<typeof BrowserDataAdt>;
+    vCardData: ADTType<typeof VCardDataAdt>;
 };
 
+// TODO: replace nested matchers with sequencing
 const QrCodeView: FunctionComponent<QrCodeViewProps> = ({
     appData,
     browserData,
+    vCardData
 }) => pipe(
     browserData,
     BrowserDataAdt.matchStrict({
@@ -530,14 +550,23 @@ const QrCodeView: FunctionComponent<QrCodeViewProps> = ({
                 Failure: () => <>
                     <ErrorIcon /> An error occurred while loading application data.
                 </>,
-                Loaded: (appDataLoaded) => (
-                    <QrCodeCard
-                        href={pipe(
-                            appDataLoaded,
-                            appDataToUrlParams,
-                            makeCurrentUrl(location)
-                        )}
-                    />
+                Loaded: (appDataLoaded) => pipe(
+                    vCardData,
+                    VCardDataAdt.matchStrict({
+                        NotLoaded: () => <></>,
+                        Loading: () => <LoaderIcon />,
+                        Failure: () => <>
+                            <ErrorIcon /> An error occurred while creating vcard data.
+                        </>,
+                        Loaded: (vCardDataLoaded) => <QrCodeCard
+                            href={pipe(
+                                appDataLoaded,
+                                appDataToUrlParams,
+                                makeCurrentUrl(location)
+                            )}
+                            vcard={vCardDataLoaded.vCardNoImage}
+                        />
+                    })
                 )
             })
         ),
