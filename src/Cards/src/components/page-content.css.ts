@@ -19,9 +19,6 @@ export const content = style({
     WebkitBackdropFilter: `blur(${varsApp.space.large})`,
     backdropFilter: `blur(${varsApp.space.large})`,
 
-    // for hover
-    transition: "background 1s, box-shadow 1s",
-
     // flex from page
     flex: 1,
 
@@ -31,13 +28,6 @@ export const content = style({
     maxWidth: "48rem",
 
     boxShadow: makeBoxShadow(varsApp.color.shadow.rgb, 0.1, 0.09),
-
-    selectors: {
-        "&:hover": {
-            backgroundColor: `rgb(${varsApp.color.primary.rgb},.65)`,
-            boxShadow: makeBoxShadow(varsApp.color.shadow.rgb, 0.2, 0.15),
-        },
-    },
 
     "@supports": {
         "not((-webkit-backdrop-filter: none) or (backdrop-filter: none))": {
