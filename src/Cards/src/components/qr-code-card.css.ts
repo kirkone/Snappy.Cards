@@ -4,7 +4,7 @@ import { varsApp } from "../theme/variables.css";
 export const qrCode = style({
     borderRadius: varsApp.space.small,
 
-    backgroundColor: `rgb(${varsApp.color.light.rgb},.75)`,
+    backgroundColor: `rgb(${varsApp.color.light.rgb})`,
     color: varsApp.color.dark.hex,
 
     scrollSnapAlign: "center",
