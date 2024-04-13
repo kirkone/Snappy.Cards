@@ -7,17 +7,25 @@ import { QrCode } from "./qr-code";
 
 type QrCodeCardProps = {
     href: string;
+    vcard: string;
     className?: string;
 };
 
 export const QrCodeCard: FunctionComponent<QrCodeCardProps> = ({
     href,
+    vcard,
     className = "",
 }) => (
-    <PageContent className={className}>
-        <QrCode text={href}
-            border={5}
-            className={`${styles.qrCode} ${theme.lightTheme}`}
-        />
+    <PageContent className={`${className}`}>
+        <div className={styles.outer}>
+            <QrCode text={href}
+                border={5}
+                className={`${styles.qrCode} ${styles.firstQr} ${theme.lightTheme}`}
+            />
+            <QrCode text={vcard}
+                border={5}
+                className={`${styles.qrCode} ${theme.lightTheme}`}
+            />
+        </div>
     </PageContent>
 );
