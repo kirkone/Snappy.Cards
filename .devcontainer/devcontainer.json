@@ -1,0 +1,17 @@
+{
+	"name": "Snappy.Cards",
+	"image": "mcr.microsoft.com/devcontainers/typescript-node:20-bookworm",
+	"forwardPorts": [5173],
+	"portsAttributes": {
+		"5173": {
+			"label": "Snappy.Cards"
+		}
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"vitest.explorer"
+			]
+		}
+	}
+}
