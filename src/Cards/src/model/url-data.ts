@@ -23,31 +23,36 @@ const stringNotEmptyAsOption = O.fromPredicate(P.not(S.isEmpty));
 // ============================================================================
 // #region Image param helpers
 // ============================================================================
-export type ImageParamUnsplash =
-    | "random"
-    | (string & Readonly<{}>);
-
+export type ImageParamSnappy = `snappy:${string}`;
 export type ImageParamLink = `http${string}`;
+
+const isImageParamSnappy = (
+    p: string
+): p is ImageParamSnappy => p.startsWith("snappy:");
 
 const isImageParamLink = (
     p: string
 ): p is ImageParamLink => p.startsWith("http");
 
 export type ImageParam =
-    | ImageParamUnsplash
+    | ImageParamSnappy
     | ImageParamLink
     ;
 
+const isImageParam = (
+    v: string
+): v is ImageParam => isImageParamLink(v) || isImageParamSnappy(v);
+
 type MatchImageParamOptions<R> = {
-    onUnsplash: (imgParam: ImageParamUnsplash) => R;
+    onSnappy: (imgParam: ImageParamSnappy) => R;
     onUrl: (imgParam: ImageParamLink) => R;
 };
 
-export const matchImageParam = <R>({ onUnsplash, onUrl }: MatchImageParamOptions<R>) =>
+export const matchImageParam = <R>({ onSnappy, onUrl }: MatchImageParamOptions<R>) =>
     (ipv: ImageParam) =>
         isImageParamLink(ipv) ?
             onUrl(ipv) :
-            onUnsplash(ipv);
+            onSnappy(ipv);
 //#endregion
 
 // ============================================================================
@@ -62,7 +67,6 @@ const nonEmptyStringCombinator = (
 );
 
 const optionalString = lookup<string>;
-const optionalImageParam = lookup<ImageParam>;
 const optionalPositiveSmallInt = flow(
     optionalString,
     RE.map(O.chain(flow(
@@ -73,8 +77,12 @@ const optionalPositiveSmallInt = flow(
 
 const optionalNonEmptyString = flow(optionalString, nonEmptyStringCombinator);
 const optionalNonEmptyImageParam = flow(
-    optionalImageParam,
-    nonEmptyStringCombinator
+    lookup<string>,
+    nonEmptyStringCombinator,
+    f => flow(
+        f,
+        O.chain(O.fromPredicate(isImageParam))
+    )
 );
 
 const TUrlParameters = {
@@ -244,7 +252,7 @@ export const getParametersFromUrl = flow(
 
     evolve({
         origin: identity<UrlDataOrigin>,
-        urlParams: decodeUrlParameters
+        urlParams: x => decodeUrlParameters(x)
     }),
 );
 

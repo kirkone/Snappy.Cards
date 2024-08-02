@@ -1,18 +1,16 @@
 import * as O from "fp-ts/Option";
-import * as URL_SP from "fp-ts-std/URLSearchParams";
 
 import { ADTType, makeADT, ofType } from "@morphic-ts/adt";
-import { FunctionN, constant, flow, pipe } from "fp-ts/function";
-import { ImageParamUnsplash, UrlParameters, matchImageParam } from "./url-data";
+import { FunctionN, constant, pipe } from "fp-ts/function";
+import { ImageParamLink, ImageParamSnappy, UrlParameters, matchImageParam } from "./url-data";
 
 import { makeRemoteResultADT } from "@fun-ts/remote-result-adt";
-import { prepend } from "fp-ts-std/String";
 
-type ImageDataUnsplash = { type: "Unsplash"; id: string; url: string; };
-type ImageDataUrl = { type: "Url", url: string; };
+type ImageDataSnappy = { type: "Snappy"; name: ImageParamSnappy; url: string; };
+type ImageDataUrl = { type: "Url", url: ImageParamLink; };
 
 export const ImageDataAdt = makeADT("type")({
-    Unsplash: ofType<ImageDataUnsplash>(),
+    Snappy: ofType<ImageDataSnappy>(),
     Url: ofType<ImageDataUrl>(),
 });
 
@@ -101,14 +99,9 @@ export const getAppDataFromUrlParams: FunctionN<[UrlParameters], AppData> = ({
         avatar,
         O.map(
             matchImageParam({
-                onUnsplash: id => ImageDataAdt.of.Unsplash({
-                    id,
-                    url: makeUnsplashUrl({
-                        id,
-                        width: 100,
-                        height: 100,
-                        params: URL_SP.fromTuples([["face", ""]])
-                    })
+                onSnappy: name => ImageDataAdt.of.Snappy({
+                    name,
+                    url: makeSnappyUrl({ name })
                 }),
 
                 onUrl: url => ImageDataAdt.of.Url({ url }),
@@ -119,14 +112,9 @@ export const getAppDataFromUrlParams: FunctionN<[UrlParameters], AppData> = ({
     background: pipe(
         background,
         O.map(matchImageParam<ImageData>({
-            onUnsplash: id => ImageDataAdt.of.Unsplash({
-                id,
-                url: makeUnsplashUrl({
-                    id,
-                    width: 1000,
-                    height: 1000,
-                    params: URL_SP.fromTuples([["blur", ""]])
-                })
+            onSnappy: name => ImageDataAdt.of.Snappy({
+                name,
+                url: makeSnappyUrl({ name })
             }),
 
             onUrl: url => ImageDataAdt.of.Url({ url }),
@@ -186,7 +174,7 @@ export const appDataToUrlParams: FunctionN<[AppData], UrlParameters> = ({
     avatar: pipe(
         avatar,
         O.map(ImageDataAdt.matchStrict({
-            Unsplash: ({ id }) => id,
+            Snappy: ({ name }) => name,
             Url: ({ url }) => url,
         })),
     ),
@@ -194,7 +182,7 @@ export const appDataToUrlParams: FunctionN<[AppData], UrlParameters> = ({
     background: pipe(
         background,
         O.map(ImageDataAdt.matchStrict({
-            Unsplash: ({ id }) => id,
+            Snappy: ({ name }) => name,
             Url: ({ url }) => url,
         })),
     ),
@@ -204,25 +192,12 @@ export const appDataToUrlParams: FunctionN<[AppData], UrlParameters> = ({
     ...rest,
 });
 
-type UnsplashApiParams = {
-    id: ImageParamUnsplash;
-    width: number;
-    height: number;
-    params?: URLSearchParams;
+type SnappyApiParams = {
+    name: ImageParamSnappy;
 };
 
-const makeUnsplashUrl = (
-    { id, width, height, params }: UnsplashApiParams
-) => pipe(
-    O.fromNullable(params),
-    O.fold(
-        constant(""),
-        flow(
-            URL_SP.toString,
-            prepend("?")
-        ),
-    ),
-    qs => `https://source.unsplash.com/${encodeURIComponent(id)}/${width}x${height}${qs}`
-);
+const makeSnappyUrl = (
+    { name }: SnappyApiParams
+) => `${import.meta.env.BASE_URL}images/wallpapers/${encodeURIComponent(name.replace(/^snappy:/, ""))}`;
 
 export const AppDataAdt = makeRemoteResultADT<AppData>();

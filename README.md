@@ -9,7 +9,7 @@ Snappy Cards is for sharing your contact information with others.
 This card works with data **only** beeing stored in the URL.
 To make sharing easier a QR code is also generated.
 
-This site is hosted on GitHub Pages under [snappy.cards/#...](https://snappy.cards/#name=Max%20Mustermann&phone=%2b49%20123%204567890&mail=no@mail.de&web=blog.undefined.de&sub=Mustermann&avatar=random&background=random) and can be modified by using several [parameters](#parameters).
+This site is hosted on GitHub Pages under [snappy.cards/#...](https://snappy.cards/#name=Max%20Mustermann&phone=%2b49%20123%204567890&mail=no@mail.de&web=blog.undefined.de&sub=Mustermann&avatar=snappy:018.jpeg&background=snappy:028.jpeg) and can be modified by using several [parameters](#parameters).
 
 > **Important**:
 > The parameters coming after the `#` will never be sent to the server.
@@ -21,9 +21,9 @@ This site is hosted on GitHub Pages under [snappy.cards/#...](https://snappy.car
 ![Sample of a card](/doc/images/sample-card.png)
 ![Sample of a code](/doc/images/sample-code.png)
 
-Here is a live example: [snappy.cards/#...](https://snappy.cards/#name=Max%20Mustermann&phone=%2b49%20123%204567890&mail=no@mail.de&web=blog.undefined.de&sub=Mustermann&avatar=random&background=random)
+Here is a live example: [snappy.cards/#...](https://snappy.cards/#name=Max%20Mustermann&phone=%2b49%20123%204567890&mail=no@mail.de&web=blog.undefined.de&sub=Mustermann&avatar=snappy:018.jpeg&background=snappy:028.jpeg)
 ```
-https://snappy.cards/#name=Max Mustermann&phone=+49 123 4567890&mail=no@mail.de&web=blog.undefined.de&sub=Mustermann&avatar=random&background=random
+https://snappy.cards/#name=Max Mustermann&phone=+49 123 4567890&mail=no@mail.de&web=blog.undefined.de&sub=Mustermann&avatar=snappy:018.jpeg&background=snappy:028.jpeg
 ```
 
 ## Parameters
@@ -31,7 +31,7 @@ https://snappy.cards/#name=Max Mustermann&phone=+49 123 4567890&mail=no@mail.de&
 All parameters are optional if you do not want to use them. There is no specific order for them.
 
 ```
-https://snappy.cards/#name={name}&phone={phone}&mail={mail}&web={web}&sub={subtitle}&avatar={unsplash image id | random | URL to image}&background={Unsplash image id | random | URL to image}
+https://snappy.cards/#name={name}&phone={phone}&mail={mail}&web={web}&sub={subtitle}&avatar={Snappy image id | URL to image}&background={Snappy image id | URL to image}
 ```
 
 ### name
@@ -62,19 +62,21 @@ A water mark showed on the bottom of the card. Can be any sort of text.
 
 This is the avatar image on the card. There are the following options:
 
-**Unsplash Image**: Use an ID from [unsplash.com](https://unsplash.com/). You could copy it easily from the URL of a specific image.  
-**random**: A image of a person will randomly taken from [unsplash.com](https://unsplash.com/)  
+**snappy:<000>.jpeg**: Images provided by snappy cards. *Example: snappy:001.jpeg*  
 **Image URL**: You can provide an URL to your own image.  
-**empty**: Leave the parameter empty or omit it completely and no avatar will be shown.
+**empty**: Leave the parameter empty or omit it completely and no avatar will be shown.  
+~~random~~: Random image from unsplash. Unsplash is not supported anymore. See #84 for reasons  
+~~Unsplash Image~~: Unsplash is not supported anymore. See #84 for reasons  
 
 ### background
 
 This is the background image of the card. There are the following options:
 
-**Unsplash Image**: Use an ID from [unsplash.com](https://unsplash.com/). You could copy it easily from the URL of a specific image.  
-**random**: A somewhat blurry image will randomly taken from [unsplash.com](https://unsplash.com/)  
+**snappy:<000>.jpeg**: Images provided by snappy cards. *Example: snappy:001.jpeg*  
 **Image URL**: You can provide an URL to your own image.  
-**empty**: Leave the parameter empty or omit it completely and the background will be blank.
+**empty**: Leave the parameter empty or omit it completely and the background will be blank.  
+~~random~~: Random image from unsplash. Unsplash is not supported anymore. See #84 for reasons  
+~~Unsplash Image~~: Unsplash is not supported anymore. See #84 for reasons  
 
 ### twt - *deprecated, use "x" instead*
 
