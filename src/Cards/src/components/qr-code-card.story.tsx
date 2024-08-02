@@ -15,7 +15,7 @@ const QrCodeCardStory = pipe(
     RAND.randomInt(0, 200),
     IO.map(flow(
         getQrCodeCardData,
-        href => <QrCodeCard href={href} />
+        href => <QrCodeCard href={href} vcard={href} />
     ))
 );
 

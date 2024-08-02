@@ -23,7 +23,7 @@ const vCardParamEncoder = (prefix: string) => O.map<string, string>(
 );
 
 const vCardImageEncoder = O.map<Base64Data, string>(
-    d => `PHOTO;ENCODING=BASE64;TYPE=${d.type.toUpperCase()}:${d.content}\n\n`
+    d => `PHOTO;TYPE=${d.type.toUpperCase()};ENCODING=b:${d.content}\n`
 );
 
 type VCardInput =
@@ -45,18 +45,26 @@ const renderVCard = (params: VCardFields) => pipe(
     content => `BEGIN:VCARD\nVERSION:3.0\n${content}END:VCARD`
 );
 
-const vCardUrl = (vcardData: string) => pipe(
-    new Blob([vcardData], { type: "text/vcard" }),
+export const vCardStringAsUrl = (vCardData: string) => pipe(
+    new Blob([vCardData], { type: "text/vcard" }),
     URL.createObjectURL
 );
 
-export const getVCardUrl = flow(
+export const getVCardString = flow(
     encodeVCardFields,
     renderVCard,
-    vCardUrl
 );
 
-export const VCardDataAdt = makeRemoteResultADT<{ url: string; }>();
+export const getVCardUrl = flow(
+    getVCardString,
+    vCardStringAsUrl
+);
+
+export const VCardDataAdt = makeRemoteResultADT<{
+    url: string;
+    vCard: string;
+    vCardNoImage: string;
+}>();
 
 export const vCardFieldsFromAppData = (a: AppData) => pipe(
     a,
