@@ -31,7 +31,7 @@ https://snappy.cards/#name=Max Mustermann&phone=+49 123 4567890&mail=no@mail.de&
 All parameters are optional if you do not want to use them. There is no specific order for them.
 
 ```
-https://snappy.cards/#name={name}&phone={phone}&mail={mail}&web={web}&sub={subtitle}&avatar={unsplash image id | random | URL to image}&background={Unsplash image id | random | URL to image}
+https://snappy.cards/#name={name}&phone={phone}&mail={mail}&web={web}&sub={subtitle}&avatar={Snappy image id | URL to image}&background={Snappy image id | URL to image}
 ```
 
 ### name
@@ -62,19 +62,21 @@ A water mark showed on the bottom of the card. Can be any sort of text.
 
 This is the avatar image on the card. There are the following options:
 
-**Unsplash Image**: Use an ID from [unsplash.com](https://unsplash.com/). You could copy it easily from the URL of a specific image.  
-**random**: A image of a person will randomly taken from [unsplash.com](https://unsplash.com/)  
+**snappy:<000>.jpeg**: Images provided by snappy cards. *Example: snappy:001.jpeg*  
 **Image URL**: You can provide an URL to your own image.  
-**empty**: Leave the parameter empty or omit it completely and no avatar will be shown.
+**empty**: Leave the parameter empty or omit it completely and no avatar will be shown.  
+~~random~~: Random image from unsplash. Unsplash is not supported anymore. See #84 for reasons  
+~~Unsplash Image~~: Unsplash is not supported anymore. See #84 for reasons  
 
 ### background
 
 This is the background image of the card. There are the following options:
 
-**Unsplash Image**: Use an ID from [unsplash.com](https://unsplash.com/). You could copy it easily from the URL of a specific image.  
-**random**: A somewhat blurry image will randomly taken from [unsplash.com](https://unsplash.com/)  
+**snappy:<000>.jpeg**: Images provided by snappy cards. *Example: snappy:001.jpeg*  
 **Image URL**: You can provide an URL to your own image.  
-**empty**: Leave the parameter empty or omit it completely and the background will be blank.
+**empty**: Leave the parameter empty or omit it completely and the background will be blank.  
+~~random~~: Random image from unsplash. Unsplash is not supported anymore. See #84 for reasons  
+~~Unsplash Image~~: Unsplash is not supported anymore. See #84 for reasons  
 
 ### twt - *deprecated, use "x" instead*
 
