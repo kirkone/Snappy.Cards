@@ -9,7 +9,7 @@ Snappy Cards is for sharing your contact information with others.
 This card works with data **only** beeing stored in the URL.
 To make sharing easier a QR code is also generated.
 
-This site is hosted on GitHub Pages under [snappy.cards/#...](https://snappy.cards/#name=Max%20Mustermann&phone=%2b49%20123%204567890&mail=no@mail.de&web=blog.undefined.de&sub=Mustermann&avatar=snappy:018.jpeg&background=snappy:028.jpeg) and can be modified by using several [parameters](#parameters).
+This site is hosted on GitHub Pages under [snappy.cards/#...](https://snappy.cards/#name=Max%20Mustermann&phone=%2b49%20123%204567890&mail=no@mail.de&web=blog.undefined.de&sub=Mustermann&avatar=snappy:018.jpeg&background=snappy:0028.jpeg) and can be modified by using several [parameters](#parameters).
 
 > **Important**:
 > The parameters coming after the `#` will never be sent to the server.
@@ -21,9 +21,9 @@ This site is hosted on GitHub Pages under [snappy.cards/#...](https://snappy.car
 ![Sample of a card](/doc/images/sample-card.png)
 ![Sample of a code](/doc/images/sample-code.png)
 
-Here is a live example: [snappy.cards/#...](https://snappy.cards/#name=Max%20Mustermann&phone=%2b49%20123%204567890&mail=no@mail.de&web=blog.undefined.de&sub=Mustermann&avatar=snappy:018.jpeg&background=snappy:028.jpeg)
+Here is a live example: [snappy.cards/#...](https://snappy.cards/#name=Max%20Mustermann&phone=%2b49%20123%204567890&mail=no@mail.de&web=blog.undefined.de&sub=Mustermann&avatar=snappy:018.jpeg&background=snappy:0028.jpeg)
 ```
-https://snappy.cards/#name=Max Mustermann&phone=+49 123 4567890&mail=no@mail.de&web=blog.undefined.de&sub=Mustermann&avatar=snappy:018.jpeg&background=snappy:028.jpeg
+https://snappy.cards/#name=Max Mustermann&phone=+49 123 4567890&mail=no@mail.de&web=blog.undefined.de&sub=Mustermann&avatar=snappy:018.jpeg&background=snappy:0028.jpeg
 ```
 
 ## Parameters
