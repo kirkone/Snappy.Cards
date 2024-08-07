@@ -18,8 +18,8 @@ This site is hosted on GitHub Pages under [snappy.cards/#...](https://snappy.car
 
 ### Example
 
-![Sample of a card](/doc/images/sample-card.jpeg)
-![Sample of a code](/doc/images/sample-code.jpeg)
+![Sample of a card](/doc/images/sample-card.png)
+![Sample of a code](/doc/images/sample-code.png)
 
 Here is a live example: [snappy.cards/#...](https://snappy.cards/#name=Max%20Mustermann&phone=%2b49%20123%204567890&mail=no@mail.de&web=blog.undefined.de&sub=Mustermann&avatar=snappy:1023.jpeg&background=snappy:1067.jpeg)
 ```
