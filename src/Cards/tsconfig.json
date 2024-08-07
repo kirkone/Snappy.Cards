@@ -31,7 +31,8 @@
         "verbatimModuleSyntax": false
     },
     "include": [
-        "src"
+        "src",
+        "plugins"
     ],
     "references": [
         {

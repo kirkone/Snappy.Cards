@@ -5,9 +5,19 @@ import preact from '@preact/preset-vite';
 import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin";
 import { visualizer } from "rollup-plugin-visualizer";
 
+import resizeImagesPlugin from './plugins/vite-plugin-resize-images';
+
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
     plugins: [
+        resizeImagesPlugin({
+            inputDir: 'images/originals',
+            outputDir: 'public/images',
+            sizes: [
+                { width: 480, height: 480, folder: 'avatars', compression: 70 },
+                { width: 1200, height: 1200, folder: 'wallpapers', compression: 65 }
+            ],
+        }),
         preact(),
         vanillaExtractPlugin(),
         splitVendorChunkPlugin(),

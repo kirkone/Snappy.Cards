@@ -1,5 +1,5 @@
 {
-  "name": "about.cards",
+  "name": "snappy.cards",
   "version": "1.0.0",
   "description": "A web site to show a business card.",
   "main": "index.html",
@@ -18,7 +18,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/kirkone/About.git"
+    "url": "https://github.com/kirkone/Snappy.Cards.git"
   },
   "scripts": {
     "start": "vite --host",
@@ -71,6 +71,7 @@
     "rollup-plugin-hypothetical": "2.1.1",
     "type-fest": "4.15.0",
     "terser": "5.30.3",
-    "vitest": "1.4.0"
+    "vitest": "1.4.0",
+    "sharp": "0.33.4"
   }
 }
