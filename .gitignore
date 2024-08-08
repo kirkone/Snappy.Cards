@@ -26,6 +26,3 @@ dist-ssr
 *.sw?
 .cache
 .temp
-
-src/Cards/public/images/wallpapers
-src/Cards/public/images/avatars

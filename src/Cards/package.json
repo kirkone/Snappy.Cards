@@ -66,12 +66,12 @@
     "eslint-plugin-functional": "6.4.0",
     "typescript": "5.4.4",
     "vite": "5.2.8",
+    "vite-imagetools": "7.0.4",
     "@faker-js/faker": "8.4.1",
     "rollup-plugin-visualizer": "5.12.0",
     "rollup-plugin-hypothetical": "2.1.1",
     "type-fest": "4.15.0",
     "terser": "5.30.3",
-    "vitest": "1.4.0",
-    "sharp": "0.33.4"
+    "vitest": "1.4.0"
   }
 }
