@@ -7,6 +7,10 @@
 			"label": "Snappy.Cards"
 		}
 	},
+
+	// Use 'postCreateCommand' to run commands after the container is created.
+	"postCreateCommand": "npm install --no-fund",
+
 	"customizations": {
 		"vscode": {
 			"extensions": [

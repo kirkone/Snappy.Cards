@@ -1,0 +1,13 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "build:cards",
+			"group": "build",
+			"problemMatcher": [],
+			"label": "npm: build:cards",
+			"detail": "npm run build --workspace=src/Cards"
+		}
+	]
+}
