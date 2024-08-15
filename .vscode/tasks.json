@@ -3,10 +3,13 @@
 	"tasks": [
 		{
 			"type": "npm",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
 			"script": "build:cards",
-			"group": "build",
 			"problemMatcher": [],
-			"label": "npm: build:cards",
+			"label": "Build the Cards workspace",
 			"detail": "npm run build --workspace=src/Cards"
 		}
 	]
