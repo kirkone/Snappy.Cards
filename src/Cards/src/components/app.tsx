@@ -3,33 +3,32 @@
 import * as IO from "fp-ts/IO";
 import * as O from "fp-ts/Option";
 import * as T from "fp-ts/Task";
-import * as styles from "./app.css";
 import * as theme from "../theme/variables.css";
+import * as styles from "./app.css";
 
-import { ADTType, makeADT, ofType } from "@morphic-ts/adt";
-import { AppData, AppDataAdt, appDataToUrlParams, getAppDataFromUrlParams } from "../model/app-data";
-import { Base64Data, DownloadImageError, RemoteImageAdt, downloadImageCached } from "../model/remote-image";
-import { BrowserData, BrowserDataAdt, getBrowserData, shareUrl } from "../model/browser-data";
 import { ElmishResult, Init, Subscribe, Update, cmd } from "@fun-ts/elmish";
-import { ErrorIcon, LoaderIcon } from "./icons";
+import { ADTType, makeADT, ofType } from "@morphic-ts/adt";
+import { constant, identity, pipe } from "fp-ts/function";
+import { AppData, AppDataAdt, ImageDataAdt, appDataToUrlParams, getAppDataFromUrlParams } from "../model/app-data";
+import { BrowserData, BrowserDataAdt, getBrowserData, shareUrl } from "../model/browser-data";
+import { Base64Data, DownloadImageError, RemoteImageAdt, downloadImageCached } from "../model/remote-image";
 import { UrlDataOrigin, UrlDataOriginAdt, compressToUrlParam, getParametersFromUrl, getStableStringFromParameters, makeCurrentUrl } from "../model/url-data";
 import { VCardDataAdt, getVCardUrl, vCardFieldsFromAppData, vCardFieldsFromAppDataLoaded } from "../model/v-card-url";
-import { constant, identity, pipe } from "fp-ts/function";
 import { getWindowTitleFromAppData, setWindowTitle } from "../model/window-title";
+import { ErrorIcon, LoaderIcon } from "./icons";
 
-import { Card } from "./card";
-import { SharePage } from "./share-page";
-import type { FunctionComponent } from "preact";
-import { Page } from "./page";
 import type { PreactView } from "@fun-ts/elmish-preact";
-import { QrCodeCard } from "./qr-code-card";
-import type { Simplify } from "type-fest";
-import { assignInlineVars } from "@vanilla-extract/dynamic";
+import { get, pick } from "fp-ts-std/Struct";
 import { evolve } from "fp-ts/struct";
-import { pick } from "fp-ts-std/Struct";
-import { Menu } from "./menu";
+import type { FunctionComponent } from "preact";
+import type { Simplify } from "type-fest";
 import * as Routes from "../model/routes";
+import { Card } from "./card";
+import { Menu } from "./menu";
 import { CSSVarScrollPercentage } from "./menu.css";
+import { Page } from "./page";
+import { QrCodeCard } from "./qr-code-card";
+import { SharePage } from "./share-page";
 
 // #endregion
 
@@ -395,17 +394,35 @@ export const update: Update<Model, Msg> = (model, msg) => pipe(
 export const view: PreactView<Model, Msg> = (dispatch, model) => (
     <div class={`${styles.app} ${theme.defaultTheme}`}
         onScroll={synchronizeScrollToCSS}
-        style={assignInlineVars({
-            [styles.CssVarBackground]: pipe(
-                model.backgroundImage,
-                O.fromPredicate(RemoteImageAdt.is.Loaded),
-                O.fold(
-                    () => "",
-                    ({ objectUrl }) => `url(${objectUrl})`
-                ),
-            )
-        })}
     >
+        {pipe(
+            model.backgroundImage,
+            O.fromPredicate(RemoteImageAdt.is.Loaded),
+            O.fold(
+                () => <img
+                    src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="
+                    className={styles.backgroundImage}
+                />,
+                ({ objectUrl }) => <img
+                    src={objectUrl}
+                    className={styles.backgroundImage}
+                    {...pipe(
+                        model.appData,
+                        O.fromPredicate(AppDataAdt.is.Loaded),
+                        O.chain(get("background")),
+                        O.chain(O.fromPredicate(ImageDataAdt.is.Snappy)),
+                        O.fold(
+                            constant({}),
+                            (snappyImage): Pick<JSX.HTMLAttributes, "srcSet" | "sizes"> => ({
+                                srcSet: snappyImage.srcset,
+                                sizes: "100vw",
+                            })
+                        )
+                    )}
+                />
+            ),
+        )}
+
         <Page route={Routes.of.Card}>
             <CardView
                 appData={model.appData}
@@ -499,6 +516,7 @@ const CardView: FunctionComponent<CardViewProps> = ({
                 ]),
             )}
             avatar={avatar}
+            avatarAppData={appData.avatar}
         />
     })
 );

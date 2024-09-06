@@ -1,6 +1,7 @@
 import { defineConfig, splitVendorChunkPlugin } from "vite";
 
 import hypothetical from "rollup-plugin-hypothetical";
+import { imagetools } from 'vite-imagetools';
 import preact from '@preact/preset-vite';
 import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin";
 import { visualizer } from "rollup-plugin-visualizer";
@@ -9,6 +10,11 @@ import { visualizer } from "rollup-plugin-visualizer";
 export default defineConfig(({ mode }) => ({
     plugins: [
         preact(),
+        imagetools({
+            defaultDirectives: () => new URLSearchParams({
+                effort: mode === "production" ? "max" : "min"
+            })
+        }),
         vanillaExtractPlugin(),
         splitVendorChunkPlugin(),
         hypothetical({

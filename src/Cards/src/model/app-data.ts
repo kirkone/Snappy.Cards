@@ -1,12 +1,19 @@
 import * as O from "fp-ts/Option";
+import * as S from "fp-ts/string";
 
 import { ADTType, makeADT, ofType } from "@morphic-ts/adt";
-import { FunctionN, constant, pipe } from "fp-ts/function";
+import { FunctionN, constant, flow, pipe } from "fp-ts/function";
 import { ImageParamLink, ImageParamSnappy, UrlParameters, matchImageParam } from "./url-data";
 
+import { append } from "fp-ts-std/String";
 import { makeRemoteResultADT } from "@fun-ts/remote-result-adt";
 
-type ImageDataSnappy = { type: "Snappy"; name: ImageParamSnappy; url: string; };
+type ImageDataSnappy = {
+    type: "Snappy";
+    name: ImageParamSnappy;
+    url: string;
+    srcset: string;
+};
 type ImageDataUrl = { type: "Url", url: ImageParamLink; };
 
 export const ImageDataAdt = makeADT("type")({
@@ -101,7 +108,8 @@ export const getAppDataFromUrlParams: FunctionN<[UrlParameters], AppData> = ({
             matchImageParam({
                 onSnappy: name => ImageDataAdt.of.Snappy({
                     name,
-                    url: makeSnappyUrl({ name })
+                    url: makeSnappyAvatarUrl(name),
+                    srcset: makeSnappyAvatarSrcSet(name),
                 }),
 
                 onUrl: url => ImageDataAdt.of.Url({ url }),
@@ -114,7 +122,8 @@ export const getAppDataFromUrlParams: FunctionN<[UrlParameters], AppData> = ({
         O.map(matchImageParam<ImageData>({
             onSnappy: name => ImageDataAdt.of.Snappy({
                 name,
-                url: makeSnappyUrl({ name })
+                url: makeSnappyBackgroundUrl(name),
+                srcset: makeSnappyBackgroundSrcSet(name),
             }),
 
             onUrl: url => ImageDataAdt.of.Url({ url }),
@@ -192,12 +201,56 @@ export const appDataToUrlParams: FunctionN<[AppData], UrlParameters> = ({
     ...rest,
 });
 
-type SnappyApiParams = {
-    name: ImageParamSnappy;
-};
+const removeSnappyPrefix = S.replace(/^snappy:/, "");
 
-const makeSnappyUrl = (
-    { name }: SnappyApiParams
-) => `${import.meta.env.BASE_URL}images/wallpapers/${encodeURIComponent(name.replace(/^snappy:/, ""))}`;
+// URL and placeholder handling for vite
+// https://vitejs.dev/guide/assets.html#new-url-url-import-meta-url
+const makeSnappyBackgroundUrl = flow(
+    removeSnappyPrefix,
+    name => new URL(
+        `../assets/images/originals/${encodeURIComponent(name)}.jpeg?w=990&quality=65&format=avif`,
+        import.meta.url
+    ).href
+);
+
+const makeSnappyBackgroundSrcSet = flow(
+    removeSnappyPrefix,
+    name => pipe(
+        new URL(
+            `../assets/images/originals/${encodeURIComponent(name)}.jpeg?w=1980&quality=65&format=avif&srcset`,
+            import.meta.url
+        ).href,
+        append(" 1980w,"),
+        append(new URL(
+            `../assets/images/originals/${encodeURIComponent(name)}.jpeg?w=2970&quality=65&format=avif&srcset`,
+            import.meta.url
+        ).href),
+        append(" 2970w"),
+    )
+);
+
+const makeSnappyAvatarUrl = flow(
+    removeSnappyPrefix,
+    name => new URL(
+        `../assets/images/originals/${encodeURIComponent(name)}.jpeg?w=120&quality=65&format=avif`,
+        import.meta.url
+    ).href
+);
+
+const makeSnappyAvatarSrcSet = flow(
+    removeSnappyPrefix,
+    name => pipe(
+        new URL(
+            `../assets/images/originals/${encodeURIComponent(name)}.jpeg?w=240&quality=65&format=avif`,
+            import.meta.url
+        ).href,
+        append(" 240w,"),
+        append(new URL(
+            `../assets/images/originals/${encodeURIComponent(name)}.jpeg?w=480&quality=65&format=avif`,
+            import.meta.url
+        ).href),
+        append(" 480w"),
+    )
+);
 
 export const AppDataAdt = makeRemoteResultADT<AppData>();

@@ -10,6 +10,7 @@
         "esbuild",
         "filenamify",
         "Guybrush",
+        "imagetools",
         "metacpan",
         "Monoid",
         "nayuki",

@@ -4,6 +4,7 @@ import * as O from "fp-ts/Option";
 import * as R from "fp-ts/Record";
 import * as styles from "./card.css";
 
+import { AppData, ImageDataAdt } from "../model/app-data";
 import {
     ChevronDownIcon,
     CpanIcon,
@@ -30,7 +31,6 @@ import { DetailLine, DetailLink, DetailList } from "./detail-list";
 import { constant, identity, pipe, tuple } from "fp-ts/function";
 
 import type { ADTType } from "@morphic-ts/adt";
-import { AppData } from "../model/app-data";
 import type { FunctionComponent } from "preact";
 import { PageContent } from "./page-content";
 import { RemoteImageAdt } from "../model/remote-image";
@@ -70,6 +70,7 @@ type CardProps = {
     avatar: ADTType<typeof RemoteImageAdt>;
     expanded: boolean;
     maximumDetailsVisible: O.Option<number>;
+    avatarAppData: AppData["avatar"],
 
     onExpandClick: VoidFunction;
 };
@@ -79,6 +80,7 @@ export const Card: FunctionComponent<CardProps> = ({
     avatar,
     expanded,
     maximumDetailsVisible,
+    avatarAppData,
 
     onExpandClick,
 }) => (
@@ -91,11 +93,19 @@ export const Card: FunctionComponent<CardProps> = ({
                     NotLoaded: Empty,
                     // TODO: Loading animation for avatar
                     Loading: Empty,
-                    Loaded: ({ objectUrl }) => <div className={styles.layoutNarrow}>
-                        <Avatar url={objectUrl} name={name} />
-                    </div>,
                     Failure: ({ error }) => <div className={styles.layoutNarrow}>
-                        <Avatar url={error.remoteUrl} name={name} />
+                        <Avatar
+                            url={error.remoteUrl}
+                            name={name}
+                            avatarAppData={avatarAppData}
+                        />
+                    </div>,
+                    Loaded: ({ objectUrl }) => <div className={styles.layoutNarrow}>
+                        <Avatar
+                            url={objectUrl}
+                            name={name}
+                            avatarAppData={avatarAppData}
+                        />
                     </div>,
                 })
             )}
@@ -289,9 +299,10 @@ const Details: FunctionComponent<DetailProps> = ({
 type AvatarProps = {
     url: string;
     name: O.Option<string>;
+    avatarAppData: AppData["avatar"];
 };
 
-const Avatar: FunctionComponent<AvatarProps> = ({ url, name }) => (
+const Avatar: FunctionComponent<AvatarProps> = ({ url, name, avatarAppData }) => (
     <div className={styles.avatarCircle}>
         <img src={url}
             className={styles.avatar}
@@ -300,6 +311,17 @@ const Avatar: FunctionComponent<AvatarProps> = ({ url, name }) => (
                 O.fold(
                     constant("Avatar"),
                     name => `Avatar of ${name}`
+                )
+            )}
+            {...pipe(
+                avatarAppData,
+                O.chain(O.fromPredicate(ImageDataAdt.is.Snappy)),
+                O.fold(
+                    constant({}),
+                    (snappyImage): Pick<JSX.HTMLAttributes, "srcSet" | "sizes"> => ({
+                        srcSet: snappyImage.srcset,
+                        sizes: `${styles.AVATAR_SIZE}px`,
+                    })
                 )
             )}
         />

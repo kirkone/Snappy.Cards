@@ -1,5 +1,5 @@
 {
-  "name": "about.cards",
+  "name": "snappy.cards",
   "version": "1.0.0",
   "description": "A web site to show a business card.",
   "main": "index.html",
@@ -18,7 +18,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/kirkone/About.git"
+    "url": "https://github.com/kirkone/Snappy.Cards.git"
   },
   "scripts": {
     "start": "vite --host",
@@ -66,6 +66,7 @@
     "eslint-plugin-functional": "6.4.0",
     "typescript": "5.4.4",
     "vite": "5.2.8",
+    "vite-imagetools": "7.0.4",
     "@faker-js/faker": "8.4.1",
     "rollup-plugin-visualizer": "5.12.0",
     "rollup-plugin-hypothetical": "2.1.1",
