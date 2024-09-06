@@ -10,7 +10,11 @@ import { visualizer } from "rollup-plugin-visualizer";
 export default defineConfig(({ mode }) => ({
     plugins: [
         preact(),
-        imagetools(),
+        imagetools({
+            defaultDirectives: () => new URLSearchParams({
+                effort: mode === "production" ? "max" : "min"
+            })
+        }),
         vanillaExtractPlugin(),
         splitVendorChunkPlugin(),
         hypothetical({

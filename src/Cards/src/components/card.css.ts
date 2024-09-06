@@ -63,10 +63,12 @@ export const layoutBottom = style({
     ...ellipsisLine,
 });
 
+export const AVATAR_SIZE = 120;
+
 export const avatarCircle = style({
     // circle shape
-    width: 120,
-    height: 120,
+    width: AVATAR_SIZE,
+    height: AVATAR_SIZE,
     borderRadius: "50%",
     overflow: "hidden",
 

@@ -78,7 +78,7 @@ const SingleCardAll = pipe(
         fakerD,
         (faker) => {
             const [expanded, setExpanded] = useState<boolean>(false);
-            const avatar = faker.internet.avatar();
+            const avatar = faker.internet.avatar() as `http${string}`;
 
             return <div style={{ margin: 30 }}>
                 <Card
@@ -113,6 +113,10 @@ const SingleCardAll = pipe(
                         remoteUrl: avatar,
                         objectUrl: avatar
                     })}
+                    avatarAppData={O.some({
+                        type: "Url",
+                        url: avatar
+                    })}
                     maximumDetailsVisible={O.some(5)}
                 />
             </div>;
@@ -126,7 +130,7 @@ export const SingleCardOnlyThree = pipe(
         fakerD,
         (faker) => {
             const [expanded, setExpanded] = useState<boolean>(false);
-            const avatar = faker.internet.avatar();
+            const avatar = faker.internet.avatar() as `http${string}`;
 
             return <div style={{ margin: 30 }}>
                 <Card
@@ -161,6 +165,10 @@ export const SingleCardOnlyThree = pipe(
                         remoteUrl: avatar,
                         objectUrl: avatar
                     })}
+                    avatarAppData={O.some({
+                        type: "Url",
+                        url: avatar
+                    })}
                     maximumDetailsVisible={O.none}
                 />
             </div>;
@@ -174,7 +182,7 @@ export const SingleCardWithJobOnlyTwo = pipe(
         fakerD,
         (faker) => {
             const [expanded, setExpanded] = useState<boolean>(false);
-            const avatar = faker.internet.avatar();
+            const avatar = faker.internet.avatar() as `http${string}`;
 
             return <div style={{ margin: 30 }}>
                 <Card
@@ -209,6 +217,10 @@ export const SingleCardWithJobOnlyTwo = pipe(
                         remoteUrl: avatar,
                         objectUrl: avatar
                     })}
+                    avatarAppData={O.some({
+                        type: "Url",
+                        url: avatar
+                    })}
                     maximumDetailsVisible={O.none}
                 />
             </div>;
@@ -222,7 +234,7 @@ export const SingleCardWithJobOnlyThree = pipe(
         fakerD,
         (faker) => {
             const [expanded, setExpanded] = useState<boolean>(false);
-            const avatar = faker.internet.avatar();
+            const avatar = faker.internet.avatar() as `http${string}`;
 
             return <div style={{ margin: 30 }}>
                 <Card
@@ -257,6 +269,10 @@ export const SingleCardWithJobOnlyThree = pipe(
                         remoteUrl: avatar,
                         objectUrl: avatar
                     })}
+                    avatarAppData={O.some({
+                        type: "Url",
+                        url: avatar
+                    })}
                     maximumDetailsVisible={O.none}
                 />
             </div>;
@@ -287,6 +303,7 @@ const Permutations = pipe(
                             }),
                         ),
                     )}
+                    avatarAppData={O.none}
                     maximumDetailsVisible={O.none}
                 />
             </div>;
