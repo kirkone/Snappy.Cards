@@ -53,5 +53,8 @@ export default defineConfig(({ mode }) => ({
         outDir: "../../build",
         emptyOutDir: true,
         minify: "terser",
+    },
+    server: {
+        port: 3000
     }
 }));

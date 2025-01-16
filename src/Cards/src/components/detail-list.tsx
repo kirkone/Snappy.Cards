@@ -23,7 +23,7 @@ export const DetailLine: FunctionComponent<DetailLineProps> = ({
 );
 
 type DetailLinkProps = Simplify<
-    & Pick<JSX.HTMLAttributes, "href" | "target" | "rel" | "download" | "onClick">
+    & Pick<JSX.AnchorHTMLAttributes, "href" | "target" | "rel" | "download" | "onClick">
     & {
         icon: ComponentType<Pick<JSX.HTMLAttributes, "className">>;
         caption: string,

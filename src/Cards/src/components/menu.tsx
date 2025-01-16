@@ -29,7 +29,7 @@ export const Menu: FunctionComponent<MenuProps> = ({
     <header className={styles.header}>
         <PageContent className={`${className} ${styles.wrapper}`}>
             <menu className={`${styles.menu}`}>
-                <a name={`LinkTo${Routes.as.Card}`}
+                <a id={`LinkTo${Routes.as.Card}`}
                     aria-label={`Navigate to ${Routes.as.Card}`}
                     href={`#${Routes.as.Card}`}
                     onClick={flow(
@@ -40,7 +40,7 @@ export const Menu: FunctionComponent<MenuProps> = ({
                     <CardIcon />
                 </a>
 
-                <a name={`LinkTo${Routes.as.Qr}`}
+                <a id={`LinkTo${Routes.as.Qr}`}
                     aria-label={`Navigate to ${Routes.as.Qr}`}
                     href={`#${Routes.as.Qr}`}
                     onClick={flow(
@@ -51,7 +51,7 @@ export const Menu: FunctionComponent<MenuProps> = ({
                     <QrCodeIcon />
                 </a>
 
-                <a name={`LinkTo${Routes.as.Share}`}
+                <a id={`LinkTo${Routes.as.Share}`}
                     aria-label={`Navigate to ${Routes.as.Share}`}
                     href={`#${Routes.as.Share}`}
                     onClick={flow(
