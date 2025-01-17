@@ -18,7 +18,7 @@ const getCardData = flow(
         name: [O.some(`${faker.person.firstName()} ${faker.person.lastName()}`), O.none],
         job: [O.some(faker.person.jobTitle()), O.none],
         sub: [O.some(faker.company.buzzVerb()), O.none],
-        avatar: [O.some(faker.internet.avatar()), O.none],
+        avatar: [O.some(faker.image.avatar()), O.none],
 
         phone: [O.some(faker.phone.number()), O.none],
         mail: [O.some(faker.internet.email()), O.none],
@@ -78,7 +78,7 @@ const SingleCardAll = pipe(
         fakerD,
         (faker) => {
             const [expanded, setExpanded] = useState<boolean>(false);
-            const avatar = faker.internet.avatar();
+            const avatar = faker.image.avatar();
 
             return <div style={{ margin: 30 }}>
                 <Card
@@ -126,7 +126,7 @@ export const SingleCardOnlyThree = pipe(
         fakerD,
         (faker) => {
             const [expanded, setExpanded] = useState<boolean>(false);
-            const avatar = faker.internet.avatar();
+            const avatar = faker.image.avatar();
 
             return <div style={{ margin: 30 }}>
                 <Card
@@ -174,7 +174,7 @@ export const SingleCardWithJobOnlyTwo = pipe(
         fakerD,
         (faker) => {
             const [expanded, setExpanded] = useState<boolean>(false);
-            const avatar = faker.internet.avatar();
+            const avatar = faker.image.avatar();
 
             return <div style={{ margin: 30 }}>
                 <Card
@@ -222,7 +222,7 @@ export const SingleCardWithJobOnlyThree = pipe(
         fakerD,
         (faker) => {
             const [expanded, setExpanded] = useState<boolean>(false);
-            const avatar = faker.internet.avatar();
+            const avatar = faker.image.avatar();
 
             return <div style={{ margin: 30 }}>
                 <Card

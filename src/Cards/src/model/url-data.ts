@@ -252,7 +252,7 @@ export const getParametersFromUrl = flow(
 
     evolve({
         origin: identity<UrlDataOrigin>,
-        urlParams: x => decodeUrlParameters(x)
+        urlParams: decodeUrlParameters
     }),
 );
 
