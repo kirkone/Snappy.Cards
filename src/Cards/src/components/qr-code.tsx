@@ -30,6 +30,8 @@ export const QrCode: FunctionComponent<QrCodeProps> = ({
     border = 0,
     className = ""
 }) => pipe(
+    // Throws RangeError if qrCode too long
+    // TODO: convert to Either
     qrCodeGen.QrCode.encodeText(text, ecc),
     code => <svg xmlns="http://www.w3.org/2000/svg"
         version="1.1"

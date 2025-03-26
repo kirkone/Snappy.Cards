@@ -12,7 +12,11 @@ const QrCodeCardStory = () => <>
     <h1 style={{ backgroundColor: "white" }}>Loaded</h1>
     <SharePage
         name={O.some("Guybrush Threepwood")}
-        downloadUrl={VCardDataAdt.as.Loaded({ url: "" })}
+        downloadUrl={VCardDataAdt.as.Loaded({
+            url: "",
+            vCard: "",
+            vCardNoImage: "",
+        })}
         browserData={staticBrowserData}
         onShareClick={() => { }}
 
