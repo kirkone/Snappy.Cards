@@ -1,7 +1,7 @@
 import { defineConfig, splitVendorChunkPlugin } from "vite";
 
 import hypothetical from "rollup-plugin-hypothetical";
-import preact from '@preact/preset-vite';
+import preact from "@preact/preset-vite";
 import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin";
 import { visualizer } from "rollup-plugin-visualizer";
 
@@ -47,7 +47,7 @@ export default defineConfig(({ mode }) => ({
         }),
     ],
     esbuild: {
-        logOverride: { 'this-is-undefined-in-esm': 'silent' },
+        logOverride: { "this-is-undefined-in-esm": "silent" },
     },
     build: {
         outDir: "../../build",

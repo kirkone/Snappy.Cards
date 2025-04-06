@@ -58,6 +58,7 @@
     "@storybook/preact": "^8.6.12",
     "@storybook/preact-vite": "^8.6.12",
     "@storybook/test": "^8.6.12",
+    "@storybook/types": "^8.6.12",
     "@tsconfig/strictest": "2.0.5",
     "@typescript-eslint/eslint-plugin": "8.29.0",
     "@typescript-eslint/parser": "8.29.0",
