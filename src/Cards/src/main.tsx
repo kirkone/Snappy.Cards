@@ -4,6 +4,13 @@ import { init, sub, update, view } from "./components/app";
 import { pipe } from "fp-ts/function";
 import { withPreactSynchronous } from "@fun-ts/elmish-preact";
 
+const appElement = document.getElementById("app");
+
+if (!appElement) {
+    // eslint-disable-next-line functional/no-throw-statements
+    throw new Error("App element not found.");
+}
+
 pipe(
     program.makeProgram({
         init,
@@ -12,6 +19,6 @@ pipe(
     }),
     program.withSubscription(sub),
     debug.withConsoleDebug,
-    withPreactSynchronous(document.getElementById("app")!),
+    withPreactSynchronous(appElement),
     program.run,
 );

@@ -17,12 +17,19 @@ export const getBrowserData: IO.IO<BrowserData> = () => {
     const n = navigator;
 
     return ({
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
         osMode: /(Mac|iPhone|iPod|iPad)/i.test(n.platform) ? "ios" : "other",
 
+        // eslint thinks this is an unnecessary condition, because its types
+        // state, that the share API or clipboard do always exist
+        // This is not the case for older browsers, which is tested here
+        // Hence this is disabled here
+        /* eslint-disable @typescript-eslint/no-unnecessary-condition */
         shareMode:
             !!n.canShare && !!n.share && n.canShare({ url: location.toString() }) ? "share" :
                 !!n.clipboard && !!n.clipboard.writeText ? "clipboard" :
                     "none",
+        /* eslint-enable @typescript-eslint/no-unnecessary-condition */
 
         location: pipe(
             location,
@@ -47,7 +54,7 @@ export const matchOsMode = getUnionTypeMatcherStrict<BrowserData["osMode"]>();
 export const matchShareMode = getUnionTypeMatcherStrict<BrowserData["shareMode"]>();
 
 export const shareUrl = matchShareMode({
-    share: () => (url: string) => { navigator.share({ url }); },
-    clipboard: () => (url: string) => { navigator.clipboard.writeText(url); },
+    share: () => (url: string) => { void navigator.share({ url }); },
+    clipboard: () => (url: string) => { void navigator.clipboard.writeText(url); },
     none: () => () => { },
 });
