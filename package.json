@@ -8,7 +8,7 @@
     "build:cards": "npm run build --workspace=src/Cards",
     "check:cards": "npm run check --workspace=src/Cards",
     "preview:cards": "npm run preview --workspace=src/Cards",
-    "story:cards": "npm run vitebook:dev --workspace=src/Cards",
+    "story:cards": "npm run storybook --workspace=src/Cards",
     "test:cards": "npm run test --workspace=src/Cards",
     "use:git-commit-message": "git config commit.template commit-message-template"
   },

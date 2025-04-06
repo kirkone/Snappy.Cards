@@ -28,13 +28,15 @@
     "check:eslint": "eslint ./src/**/*.{ts,tsx}",
     "check:cspell": "cspell ./src/**/*.{ts,tsx}",
     "check:tsc": "tsc --noEmit --emitDeclarationOnly false",
-    "test": "vitest"
+    "test": "vitest",
+    "storybook": "storybook dev -p 6006 --no-open",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "@fun-ts/elmish": "0.8.5",
     "@fun-ts/elmish-preact": "0.8.5",
-    "@fun-ts/remote-result-adt": "0.8.5",
     "@fun-ts/fetch": "0.8.5",
+    "@fun-ts/remote-result-adt": "0.8.5",
     "@morphic-ts/adt": "3.0.0",
     "@vanilla-extract/css": "1.17.1",
     "@vanilla-extract/css-utils": "0.1.4",
@@ -42,13 +44,20 @@
     "filenamify": "6.0.0",
     "fp-ts": "2.16.9",
     "fp-ts-std": "1.0.0",
+    "lz-ts": "1.1.2",
     "nayuki-qr-code-generator": "1.8.0",
     "preact": "10.26.5",
-    "tslib": "2.8.1",
-    "lz-ts": "1.1.2"
+    "tslib": "2.8.1"
   },
   "devDependencies": {
+    "@chromatic-com/storybook": "^3.2.6",
+    "@faker-js/faker": "9.6.0",
     "@preact/preset-vite": "2.10.1",
+    "@storybook/addon-essentials": "^8.6.12",
+    "@storybook/blocks": "^8.6.12",
+    "@storybook/preact": "^8.6.12",
+    "@storybook/preact-vite": "^8.6.12",
+    "@storybook/test": "^8.6.12",
     "@tsconfig/strictest": "2.0.5",
     "@typescript-eslint/eslint-plugin": "8.29.0",
     "@typescript-eslint/parser": "8.29.0",
@@ -57,13 +66,14 @@
     "eslint": "8.57.1",
     "eslint-plugin-fp-ts": "0.3.2",
     "eslint-plugin-functional": "6.6.3",
+    "eslint-plugin-storybook": "0.12.0",
+    "rollup-plugin-hypothetical": "2.1.1",
+    "rollup-plugin-visualizer": "5.14.0",
+    "storybook": "^8.6.12",
+    "terser": "5.39.0",
+    "type-fest": "4.39.1",
     "typescript": "5.8.3",
     "vite": "6.2.5",
-    "@faker-js/faker": "9.6.0",
-    "rollup-plugin-visualizer": "5.14.0",
-    "rollup-plugin-hypothetical": "2.1.1",
-    "type-fest": "4.39.1",
-    "terser": "5.39.0",
     "vitest": "3.1.1"
   }
 }

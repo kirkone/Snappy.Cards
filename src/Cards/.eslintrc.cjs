@@ -11,7 +11,8 @@ module.exports = {
         "plugin:functional/no-exceptions",
         "plugin:functional/no-other-paradigms",
         "plugin:@typescript-eslint/strict-type-checked",
-        "plugin:fp-ts/all"
+        "plugin:fp-ts/all",
+        "plugin:storybook/recommended"
     ],
     "globals": {
         "Atomics": "readonly",
