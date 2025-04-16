@@ -3,7 +3,7 @@ import * as IO from "fp-ts/IO";
 import * as RAND from "fp-ts/Random";
 
 import { Meta, StoryObj } from "../utils/storybook";
-import { fakerD } from "../utils/utils-vitebook";
+import { fakerD } from "../utils/faker";
 import { QrCodeCard } from "./qr-code-card";
 
 const meta = {

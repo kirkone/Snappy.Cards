@@ -3,7 +3,7 @@ import * as O from "fp-ts/Option";
 import * as RAND from "fp-ts/Random";
 
 import { flow, pipe } from "fp-ts/function";
-import { fakerD } from "../utils/utils-vitebook";
+import { fakerD } from "../utils/faker";
 
 import { action } from "@storybook/addon-actions";
 import { memoize } from "fp-ts-std/IO";
