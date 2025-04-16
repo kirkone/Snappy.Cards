@@ -1,5 +1,6 @@
-import "../src/styles/base.css";
 import "../src/styles/reset.css";
+import "../src/styles/base.css";
+import "./assets/storybook.css";
 
 import * as theme from "../src/theme/variables.css";
 

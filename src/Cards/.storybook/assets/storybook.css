@@ -1,0 +1,12 @@
+body,
+html {
+    overscroll-behavior: initial;
+    height: initial;
+    min-height: initial;
+
+    overflow: initial;
+}
+
+*[hidden="true"] {
+    display: none !important;
+}
