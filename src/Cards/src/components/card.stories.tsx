@@ -39,6 +39,8 @@ const getCardData = flow(
         snapchat: O.some(faker.hacker.noun()),
         steam: O.some(faker.hacker.noun()),
         cpan: O.some(faker.hacker.noun()),
+        signal: O.some(faker.hacker.noun()),
+        telegram: O.some(faker.hacker.noun()),
     }),
 );
 
@@ -66,6 +68,8 @@ const emptyCardData = {
     snapchat: O.none,
     steam: O.none,
     cpan: O.none,
+    signal: O.none,
+    telegram: O.none,
 };
 
 const randomSeed = memoize(RAND.randomInt(0, 200));
