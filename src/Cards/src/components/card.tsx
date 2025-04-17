@@ -16,15 +16,17 @@ import {
     PatreonIcon,
     PaypalIcon,
     PinterestIcon,
+    SignalIcon,
     SmartphoneIcon,
     SnapchatIcon,
     SoundcloudIcon,
     SteamIcon,
+    TelegramIcon,
     TwitchIcon,
     WebIcon,
     XIcon,
     XingIcon,
-    YoutubeIcon
+    YoutubeIcon,
 } from "./icons";
 import { DetailLine, DetailLink, DetailList } from "./detail-list";
 import { constant, identity, pipe, tuple } from "fp-ts/function";
@@ -58,6 +60,8 @@ type Media = Pick<AppData,
     | "snapchat"
     | "steam"
     | "cpan"
+    | "signal"
+    | "telegram"
 >;
 
 export type CardData = Simplify<
@@ -208,6 +212,8 @@ const Details: FunctionComponent<DetailProps> = ({
                     "instagram",
                     "pinterest",
                     "snapchat",
+                    "signal",
+                    "telegram",
 
                     // dev
                     "github",
@@ -499,6 +505,24 @@ const getLinkForMedium = getUnionTypeMatcherStrict<keyof Media>()({
             caption={value}
             icon={CpanIcon}
             href={`https://metacpan.org/author/${encodeURIComponent(value)}`}
+            target="_blank"
+        />
+    ),
+
+    signal: () => (value: string) => (
+        <DetailLink
+            caption={value}
+            icon={SignalIcon}
+            href={`https://signal.me/#${encodeURIComponent(value)}`}
+            target="_blank"
+        />
+    ),
+
+    telegram: () => (value: string) => (
+        <DetailLink
+            caption={value}
+            icon={TelegramIcon}
+            href={`https://t.me/${encodeURIComponent(value)}`}
             target="_blank"
         />
     ),

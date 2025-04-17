@@ -502,6 +502,8 @@ const CardView: FunctionComponent<CardViewProps> = ({
                     "snapchat" as const,
                     "steam" as const,
                     "cpan" as const,
+                    "signal" as const,
+                    "telegram" as const,
                 ]),
             )}
             avatar={avatar}

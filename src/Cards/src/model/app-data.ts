@@ -41,6 +41,8 @@ export type AppData = {
     snapchat: O.Option<string>;
     steam: O.Option<string>;
     cpan: O.Option<string>;
+    signal: O.Option<string>;
+    telegram: O.Option<string>;
 
     config: {
         maximumDetailsVisible: O.Option<number>;
@@ -67,6 +69,8 @@ export const getAppDataFromUrlParams: FunctionN<[UrlParameters], AppData> = ({
     sn,
     st,
     mc,
+    sgn,
+    tel,
 
     cfgMaxDetails,
 
@@ -89,6 +93,8 @@ export const getAppDataFromUrlParams: FunctionN<[UrlParameters], AppData> = ({
     snapchat: sn,
     steam: st,
     cpan: mc,
+    signal: sgn,
+    telegram: tel,
 
     twitter: pipe(
         x,
@@ -145,6 +151,8 @@ export const appDataToUrlParams: FunctionN<[AppData], UrlParameters> = ({
     snapchat,
     steam,
     cpan,
+    signal,
+    telegram,
 
     config,
 
@@ -170,6 +178,8 @@ export const appDataToUrlParams: FunctionN<[AppData], UrlParameters> = ({
     sn: snapchat,
     st: steam,
     mc: cpan,
+    sgn: signal,
+    tel: telegram,
 
     avatar: pipe(
         avatar,

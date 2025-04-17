@@ -110,6 +110,8 @@ const TUrlParameters = {
     sn: optionalNonEmptyString("sn"),
     st: optionalNonEmptyString("st"),
     mc: optionalNonEmptyString("mc"),
+    sgn: optionalNonEmptyString("sgn"),
+    tel: optionalNonEmptyString("tel"),
 
     cfgMaxDetails: optionalPositiveSmallInt("cfgMaxDetails"),
 
