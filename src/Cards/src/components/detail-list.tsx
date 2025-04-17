@@ -10,7 +10,10 @@ export const DetailList: FunctionComponent = ({ children }) => (
     </ul>
 );
 
-type DetailLineProps = Pick<JSX.HTMLAttributes, "className" | "style">;
+type DetailLineProps = Simplify<
+    & Pick<JSX.HTMLAttributes, "style">
+    & { className?: string; }
+>;
 
 export const DetailLine: FunctionComponent<DetailLineProps> = ({
     children,

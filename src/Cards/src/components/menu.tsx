@@ -28,13 +28,13 @@ export const Menu: FunctionComponent<MenuProps> = ({
 }) => (
     <header className={styles.header}>
         <PageContent className={`${className} ${styles.wrapper}`}>
-            <menu className={`${styles.menu}`}>
+            <menu className={styles.menu}>
                 <a id={`LinkTo${Routes.as.Card}`}
                     aria-label={`Navigate to ${Routes.as.Card}`}
                     href={`#${Routes.as.Card}`}
                     onClick={flow(
                         preventDefault,
-                        () => onClick(Routes.as.Card),
+                        () => { onClick(Routes.as.Card); },
                     )}
                 >
                     <CardIcon />
@@ -45,7 +45,7 @@ export const Menu: FunctionComponent<MenuProps> = ({
                     href={`#${Routes.as.Qr}`}
                     onClick={flow(
                         preventDefault,
-                        () => onClick(Routes.as.Qr),
+                        () => { onClick(Routes.as.Qr); },
                     )}
                 >
                     <QrCodeIcon />
@@ -56,7 +56,7 @@ export const Menu: FunctionComponent<MenuProps> = ({
                     href={`#${Routes.as.Share}`}
                     onClick={flow(
                         preventDefault,
-                        () => onClick(Routes.as.Share),
+                        () => { onClick(Routes.as.Share); },
                     )}
                 >
                     {pipe(

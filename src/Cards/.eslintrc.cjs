@@ -10,8 +10,9 @@ module.exports = {
         "plugin:functional/stylistic",
         "plugin:functional/no-exceptions",
         "plugin:functional/no-other-paradigms",
-        "plugin:@typescript-eslint/eslint-recommended",
-        "plugin:fp-ts/all"
+        "plugin:@typescript-eslint/strict-type-checked",
+        "plugin:fp-ts/all",
+        "plugin:storybook/recommended"
     ],
     "globals": {
         "Atomics": "readonly",
@@ -46,6 +47,30 @@ module.exports = {
         ],
         "functional/no-mixed-types": "off",
         "functional/no-loop-statements": "error",
-        "fp-ts/no-module-imports": "off"
+        "fp-ts/no-module-imports": "off",
+        "@typescript-eslint/restrict-template-expressions": [
+            "error",
+            {
+                "allow": [{
+                    "name": "SignalLike",
+                    "from": "package",
+                    "package": "preact"
+                }],
+                "allowNumber": true,
+                "allowAny": false,
+                "allowArray": false,
+                "allowBoolean": false,
+                "allowNever": false,
+                "allowNullish": false,
+                "allowRegExp": false
+            }
+        ],
+        "@typescript-eslint/no-unused-expressions": [
+            "error",
+            {
+                "allowShortCircuit": true,
+                "allowTernary": true,
+            }
+        ]
     }
 };

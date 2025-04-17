@@ -10,7 +10,9 @@ import { pipe } from "fp-ts/function";
 const convertBlobToBase64P = (blob: Blob) => new Promise<string>(
     (resolve, reject) => {
         const reader = new FileReader();
-        reader.onerror = () => reject(reader.error);
+        reader.onerror = () => {
+            reject(reader.error ?? new Error("FileReader Error"));
+        };
         reader.onload = () => {
             typeof reader.result === "string" ?
                 resolve(reader.result) :

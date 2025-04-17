@@ -47,7 +47,7 @@ const renderVCard = (params: VCardFields) => pipe(
 
 const vCardUrl = (vcardData: string) => pipe(
     new Blob([vcardData], { type: "text/vcard" }),
-    URL.createObjectURL
+    URL.createObjectURL.bind(URL)
 );
 
 export const getVCardUrl = flow(

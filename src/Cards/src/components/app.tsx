@@ -146,9 +146,11 @@ export type Msg = ADTType<typeof MsgAdt>;
 // #region Subscription
 // ============================================================================
 export const sub: Subscribe<Model, Msg> = (_) => cmd.ofSub(
-    dispatch => window.addEventListener("hashchange", () => {
-        dispatch(MsgAdt.as.HashChanged({}));
-    })
+    dispatch => {
+        window.addEventListener("hashchange", () => {
+            dispatch(MsgAdt.as.HashChanged({}));
+        });
+    }
 );
 
 export const pushUrlParametersCmd = (hash: string) =>
@@ -226,11 +228,13 @@ export const update: Update<Model, Msg> = (model, msg) => pipe(
                 ...model,
                 browserData: BrowserDataAdt.as.Loading({})
             },
-            cmd.ofSub(dispatch => dispatch(
-                MsgAdt.as.GetBrowserDataSucceeded({
-                    data: getBrowserData()
-                })
-            ))
+            cmd.ofSub(dispatch => {
+                dispatch(
+                    MsgAdt.as.GetBrowserDataSucceeded({
+                        data: getBrowserData()
+                    })
+                );
+            })
         ],
 
         GetBrowserDataSucceeded: ({ data }): ElmishResult<Model, Msg> => [
@@ -411,7 +415,9 @@ export const view: PreactView<Model, Msg> = (dispatch, model) => (
                 appData={model.appData}
                 avatar={model.avatarImage}
                 expanded={model.cardExpanded}
-                onExpandClick={() => dispatch(MsgAdt.as.ToggleCardExpansion({}))}
+                onExpandClick={
+                    () => { dispatch(MsgAdt.as.ToggleCardExpansion({})); }
+                }
             />
         </Page>
         <Page route={Routes.of.Qr}>
@@ -429,12 +435,12 @@ export const view: PreactView<Model, Msg> = (dispatch, model) => (
                     O.chain(d => d.name)
                 )}
                 browserData={model.browserData}
-                onShareClick={() => dispatch(MsgAdt.as.Share({}))}
+                onShareClick={() => { dispatch(MsgAdt.as.Share({})); }}
             />
         </Page>
         <Menu
             browserData={model.browserData}
-            onClick={route => dispatch(MsgAdt.as.Navigate({ route }))}
+            onClick={route => { dispatch(MsgAdt.as.Navigate({ route })); }}
         />
     </div>
 );
@@ -550,7 +556,7 @@ const QrCodeView: FunctionComponent<QrCodeViewProps> = ({
 // ============================================================================
 const CSSVarScrollPercentageName = pipe(
     CSSVarScrollPercentage,
-    s => s.replace(/var\(([^)]+)\)/, (_, name) => name)
+    s => s.replace(/var\(([^)]+)\)/, (_, name: string) => name)
 );
 
 const synchronizeScrollToCSS = ({

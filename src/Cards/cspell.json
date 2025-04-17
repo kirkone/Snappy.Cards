@@ -2,6 +2,7 @@
     "version": "0.2",
     "language": "en",
     "words": [
+        "autodocs",
         "contramap",
         "Cpan",
         "currentcolor",
@@ -22,8 +23,7 @@
         "stringification",
         "Threepwood",
         "VCARD",
-        "vite",
-        "vitebook"
+        "vite"
     ],
     "flagWords": []
 }
