@@ -42,6 +42,8 @@ sc=Your handle on SoundCloud.
 sn=Your handle on Snapchat.
 st=Your handle on Steam.
 mc=Your handle on metacpan.
+sgn=Your handle on Signal.
+tel=Your handle on Telegram.
 cfgMaxDetails=Configuration option to determine how many detail lines are shown. Default is to display all detail lines.
 ```
 

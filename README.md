@@ -146,6 +146,14 @@ Your handle on Steam.
 
 Your handle on metacpan.
 
+### sgn
+
+Your handle on Signal.
+
+### tel
+
+Your handle on Telegram.
+
 ### cfgMaxDetails
 
 Configuration option to determine, how many detail lines are going te be shown.

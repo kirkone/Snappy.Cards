@@ -58,3 +58,5 @@ export const SnapchatIcon = makeIcon("snapchat-line");
 export const SlackIcon = makeIcon("slack-line");
 export const SteamIcon = makeIcon("steam-line");
 export const CpanIcon = makeIcon("apps-2-fill");
+export const SignalIcon = makeIcon("chat-3-line");
+export const TelegramIcon = makeIcon("telegram-2-line");

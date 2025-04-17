@@ -32,6 +32,8 @@ describe("appData", () => {
         snapchat: O.some("snapchat"),
         steam: O.some("steam"),
         cpan: O.some("cpan"),
+        signal: O.some("signal"),
+        telegram: O.some("telegram"),
 
         config: {
             maximumDetailsVisible: O.none

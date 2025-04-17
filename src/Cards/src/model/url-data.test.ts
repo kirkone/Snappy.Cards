@@ -33,6 +33,9 @@ describe("getStableStringFromParameters", () => {
             sn: O.some("21snapchat"),
             st: O.some("22steam"),
             mc: O.some("23metacpan"),
+            sgn: O.some("24signal"),
+            tel: O.some("25telegram"),
+
             background: O.none,
             cfgMaxDetails: O.none
         }),
@@ -40,7 +43,9 @@ describe("getStableStringFromParameters", () => {
             "fb=11facebook&gh=6github&in=5instagram&job=13job&li=14linkedIn" +
             "&mail=2mail&mc=23metacpan&name=8name&npm=19npm&pa=17patreon" +
             "&phone=101234&pi=18pinterest&pp=16paypal&sc=20soundcloud" +
-            "&sn=21snapchat&st=22steam&sub=1sub&twc=12twitch&web=3web" +
+            "&sgn=24signal" +
+            "&sn=21snapchat&st=22steam&sub=1sub&tel=25telegram" +
+            "&twc=12twitch&web=3web" +
             "&x=4twitter&xi=15xing&yt=9youtube"
     });
 
