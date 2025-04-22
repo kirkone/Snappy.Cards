@@ -2,10 +2,11 @@ import * as O from "fp-ts/Option";
 import * as R from "fp-ts/Record";
 import * as S from "fp-ts/string";
 
-import { AppData, AppDataAdt } from "./app-data";
+import { AppData, AppDataAdt, getAppDataInfo } from "./app-data";
 import { flow, pipe } from "fp-ts/function";
 
 import type { Base64Data } from "./remote-image";
+import { Simplify } from "type-fest";
 import { makeRemoteResultADT } from "@fun-ts/remote-result-adt";
 import { pick } from "fp-ts-std/Struct";
 
@@ -26,9 +27,15 @@ const vCardImageEncoder = O.map<Base64Data, string>(
     d => `PHOTO;ENCODING=BASE64;TYPE=${d.type.toUpperCase()}:${d.content}\n\n`
 );
 
-type VCardInput =
-    & Pick<AppData, "name" | "phone" | "mail" | "web" | "job">
-    & { avatarBase64: O.Option<Base64Data>; };
+type VCardInput = Simplify<
+    & Pick<AppData, "name" | "job">
+    & {
+        phone: O.Option<string>;
+        mail: O.Option<string>;
+        web: O.Option<string>;
+    }
+    & { avatarBase64: O.Option<Base64Data>; }
+>;
 
 const encodeVCardFields = (params: VCardInput): VCardFields => ({
     name: pipe(params.name, vCardParamEncoder("N:")),
@@ -60,7 +67,14 @@ export const VCardDataAdt = makeRemoteResultADT<{ url: string; }>();
 
 export const vCardFieldsFromAppData = (a: AppData) => pipe(
     a,
-    pick(["name", "phone", "mail", "web", "job"]),
+    pick(["name", "job"]),
+    (x) => ({
+        ...x,
+        phone: pipe(a, getAppDataInfo("phone")),
+        mail: pipe(a, getAppDataInfo("mail")),
+        web: pipe(a, getAppDataInfo("web")),
+        avatarBase64: pipe(a.avatar, O.map(a => a.url)),
+    }),
 );
 
 export const vCardFieldsFromAppDataLoaded = flow(

@@ -1,6 +1,9 @@
+import * as A from "fp-ts/Array";
 import * as IO from "fp-ts/IO";
 import * as O from "fp-ts/Option";
+import * as S from "fp-ts/string";
 import * as RAND from "fp-ts/Random";
+import * as ORD from "fp-ts/Ord";
 
 import { flow, pipe } from "fp-ts/function";
 import { fakerD } from "../utils/faker";
@@ -9,67 +12,64 @@ import { action } from "@storybook/addon-actions";
 import { memoize } from "fp-ts-std/IO";
 import { RemoteImageAdt } from "../model/remote-image";
 import { Meta, StoryObj } from "../utils/storybook";
-import { Card } from "./card";
+import { Card, CardData, CardProps } from "./card";
 
-const getCardData = flow(
-    fakerD,
-    faker => ({
-        name: O.some(`${faker.person.firstName()} ${faker.person.lastName()}`),
-        job: O.some(faker.person.jobTitle()),
-        sub: O.some(faker.company.buzzVerb()),
+type StoryData = Pick<CardProps, "data" | "avatar">;
 
-        avatar: faker.image.avatar(),
-
-        phone: O.some(faker.phone.number()),
-        mail: O.some(faker.internet.email()),
-        web: O.some(faker.internet.url()),
-        twitter: O.some(faker.hacker.noun()),
-        facebook: O.some(faker.hacker.noun()),
-        youtube: O.some(faker.hacker.noun()),
-        instagram: O.some(faker.hacker.noun()),
-        twitch: O.some(faker.hacker.noun()),
-        github: O.some(faker.hacker.noun()),
-        linkedIn: O.some(faker.hacker.noun()),
-        xing: O.some(faker.hacker.noun()),
-        paypal: O.some(faker.hacker.noun()),
-        patreon: O.some(faker.hacker.noun()),
-        pinterest: O.some(faker.hacker.noun()),
-        npm: O.some(faker.hacker.noun()),
-        soundcloud: O.some(faker.hacker.noun()),
-        snapchat: O.some(faker.hacker.noun()),
-        steam: O.some(faker.hacker.noun()),
-        cpan: O.some(faker.hacker.noun()),
-        signal: O.some(faker.hacker.noun()),
-        telegram: O.some(faker.hacker.noun()),
-    }),
+const ByName: ORD.Ord<CardData["info"][number]> = pipe(
+    S.Ord,
+    ORD.contramap(([name]) => name),
 );
 
-const emptyCardData = {
+const getStoryData = flow(
+    fakerD,
+    (faker): StoryData => {
+        const avatar = faker.image.avatar();
+
+        return ({
+            data: {
+                name: O.some(`${faker.person.firstName()} ${faker.person.lastName()}`),
+                job: O.some(faker.person.jobTitle()),
+                sub: O.some(faker.company.buzzVerb()),
+
+                info: [
+                    ["phone", faker.phone.number()],
+                    ["mail", faker.internet.email()],
+                    ["web", faker.internet.url()],
+                    ["twitter", faker.hacker.noun()],
+                    ["facebook", faker.hacker.noun()],
+                    ["youtube", faker.hacker.noun()],
+                    ["instagram", faker.hacker.noun()],
+                    ["twitch", faker.hacker.noun()],
+                    ["github", faker.hacker.noun()],
+                    ["linkedIn", faker.hacker.noun()],
+                    ["xing", faker.hacker.noun()],
+                    ["paypal", faker.hacker.noun()],
+                    ["patreon", faker.hacker.noun()],
+                    ["pinterest", faker.hacker.noun()],
+                    ["npm", faker.hacker.noun()],
+                    ["soundcloud", faker.hacker.noun()],
+                    ["snapchat", faker.hacker.noun()],
+                    ["steam", faker.hacker.noun()],
+                    ["cpan", faker.hacker.noun()],
+                    ["signal", faker.hacker.noun()],
+                    ["telegram", faker.hacker.noun()],
+                ]
+            },
+            avatar: RemoteImageAdt.of.Loaded({
+                remoteUrl: avatar,
+                objectUrl: avatar
+            }),
+        });
+    },
+);
+
+const emptyCardData: CardData = {
     name: O.none,
     job: O.none,
     sub: O.none,
 
-    phone: O.none,
-    mail: O.none,
-    web: O.none,
-    twitter: O.none,
-    facebook: O.none,
-    youtube: O.none,
-    instagram: O.none,
-    twitch: O.none,
-    github: O.none,
-    linkedIn: O.none,
-    xing: O.none,
-    paypal: O.none,
-    patreon: O.none,
-    pinterest: O.none,
-    npm: O.none,
-    soundcloud: O.none,
-    snapchat: O.none,
-    steam: O.none,
-    cpan: O.none,
-    signal: O.none,
-    telegram: O.none,
+    info: [],
 };
 
 const randomSeed = memoize(RAND.randomInt(0, 200));
@@ -96,13 +96,10 @@ export const Full: Story = {
     args: pipe(
         randomSeed,
         IO.map(flow(
-            getCardData,
-            (data) => ({
+            getStoryData,
+            ({ data, avatar }) => ({
                 data,
-                avatar: RemoteImageAdt.of.Loaded({
-                    remoteUrl: data.avatar,
-                    objectUrl: data.avatar
-                }),
+                avatar,
                 maximumDetailsVisible: O.none,
             }),
         )),
@@ -113,8 +110,8 @@ export const NoAvatar: Story = {
     args: pipe(
         randomSeed,
         IO.map(flow(
-            getCardData,
-            (data) => ({
+            getStoryData,
+            ({ data }) => ({
                 data: {
                     ...emptyCardData,
 
@@ -122,9 +119,10 @@ export const NoAvatar: Story = {
                     job: data.job,
                     sub: data.sub,
 
-                    twitter: data.twitter,
-                    facebook: data.facebook,
-                    youtube: data.youtube,
+                    info: pipe(
+                        data.info,
+                        A.takeLeft(3),
+                    )
                 },
                 maximumDetailsVisible: O.some(3),
             }),
@@ -136,13 +134,10 @@ export const WithJob: Story = {
     args: pipe(
         randomSeed,
         IO.map(flow(
-            getCardData,
-            (data) => ({
+            getStoryData,
+            ({ avatar }) => ({
                 ...NoAvatar.args,
-                avatar: RemoteImageAdt.of.Loaded({
-                    remoteUrl: data.avatar,
-                    objectUrl: data.avatar
-                }),
+                avatar,
             }),
         )),
     )()
@@ -152,8 +147,8 @@ export const WithThreeMediaExpandNotVisible: Story = {
     args: pipe(
         randomSeed,
         IO.map(flow(
-            getCardData,
-            (data) => ({
+            getStoryData,
+            ({ data, avatar }) => ({
                 data: {
                     ...emptyCardData,
 
@@ -161,14 +156,12 @@ export const WithThreeMediaExpandNotVisible: Story = {
                     job: data.job,
                     sub: data.sub,
 
-                    twitter: data.twitter,
-                    facebook: data.facebook,
-                    youtube: data.youtube,
+                    info: pipe(
+                        data.info,
+                        A.takeLeft(3),
+                    )
                 },
-                avatar: RemoteImageAdt.of.Loaded({
-                    remoteUrl: data.avatar,
-                    objectUrl: data.avatar
-                }),
+                avatar,
                 maximumDetailsVisible: O.some(3),
             }),
         )),
@@ -178,6 +171,33 @@ export const WithThreeMediaExpandNotVisible: Story = {
 export const WithThreeMediaExpandVisible: Story = {
     args: {
         ...WithThreeMediaExpandNotVisible.args,
+        expanded: false,
         maximumDetailsVisible: O.some(2),
     },
+};
+
+export const WithDoubleEntries: Story = {
+    args: pipe(
+        randomSeed,
+        IO.map(flow(
+            getStoryData,
+            ({ data, avatar }) => ({
+                data: {
+                    ...data,
+                    info: pipe(
+                        data.info,
+                        A.takeLeft(5),
+                        xs => [
+                            ...xs,
+                            ...xs
+                        ],
+                        A.sort(ByName)
+                    )
+                },
+
+                avatar,
+                maximumDetailsVisible: O.none,
+            }),
+        )),
+    )()
 };
