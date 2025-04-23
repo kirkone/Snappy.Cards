@@ -1,3 +1,4 @@
+import * as A from "fp-ts/Array";
 import * as O from "fp-ts/Option";
 
 import { ADTType, makeADT, ofType } from "@morphic-ts/adt";
@@ -22,32 +23,37 @@ export type AppData = {
     sub: O.Option<string>;
     avatar: O.Option<ImageData>;
     background: O.Option<ImageData>;
-    phone: O.Option<string>;
-    mail: O.Option<string>;
-    web: O.Option<string>;
-    twitter: O.Option<string>;
-    facebook: O.Option<string>;
-    youtube: O.Option<string>;
-    instagram: O.Option<string>;
-    twitch: O.Option<string>;
-    github: O.Option<string>;
-    linkedIn: O.Option<string>;
-    xing: O.Option<string>;
-    paypal: O.Option<string>;
-    patreon: O.Option<string>;
-    pinterest: O.Option<string>;
-    npm: O.Option<string>;
-    soundcloud: O.Option<string>;
-    snapchat: O.Option<string>;
-    steam: O.Option<string>;
-    cpan: O.Option<string>;
-    signal: O.Option<string>;
-    telegram: O.Option<string>;
 
     config: {
         maximumDetailsVisible: O.Option<number>;
     };
+
+    info: Array<
+        | [type: 'phone', value: string]
+        | [type: 'mail', value: string]
+        | [type: 'web', value: string]
+        | [type: 'twitter', value: string]
+        | [type: 'facebook', value: string]
+        | [type: 'youtube', value: string]
+        | [type: 'instagram', value: string]
+        | [type: 'twitch', value: string]
+        | [type: 'github', value: string]
+        | [type: 'linkedIn', value: string]
+        | [type: 'xing', value: string]
+        | [type: 'paypal', value: string]
+        | [type: 'patreon', value: string]
+        | [type: 'pinterest', value: string]
+        | [type: 'npm', value: string]
+        | [type: 'soundcloud', value: string]
+        | [type: 'snapchat', value: string]
+        | [type: 'steam', value: string]
+        | [type: 'cpan', value: string]
+        | [type: 'signal', value: string]
+        | [type: 'telegram', value: string]
+    >;
 };
+
+export type AppDataInfo = AppData["info"][number][0];
 
 export const getAppDataFromUrlParams: FunctionN<[UrlParameters], AppData> = ({
     avatar,
@@ -211,3 +217,9 @@ const makeSnappyUrl = (
 ) => `${import.meta.env.BASE_URL}images/wallpapers/${encodeURIComponent(name.replace(/^snappy:/, ""))}`;
 
 export const AppDataAdt = makeRemoteResultADT<AppData>();
+
+export const getAppDataInfo = (name: AppDataInfo) => (a: AppData) => pipe(
+    a.info,
+    A.findFirst(([key]) => key === name),
+    O.map(([_, value]) => value),
+);

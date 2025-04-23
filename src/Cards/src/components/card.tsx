@@ -1,9 +1,10 @@
 import * as A from "fp-ts/Array";
 import * as NEA from "fp-ts/NonEmptyArray";
 import * as O from "fp-ts/Option";
-import * as R from "fp-ts/Record";
 import * as styles from "./card.css";
 
+import { constant, pipe } from "fp-ts/function";
+import { DetailLine, DetailLink, DetailList } from "./detail-list";
 import {
     ChevronDownIcon,
     CpanIcon,
@@ -28,48 +29,19 @@ import {
     XingIcon,
     YoutubeIcon,
 } from "./icons";
-import { DetailLine, DetailLink, DetailList } from "./detail-list";
-import { constant, identity, pipe, tuple } from "fp-ts/function";
 
 import type { ADTType } from "@morphic-ts/adt";
-import { AppData } from "../model/app-data";
-import type { FunctionComponent } from "preact";
-import { PageContent } from "./page-content";
-import { RemoteImageAdt } from "../model/remote-image";
-import { Simplify } from "type-fest";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
+import type { FunctionComponent } from "preact";
+import { Except } from "type-fest";
+import { AppData, AppDataInfo } from "../model/app-data";
+import { RemoteImageAdt } from "../model/remote-image";
 import { getUnionTypeMatcherStrict } from "../utils/utils";
+import { PageContent } from "./page-content";
 
-type Media = Pick<AppData,
-    | "phone"
-    | "mail"
-    | "web"
-    | "twitter"
-    | "facebook"
-    | "youtube"
-    | "instagram"
-    | "twitch"
-    | "github"
-    | "linkedIn"
-    | "xing"
-    | "paypal"
-    | "patreon"
-    | "pinterest"
-    | "npm"
-    | "soundcloud"
-    | "snapchat"
-    | "steam"
-    | "cpan"
-    | "signal"
-    | "telegram"
->;
+export type CardData = Except<AppData, "config" | "avatar" | "background">;
 
-export type CardData = Simplify<
-    & Pick<AppData, "name" | "job" | "sub">
-    & Media
->;
-
-type CardProps = {
+export type CardProps = {
     data: CardData;
     avatar: ADTType<typeof RemoteImageAdt>;
     expanded: boolean;
@@ -79,7 +51,7 @@ type CardProps = {
 };
 
 export const Card: FunctionComponent<CardProps> = ({
-    data: { sub, name, job, ...media },
+    data: { sub, name, job, info },
     avatar,
     expanded,
     maximumDetailsVisible,
@@ -105,14 +77,14 @@ export const Card: FunctionComponent<CardProps> = ({
             )}
 
             {pipe(
-                { ...media, name, job },
-                O.fromPredicate(R.some(O.isSome)),
+                [name, job, NEA.fromArray(info)],
+                O.fromPredicate(A.some(O.isSome<unknown>)),
                 O.fold(
                     Empty,
-                    (media) => <Details
+                    () => <Details
                         name={name}
                         job={job}
-                        media={media}
+                        info={info}
                         expanded={expanded}
                         maximumDetailsVisible={maximumDetailsVisible}
                         onExpandClick={onExpandClick}
@@ -139,7 +111,7 @@ const Empty = constant(<></>);
 type DetailProps = {
     name: O.Option<string>;
     job: O.Option<string>;
-    media: Media;
+    info: AppData["info"];
     maximumDetailsVisible: O.Option<number>;
 
     expanded: boolean;
@@ -149,7 +121,7 @@ type DetailProps = {
 const Details: FunctionComponent<DetailProps> = ({
     name,
     job,
-    media,
+    info,
     maximumDetailsVisible,
 
     expanded,
@@ -196,51 +168,7 @@ const Details: FunctionComponent<DetailProps> = ({
             )}
 
             {pipe(
-                // 1. define order, that is used for display
-                identity<Array<keyof Media>>([
-                    // business
-                    "phone",
-                    "mail",
-                    "web",
-                    "linkedIn",
-                    "xing",
-
-                    // social media
-                    "twitter",
-                    "facebook",
-                    "youtube",
-                    "instagram",
-                    "pinterest",
-                    "snapchat",
-                    "signal",
-                    "telegram",
-
-                    // dev
-                    "github",
-                    "npm",
-                    "cpan",
-
-                    // payment
-                    "paypal",
-                    "patreon",
-
-                    // gaming
-                    "twitch",
-                    "steam",
-
-                    // media
-                    "soundcloud",
-                ]),
-
-                // 2. get the value out of details, save ordered with its key
-                A.map(k => pipe(
-                    k,
-                    k => R.lookup(k, media),
-                    O.flatten,
-                    O.map(v => tuple(k, v))
-                )),
-
-                A.compact,
+                info,
                 splitDetails,
 
                 // 3. render
@@ -249,7 +177,7 @@ const Details: FunctionComponent<DetailProps> = ({
                         details,
                         A.map(([name, value]) => (
                             <DetailLine>
-                                <LinkForMedium name={name} caption={value} />
+                                <LinkForMedium name={name} value={value} />
                             </DetailLine>
                         ))
                     )}
@@ -261,7 +189,7 @@ const Details: FunctionComponent<DetailProps> = ({
                                 expanded={expanded}
                                 animationIndex={idx}>
 
-                                <LinkForMedium name={name} caption={value} />
+                                <LinkForMedium name={name} value={value} />
                             </AnimatedDetailLine>
                         ))
                     )}
@@ -339,7 +267,7 @@ const AnimatedDetailLine: FunctionComponent<AnimatedDetailLineProps> = ({
     </DetailLine>
 );
 
-const getLinkForMedium = getUnionTypeMatcherStrict<keyof Media>()({
+const getLinkForMedium = getUnionTypeMatcherStrict<AppDataInfo>()({
     phone: () => (value: string) => (
         <DetailLink
             caption={value}
@@ -530,10 +458,10 @@ const getLinkForMedium = getUnionTypeMatcherStrict<keyof Media>()({
 });
 
 type LinkForMediumProps = {
-    name: keyof Media;
-    caption: string;
+    name: AppDataInfo;
+    value: string;
 };
 
 const LinkForMedium: FunctionComponent<LinkForMediumProps> = ({
-    name, caption
-}) => getLinkForMedium(name)(caption);
+    name, value
+}) => getLinkForMedium(name)(value);
