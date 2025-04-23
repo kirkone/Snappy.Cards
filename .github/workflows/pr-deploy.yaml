@@ -67,7 +67,7 @@ jobs:
           script: |
             const prNumber = context.payload.pull_request.number;
             const staticWebAppUrl = `https://snappycards.z1.web.core.windows.net/pr-${prNumber}/`;
-            const staticWebAppParameter = "#name=Max%20Mustermann&phone=%2b49%20123%204567890&mail=me@mail.com&web=awesomesite.com&avatar=ygEyXBClJhA&background=grOCtxtBrDg&job=Toller%20Typ&sub==^..^=";
+            const staticWebAppParameter = "#name=Max%20Mustermann&phone=%2b49%20123%204567890&mail=me@mail.com&web=awesomesite.com&avatar=snappy:2008&background=snappy:1073&job=Toller%20Typ&sub==^..^=";
             /*
             const comment = `The preview for this PR is deployed!  
             You can access it here:  
