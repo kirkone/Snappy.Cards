@@ -16,6 +16,24 @@ type VCardFields = {
     mail: O.Option<string>;
     web: O.Option<string>;
     avatar: O.Option<string>;
+    twitter: O.Option<string>;
+    facebook: O.Option<string>;
+    youtube: O.Option<string>;
+    instagram: O.Option<string>;
+    twitch: O.Option<string>;
+    github: O.Option<string>;
+    linkedIn: O.Option<string>;
+    xing: O.Option<string>;
+    paypal: O.Option<string>;
+    patreon: O.Option<string>;
+    pinterest: O.Option<string>;
+    npm: O.Option<string>;
+    soundcloud: O.Option<string>;
+    snapchat: O.Option<string>;
+    steam: O.Option<string>;
+    cpan: O.Option<string>;
+    signal: O.Option<string>;
+    telegram: O.Option<string>;
 };
 
 const vCardParamEncoder = (prefix: string) => O.map<string, string>(
@@ -27,16 +45,34 @@ const vCardImageEncoder = O.map<Base64Data, string>(
 );
 
 type VCardInput =
-    & Pick<AppData, "name" | "phone" | "mail" | "web" | "job">
+    & Pick<AppData, "name" | "phone" | "mail" | "web" | "job" | "twitter" | "facebook" | "youtube" | "instagram" | "twitch" | "github" | "linkedIn" | "xing" | "paypal" | "patreon" | "pinterest" | "npm" | "soundcloud" | "snapchat" | "steam" | "cpan" | "signal" | "telegram">
     & { avatarBase64: O.Option<Base64Data>; };
 
-const encodeVCardFields = (params: VCardInput): VCardFields => ({
+export const encodeVCardFields = (params: VCardInput): VCardFields => ({
     name: pipe(params.name, vCardParamEncoder("N:")),
     job: pipe(params.job, vCardParamEncoder("TITLE:")),
     phone: pipe(params.phone, vCardParamEncoder("TEL;TYPE=PREF:")),
     mail: pipe(params.mail, vCardParamEncoder("EMAIL;TYPE=PREF,INTERNET:")),
     web: pipe(params.web, vCardParamEncoder("URL:")),
     avatar: pipe(params.avatarBase64, vCardImageEncoder),
+    twitter: pipe(params.twitter, vCardParamEncoder("X-TWITTER:")),
+    facebook: pipe(params.facebook, vCardParamEncoder("X-FACEBOOK:")),
+    youtube: pipe(params.youtube, vCardParamEncoder("X-YOUTUBE:")),
+    instagram: pipe(params.instagram, vCardParamEncoder("X-INSTAGRAM:")),
+    twitch: pipe(params.twitch, vCardParamEncoder("X-TWITCH:")),
+    github: pipe(params.github, vCardParamEncoder("X-GITHUB:")),
+    linkedIn: pipe(params.linkedIn, vCardParamEncoder("X-LINKEDIN:")),
+    xing: pipe(params.xing, vCardParamEncoder("X-XING:")),
+    paypal: pipe(params.paypal, vCardParamEncoder("X-PAYPAL:")),
+    patreon: pipe(params.patreon, vCardParamEncoder("X-PATREON:")),
+    pinterest: pipe(params.pinterest, vCardParamEncoder("X-PINTEREST:")),
+    npm: pipe(params.npm, vCardParamEncoder("X-NPM:")),
+    soundcloud: pipe(params.soundcloud, vCardParamEncoder("X-SOUNDCLOUD:")),
+    snapchat: pipe(params.snapchat, vCardParamEncoder("X-SNAPCHAT:")),
+    steam: pipe(params.steam, vCardParamEncoder("X-STEAM:")),
+    cpan: pipe(params.cpan, vCardParamEncoder("X-CPAN:")),
+    signal: pipe(params.signal, vCardParamEncoder("X-SIGNAL:")),
+    telegram: pipe(params.telegram, vCardParamEncoder("X-TELEGRAM:")),
 });
 
 const renderVCard = (params: VCardFields) => pipe(
@@ -60,7 +96,7 @@ export const VCardDataAdt = makeRemoteResultADT<{ url: string; }>();
 
 export const vCardFieldsFromAppData = (a: AppData) => pipe(
     a,
-    pick(["name", "phone", "mail", "web", "job"]),
+    pick(["name", "phone", "mail", "web", "job", "twitter", "facebook", "youtube", "instagram", "twitch", "github", "linkedIn", "xing", "paypal", "patreon", "pinterest", "npm", "soundcloud", "snapchat", "steam", "cpan", "signal", "telegram"]),
 );
 
 export const vCardFieldsFromAppDataLoaded = flow(
